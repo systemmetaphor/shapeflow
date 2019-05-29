@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.DbModel",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Application", "ShapeFlow.Application\ShapeFlow.Application.csproj", "{AEF6D4A5-C798-42F7-A676-7FD081B79264}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthwindSample.Mvc", "NorthwindSample.Mvc\NorthwindSample.Mvc.csproj", "{676147A7-527B-4013-937A-817FA84D5BFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthwindSample.Mvc", "NorthwindSample.Mvc\NorthwindSample.Mvc.csproj", "{676147A7-527B-4013-937A-817FA84D5BFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{83488367-E381-428C-AE0E-7EFD6E6FFF75}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
