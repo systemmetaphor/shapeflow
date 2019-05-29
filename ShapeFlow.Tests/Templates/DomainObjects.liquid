@@ -1,0 +1,18 @@
+﻿/// Model: {{name}}
+/// Project Root: {{project-root}}
+/// {{description}}
+///
+namespace Domain
+{
+{% for item in entities -%}
+	/// <remarks>
+	/// {{item.description}}
+	/// </remarks>
+	public partial class {{item.domainName}}
+	{
+{% for property in item.properties -%}
+		public {{property.nativeType}} {{property.domainName}} { get; }
+{% endfor -%}
+	}
+{% endfor -%}
+}
