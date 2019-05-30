@@ -1,3 +1,9 @@
 version: 1.0.{build}
+image: Visual Studio 2019
+environment:
+  SHAPEFLOW_GITHUB_TOKEN:
+    secure: ERS+spUS51ggcVcjpDTGU8poVasbIcHKrHhWzzxnxkjTrCTKgZQbjG1R49pxyy3i
+  SHAPEFLOW_NUGET_API_KEY:
+    secure: mxmGXDeMmLt6NJ7WVahFF1XfHfgB/UsMUcspiRCItyhxJhOtDdI+kJZ5+BRTj6Y0
 build_script:
-- ps: .\build.ps1
+- ps: build.ps1
