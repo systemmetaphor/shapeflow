@@ -6,4 +6,4 @@ environment:
   SHAPEFLOW_NUGET_API_KEY:
     secure: mxmGXDeMmLt6NJ7WVahFF1XfHfgB/UsMUcspiRCItyhxJhOtDdI+kJZ5+BRTj6Y0
 build_script:
-- ps: build.ps1
+- ps: .\build.ps1
