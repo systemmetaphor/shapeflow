@@ -11,17 +11,11 @@ namespace ShapeFlow.ModelDriven.Pipelines
 {
     public class PipelineEngine
     {
-        private readonly IModelManager _modelManager;
         private readonly ModelToTextProjectionEngine _engine;
-        private readonly TextGeneratorRegistry _generatorRegistry;
-        private readonly IFileService _fileService;
 
-        public PipelineEngine(IModelManager modelManager, ModelToTextProjectionEngine engine, TextGeneratorRegistry generatorRegistry, IFileService fileService)
-        {
-            _modelManager = modelManager;
-            _engine = engine;
-            _generatorRegistry = generatorRegistry;
-            _fileService = fileService;
+        public PipelineEngine(ModelToTextProjectionEngine engine)
+        {           
+            _engine = engine;         
         }
 
         public SolutionEventContext Process(SolutionEventContext context)
