@@ -6,7 +6,7 @@
     <title>shapeflow</title>
     <authors>Pedro Salgueiro</authors>
     <owners>Pedro Salgueiro, shapeflow</owners>
-    <licenseUrl>https://github.com/Wyamio/Wyam/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/systemmetaphor/shapeflow/blob/master/License.txt</licenseUrl>
     <iconUrl>https://shapeflow.io/Content/images/logo-square-64.png</iconUrl>
     <projectUrl>https://shapeflow.io</projectUrl>
     <repository type="git" url="https://github.com/systemmetaphor/shapeflow.git" />

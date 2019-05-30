@@ -1,27 +1,4 @@
-// The following environment variables need to be set for Build target:
-// SIGNTOOL (to sign the executable)
-
-// The following environment variables need to be set for Publish target:
-// SHAPEFLOW_NUGET_API_KEY
-// SHAPEFLOW_GITHUB_TOKEN
-
-// The following environment variables need to be set for Publish-MyGet target:
-// MYGET_API_KEY
-
-// The following environment variables need to be set for Publish-Chocolatey target:
-// CHOCOLATEY_API_KEY
-
-// Publishing workflow:
-// - Update ReleaseNotes.md and RELEASE in develop branch
-// - Run a normal build with Cake to set SolutionInfo.cs in the repo and run through unit tests (`build.cmd`)
-// - Push to develop and fast-forward merge to master
-// - Switch to master
-// - Wait for CI to complete build and publish to MyGet
-// - Run a local prerelease build of SHAPEFLOW.Web to verify release (`build -Script "prerelease.cake"` from SHAPEFLOW.Web folder)
-// - Run a Publish build with Cake (`build -target Publish`)
-// - No need to add a version tag to the repo - added by GitHub on publish
-// - Switch back to develop branch
-// - Run a build on SHAPEFLOW.Web from CI to verify final release (first make sure NuGet Gallery has updated packages by searching for "SHAPEFLOW")
+// adapted from https://github.com/Wyamio/Wyam/blob/develop/build.cake 
 
 #addin "Cake.FileHelpers"
 #addin "Octokit"
