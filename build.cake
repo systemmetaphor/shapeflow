@@ -208,7 +208,7 @@ Task("Publish-MyGet")
     .WithCriteria(() => !isLocal)
     .WithCriteria(() => !isPullRequest)
     .WithCriteria(() => isRunningOnWindows)
-    .WithCriteria(() => branch == "develop")
+    .WithCriteria(() => branch == "development")
     .Does(() =>
     {
         // Resolve the API key.
