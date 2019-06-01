@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ShapeFlow.Models;
 
 namespace ShapeFlow.Loaders.Excel
 {
-    public class XlsTemplateModel : DomainModelRoot
+    public class XlsTemplateModelRoot
     {
         public string NamespaceOnCSharp { get; set; }
 
@@ -27,15 +28,6 @@ namespace ShapeFlow.Loaders.Excel
         }
 
         public string MatchColumnName { get; set; }
-
-        public override void MergeWith(DomainModelRoot second)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void RegisterDomainTypes(Action<Type, string[]> register)
-        {
-            register(typeof(XlsColumnInfo), typeof(XlsColumnInfo).GetProperties().Select(p => p.Name).ToArray());
-        }
+                               
     }
 }

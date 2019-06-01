@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using ShapeFlow.Infrastructure;
+using ShapeFlow.Models;
 
 namespace ShapeFlow.Loaders.Excel
 {
@@ -15,77 +18,85 @@ namespace ShapeFlow.Loaders.Excel
 
         public XlsImportDomainModelProvider()
         {
-            DomainModelType = ExcelImporterTargetHandler.DomainModelName;
-            Order = 0;
         }
 
-        public string DomainModelType
+        public string Name
         {
-            get;
+            get
+            {
+                return "Excel";
+            }
         }
 
-        public int Order
-        {
-            get;
-        }
+        public ModelFormat Format => ModelFormat.Clr;
 
-        public DomainModelRoot LoadModel(TargetContext context)
+        public ModelContext LoadModel(ModelDeclaration context)
         {
             var fileName = context.GetParameter(FileNameParameter);
             fileName = fileName.Replace("{{__dirname}}", Environment.CurrentDirectory);
 
             var outputDirectory = context.GetParameter("outputDirectory");
-            if (!string.IsNullOrWhiteSpace(outputDirectory))
-            {
-                outputDirectory = outputDirectory.Replace("{{__dirname}}", Environment.CurrentDirectory);
-                context.GeneratorContext.OverrideOutputDirectory(outputDirectory);
-            }
-            
             var objectName = context.GetParameter(ObjectNameParameter);
             var lineObjectName = context.GetParameter(LineObjectNameParameter);
             var matchColumn = XlsImportGenerators.DatabaseFriendlyName(context.GetParameter(MatchColumnParameter));
             var ns = context.GetParameter(NamespaceParameter);
             var schemaName = context.GetParameter(SchemaParameter);
 
-            var linesToSkip = 0;
-            int.TryParse(context.GetParameter("LinesToSkip") ?? "0", out linesToSkip);
+            int.TryParse(context.GetParameter("LinesToSkip") ?? "0", out int linesToSkip);
 
             var columnsModel = new XlsImportGenerators().GetColumnInfo(fileName, linesToSkip);
-            return new XlsTemplateModel
-            {
-                LineObjectName = lineObjectName,
-                ObjectName = objectName,
-                ColumnsToImport = columnsModel,
-                NamespaceOnCSharp = ns,
-                MatchColumnNameOnFile = context.GetParameter(MatchColumnParameter),
-                MatchColumnName = matchColumn,
-                SchemaName = schemaName
-            };
+
+            return new ModelContext(context, new XlsTemplateModel(
+                new XlsTemplateModelRoot
+                {
+                    LineObjectName = lineObjectName,
+                    ObjectName = objectName,
+                    ColumnsToImport = columnsModel,
+                    NamespaceOnCSharp = ns,
+                    MatchColumnNameOnFile = context.GetParameter(MatchColumnParameter),
+                    MatchColumnName = matchColumn,
+                    SchemaName = schemaName
+                }, ModelFormat.Clr, context.ModelName, context.Tags));
         }
 
-        public bool ValidateArguments(TargetContext context, TextWriter output)
+        public bool ValidateArguments(ModelDeclaration context)
         {
             var isValid = true;
 
             if (string.IsNullOrWhiteSpace(context.GetParameter(FileNameParameter)))
             {
                 isValid = false;
-                output.WriteLine($"The parameter {FileNameParameter} is required.");
+                AppTrace.Error($"The parameter {FileNameParameter} is required.");
             }
 
             if (string.IsNullOrWhiteSpace(context.GetParameter(ObjectNameParameter)))
             {
                 isValid = false;
-                output.WriteLine($"The parameter {ObjectNameParameter} is required.");
+                AppTrace.Error($"The parameter {ObjectNameParameter} is required.");
             }
 
             if (string.IsNullOrWhiteSpace(context.GetParameter(LineObjectNameParameter)))
             {
                 isValid = false;
-                output.WriteLine($"The parameter {LineObjectNameParameter} is required.");
+                AppTrace.Error($"The parameter {LineObjectNameParameter} is required.");
             }
 
             return isValid;
+        }
+    }
+
+    public class XlsTemplateModel : Model
+    {
+        public XlsTemplateModel(XlsTemplateModelRoot root, ModelFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
+        {
+            Root = root;
+        }
+
+        public XlsTemplateModelRoot Root { get; }
+
+        public override object GetModelInstance()
+        {
+            return Root;
         }
     }
 }
