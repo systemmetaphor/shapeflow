@@ -5,6 +5,6 @@ environment:
     secure: ERS+spUS51ggcVcjpDTGU8poVasbIcHKrHhWzzxnxkjTrCTKgZQbjG1R49pxyy3i
   SHAPEFLOW_NUGET_API_KEY:
     secure: mxmGXDeMmLt6NJ7WVahFF1XfHfgB/UsMUcspiRCItyhxJhOtDdI+kJZ5+BRTj6Y0
-  SHAPEFLOW_ARGS: -target BuildServer
+  CAKE_ARGS: -target BuildServer
 build_script:
 - ps: .\build.cmd
