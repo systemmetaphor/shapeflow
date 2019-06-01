@@ -205,10 +205,10 @@ Task("Create-Tools-Package")
 
 Task("Publish-MyGet")
     .IsDependentOn("Create-Packages")
-    .WithCriteria(() => !isLocal)
-    .WithCriteria(() => !isPullRequest)
-    .WithCriteria(() => isRunningOnWindows)
-    .WithCriteria(() => branch == "development")
+    //.WithCriteria(() => !isLocal)
+    //.WithCriteria(() => !isPullRequest)
+    //.WithCriteria(() => isRunningOnWindows)
+    //.WithCriteria(() => branch == "development")
     .Does(() =>
     {
         // Resolve the API key.
