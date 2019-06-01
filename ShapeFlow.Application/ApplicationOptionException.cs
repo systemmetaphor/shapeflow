@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace ShapeFlow.Infrastructure
+namespace ShapeFlow
 {
     [Serializable]
     internal class ApplicationOptionException : Exception

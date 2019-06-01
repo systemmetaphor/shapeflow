@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow.Models;
 
-namespace ShapeFlow.ModelDriven.Loaders
+namespace ShapeFlow.Loaders
 {
     public interface IModelLoader
     {

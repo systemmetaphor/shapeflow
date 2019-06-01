@@ -28,9 +28,14 @@ namespace ShapeFlow.Infrastructure
             _container.RegisterType<TFrom, TTo>(new ContainerControlledLifetimeManager());
         }
 
-        public void RegisterService<TFrom>(TFrom instance)
+        public void RegisterService<T>()
         {
-            _container.RegisterInstance<TFrom>(instance);
+            _container.RegisterType<T, T>(new ContainerControlledLifetimeManager());
+        }
+
+        public void RegisterService<T>(T instance)
+        {
+            _container.RegisterInstance<T>(instance);
         }
 
         public TType Resolve<TType>() where TType : class
@@ -51,6 +56,11 @@ namespace ShapeFlow.Infrastructure
         public T Activate<T>()
         {
             return (T)Activate(typeof(T));
+        }
+
+        public T Activate<T>(Type t)
+        {
+            return (T)Activate(t);
         }
 
         public void Dispose()

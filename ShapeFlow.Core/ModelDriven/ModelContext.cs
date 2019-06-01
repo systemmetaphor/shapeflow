@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow.Models;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class ModelContext
     {

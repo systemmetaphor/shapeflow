@@ -2,7 +2,7 @@
 using ShapeFlow.Infrastructure;
 using Newtonsoft.Json.Linq;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class TransformationRuleDeclaration
     {

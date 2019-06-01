@@ -1,7 +1,7 @@
 ﻿//using System;
 //using Newtonsoft.Json.Linq;
 
-//namespace Kriativity.ModelDriven.InputProviders
+//namespace Kriativity.InputProviders
 //{
 //    public class JsonTransformationInput : TransformationInput
 //    {

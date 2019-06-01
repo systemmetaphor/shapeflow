@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class LoaderRefDeclaration
     {

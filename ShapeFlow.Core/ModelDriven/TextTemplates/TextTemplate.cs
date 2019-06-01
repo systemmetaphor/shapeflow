@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using ShapeFlow.ModelDriven;
+using ShapeFlow;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class TextTemplate : IDisposable
     {        

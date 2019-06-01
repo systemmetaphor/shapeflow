@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ShapeFlow.ModelDriven {
+namespace ShapeFlow {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ShapeFlow.ModelDriven {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ShapeFlow.ModelDriven.ModelDrivenErrorMessages", typeof(ModelDrivenErrorMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ShapeFlowErrorMessages", typeof(ModelDrivenErrorMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

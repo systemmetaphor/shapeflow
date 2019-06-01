@@ -1,7 +1,7 @@
 ﻿using System;
 using ShapeFlow.Infrastructure;
 
-namespace ShapeFlow.Infrastructure
+namespace ShapeFlow
 {   
     public static class ApplicationContainerFactory
     {        

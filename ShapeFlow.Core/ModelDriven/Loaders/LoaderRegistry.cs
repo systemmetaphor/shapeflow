@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
 
-namespace ShapeFlow.ModelDriven.Loaders
+namespace ShapeFlow.Loaders
 {
     public class LoaderRegistry
     {

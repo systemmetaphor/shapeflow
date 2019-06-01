@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using ShapeFlow.ModelDriven;
+using ShapeFlow;
 
 namespace ShapeFlow.Tests
 {

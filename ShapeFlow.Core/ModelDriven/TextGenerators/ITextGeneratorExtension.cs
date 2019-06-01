@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven;
+using ShapeFlow;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public interface ITextGeneratorExtension
     {       

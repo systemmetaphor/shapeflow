@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class SolutionEventContext
     {

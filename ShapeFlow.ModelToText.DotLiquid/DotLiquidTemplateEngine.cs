@@ -9,7 +9,7 @@ using DotLiquid.NamingConventions;
 using ShapeFlow.Infrastructure;
 using Newtonsoft.Json.Linq;
 
-namespace ShapeFlow.ModelDriven.TemplateEngines
+namespace ShapeFlow.TemplateEngines
 {
     public class DotLiquidTemplateEngine : ITextTemplateEngine
     {
@@ -21,14 +21,11 @@ namespace ShapeFlow.ModelDriven.TemplateEngines
         private readonly IOutputLanguageInferenceService _inferenceService;
 
 
-        public DotLiquidTemplateEngine(ILoggingService loggingService, TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
-        {
-            LoggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+        public DotLiquidTemplateEngine(TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
+        {            
             _fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
             _inferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
         }
-
-        protected ILoggingService LoggingService { get; }
 
         public string TemplateLanguage => TextTemplateLanguages.DotLiquid;
 
@@ -66,7 +63,7 @@ namespace ShapeFlow.ModelDriven.TemplateEngines
             }
             catch (Exception e)
             {
-                LoggingService.Error("Template processing failed:", e);
+                AppTrace.Error("Template processing failed:", e);
                 throw;
             }
 

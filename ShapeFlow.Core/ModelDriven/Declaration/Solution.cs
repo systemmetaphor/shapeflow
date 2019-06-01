@@ -5,7 +5,7 @@ using System.Linq;
 using ShapeFlow.Infrastructure;
 using Newtonsoft.Json.Linq;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class Solution
     {
@@ -33,7 +33,7 @@ namespace ShapeFlow.ModelDriven
 
         public IDictionary<string, string> Parameters => _parameters;
 
-        public void AddParameters(Dictionary<string, string> parameters)
+        public void AddParameters(IDictionary<string, string> parameters)
         {
             foreach(var parameter in parameters)
             {

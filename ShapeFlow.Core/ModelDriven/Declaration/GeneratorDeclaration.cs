@@ -3,7 +3,7 @@ using System.IO;
 using ShapeFlow.Infrastructure;
 using Newtonsoft.Json.Linq;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     /// <summary>
     /// A generator converts an input model using a set of transformation rules into a set of output files.     

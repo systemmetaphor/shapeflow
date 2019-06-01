@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeFlow.Infrastructure
+namespace ShapeFlow
 {
     public static class ArgumentNames
     {

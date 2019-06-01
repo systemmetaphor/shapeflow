@@ -3,7 +3,7 @@ using System.Linq;
 using ShapeFlow.Infrastructure;
 using Newtonsoft.Json.Linq;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     /// <summary>
     /// A transformation applies a generator to an input model and optionally overrides its conventions.

@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using Dapper;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven;
-using ShapeFlow.ModelDriven.Loaders;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow;
+using ShapeFlow.Loaders;
+using ShapeFlow.Models;
 
 namespace ShapeFlow.Loaders.DbModel
 {
@@ -36,16 +36,14 @@ ON
 WHERE
 	(tbl.TABLE_TYPE = 'BASE TABLE')
 ";
-
-        private readonly ILoggingService _loggingService;
+                
 
         public string Name => "DbModelLoader";
 
         public ModelFormat Format => ModelFormat.Clr;
 
-        public DbModelLoader(ILoggingService loggingService)
-        {
-            _loggingService = loggingService;
+        public DbModelLoader()
+        {            
         }
 
         public ModelContext LoadModel(ModelDeclaration declaration)
@@ -64,7 +62,7 @@ WHERE
 
             var query = TableMetadataQuery;
 
-            _loggingService.Debug($"Loading metadata from database {databaseInfo.Name} on {databaseInfo.Server} instance.");
+            AppTrace.Verbose($"Loading metadata from database {databaseInfo.Name} on {databaseInfo.Server} instance.");
             
             if(!string.IsNullOrWhiteSpace(tableName))
             {
@@ -100,7 +98,7 @@ WHERE
                 }
             }
 
-            _loggingService.Debug($"Loaded { result.Entities.Count() } models.");
+            AppTrace.Verbose($"Loaded { result.Entities.Count() } models.");
 
             return new ModelContext(declaration, new DbModel(result, ModelFormat.Clr,declaration.ModelName, declaration.Tags));
         }

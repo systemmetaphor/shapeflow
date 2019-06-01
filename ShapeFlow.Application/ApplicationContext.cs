@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ShapeFlow.Infrastructure
+namespace ShapeFlow
 {
     public class ApplicationContext
     {       

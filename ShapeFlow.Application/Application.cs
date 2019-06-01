@@ -4,12 +4,14 @@ using ShapeFlow.Infrastructure;
 using Mono.Options;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using ShapeFlow.ModelDriven.Models;
-using ShapeFlow.ModelDriven.Loaders;
+using ShapeFlow.Models;
+using ShapeFlow.Loaders;
 using ShapeFlow.Loaders.DbModel;
-using ShapeFlow.ModelDriven.TemplateEngines;
+using ShapeFlow.TemplateEngines;
+using System.Linq;
+using ShapeFlow.Commands;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public static class Application
     {
@@ -22,80 +24,52 @@ namespace ShapeFlow.ModelDriven
 
         public static void Run(string[] args)
         {
-            using (var currentContainer = ApplicationContainerFactory.Create(RegisterComponents))
+            using (var currentContainer = ApplicationContainerFactory.Create(Register))
             {
-                // enable console output in logging
-                currentContainer.Resolve<ILoggingService>().EnableConsoleOutput();
+                // naif implementation of command detection
 
-                var optionsParser = InitializeOptionsParser();
-                optionsParser.Parse(args);
-
-                var projectFile = Path.Combine(Environment.CurrentDirectory, "shapeflow.config.json");
-                if (File.Exists(projectFile) && string.IsNullOrWhiteSpace(_options.ProjectFile))
+                if (args.Length == 0)
                 {
-                    _options.ProjectFile = projectFile;
+                    args = new string[] { "generate" };
                 }
 
-                try
-                {
-                    var parameters = new Dictionary<string, string>
-                    {
-                        { "project-root", Environment.CurrentDirectory }
-                    };
+                var commandName = args[0];
+                var commandArguments = args.Skip(1).ToArray();
 
-                    var solution = Solution.ParseFile(_options.ProjectFile);
-                    solution.AddParameters(parameters);
-
-                    var ev = new SolutionEventContext(solution);
-                    var engine = currentContainer.Resolve<SolutionEngine>();
-
-                    engine.Run(ev);
-                }
-                catch (ApplicationOptionException ex)
-                {
-                    var logging = currentContainer.Resolve<ILoggingService>();
-                    logging?.Error("Invalid command line arguments. See exception for details.", ex);
-                    Console.WriteLine(ex.Message);
-                }
+                var commandSystem = currentContainer.Resolve<CommandManagementService>();
+                commandSystem.Execute(commandName, commandArguments);
             }
         }
 
-        static OptionSet InitializeOptionsParser()
+        public static void Register(IContainer container)
         {
-            var result = new OptionSet
-            {
-                { "parameter:", "Add parameter", value => {
-                    value = value.Trim('\"');
-                    var parts = value.Split('=');
-                    if(parts.Length == 2)
-                    {
-                        _options.Parameters.Add(parts[0], parts[1]);
-                    }
-                }},
-                { "project:", "Set the project", value => {
-                    _options.ProjectFile = value;
-                }}
-            };
-
-            return result;
+            RegisterComponents(container);
+            RegisterCommands(container);
         }
+        
 
         public static void RegisterComponents(IContainer container)
-        {
-            container.RegisterService<ILoggingService, LoggingService>();
+        {            
             container.RegisterService<IExtensibilityService, ExtensibilityService>();
             container.RegisterService<IFileService, FileService>();
-            container.RegisterService<IModelManager, ModelManager>();
-            container.RegisterService<ApplicationContext, ApplicationContext>();
+            container.RegisterService<ModelManager>();
+            container.RegisterService<ApplicationContext>();
             container.RegisterService<IOutputLanguageInferenceService, OutputLanguageInferenceService>();
-            container.RegisterService<ModelToTextProjectionEngine, ModelToTextProjectionEngine>();
-            container.RegisterService<ITemplateEngineProvider, TemplateEngineProvider>();
-            container.RegisterService<TextGeneratorRegistry, TextGeneratorRegistry>();
-            container.RegisterService<SolutionEngine, SolutionEngine>();
+            container.RegisterService<ModelToTextProjectionEngine>();
+            container.RegisterService<TemplateEngineProvider>();
+            container.RegisterService<TextGeneratorRegistry>();
+            container.RegisterService<SolutionEngine>();
+            container.RegisterService<CommandManagementService>();
 
             container.RegisterMany<IModelLoader, JsonModelLoader>();
             container.RegisterMany<IModelLoader, DbModelLoader>();
             container.RegisterMany<ITextTemplateEngine, DotLiquidTemplateEngine>();
+        }
+
+        public static void RegisterCommands(IContainer container)
+        {
+            container.RegisterMany<ICommand, GenerateCommand>();
+            container.RegisterMany<ICommand, InitCommand>();
         }
     }
 }

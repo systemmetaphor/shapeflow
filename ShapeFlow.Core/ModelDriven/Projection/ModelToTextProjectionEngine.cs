@@ -1,34 +1,30 @@
 ﻿using System;
 using System.IO;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow.Models;
 using Newtonsoft.Json;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class ModelToTextProjectionEngine
     {
         public ModelToTextProjectionEngine(            
-            ILoggingService loggingService,
-            IModelManager inputManager,
+            ModelManager inputManager,
             IFileService fileService,
-            ITemplateEngineProvider templateEngineProvider,
+            TemplateEngineProvider templateEngineProvider,
             TextGeneratorRegistry generatorRegistry)
-        {
-            LoggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+        {            
             InputManager = inputManager ?? throw new ArgumentNullException(nameof(inputManager));
             FileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
             TemplateEngineProvider = templateEngineProvider ?? throw new ArgumentNullException(nameof(templateEngineProvider));
             GeneratorRegistry = generatorRegistry;
         }
-
-        protected ILoggingService LoggingService { get; }
-
-        protected IModelManager InputManager { get; }
+        
+        protected ModelManager InputManager { get; }
 
         protected IFileService FileService { get; }
 
-        protected ITemplateEngineProvider TemplateEngineProvider { get; }
+        protected TemplateEngineProvider TemplateEngineProvider { get; }
 
         protected TextGeneratorRegistry GeneratorRegistry { get; }
 
@@ -60,7 +56,7 @@ namespace ShapeFlow.ModelDriven
 
                 context.Output = transformationOutput;
 
-                LoggingService.Info("Projection completed.");
+                AppTrace.Information("Projection completed.");
             }
 
             return context;

@@ -1,4 +1,4 @@
-﻿namespace ShapeFlow.ModelDriven
+﻿namespace ShapeFlow
 {
     public class ModelToTextOutputFile
     {

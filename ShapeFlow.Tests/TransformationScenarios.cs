@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven;
-using ShapeFlow.ModelDriven.Pipelines;
+using ShapeFlow;
+using ShapeFlow.Pipelines;
 
 namespace ShapeFlow.Tests
 {

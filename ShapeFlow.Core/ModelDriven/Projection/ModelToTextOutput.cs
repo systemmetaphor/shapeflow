@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class ModelToTextOutput
     {

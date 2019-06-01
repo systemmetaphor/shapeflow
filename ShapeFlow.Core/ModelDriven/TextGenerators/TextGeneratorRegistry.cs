@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven;
+using ShapeFlow;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public class TextGeneratorRegistry
     {

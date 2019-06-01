@@ -1,5 +1,6 @@
 ﻿using System;
-using ShapeFlow.ModelDriven;
+using ShapeFlow.Infrastructure;
+using ShapeFlow;
 
 namespace shapeflow
 {
@@ -7,6 +8,7 @@ namespace shapeflow
     {
         static void Main(string[] args)
         {
+            AppTrace.AddListener(new ColorConsoleTraceListener { TraceOutputOptions = System.Diagnostics.TraceOptions.None });
             Application.Run(args);
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     public static class ParametersObjectExtensions
     {

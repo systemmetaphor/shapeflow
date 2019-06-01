@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow.Models;
 
-namespace ShapeFlow.ModelDriven.Pipelines
+namespace ShapeFlow.Pipelines
 {
     public class PipelineEngine
     {

@@ -70,6 +70,15 @@ namespace ShapeFlow.Infrastructure {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It was not possible to execute command &apos;{0}&apos;. {1}.
+        /// </summary>
+        internal static string RequiredOptionsMissing {
+            get {
+                return ResourceManager.GetString("RequiredOptionsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unexpected error ocurred while attempting to complete the request operation. Check the inner exception for details..
         /// </summary>
         internal static string UnexpectedErrorOcurred {

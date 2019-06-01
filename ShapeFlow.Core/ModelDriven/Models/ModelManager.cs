@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven.Loaders;
+using ShapeFlow.Loaders;
 
-namespace ShapeFlow.ModelDriven.Models
+namespace ShapeFlow.Models
 {
-    internal class ModelManager : IModelManager
+    public class ModelManager 
     {
         private readonly Dictionary<string, ModelContext> _models;
         private readonly LoaderRegistry _loaderRegistry;

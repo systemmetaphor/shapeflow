@@ -4,19 +4,16 @@ using System.IO;
 using System.Text;
 using System.Xml.Linq;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow.Models;
 
-namespace ShapeFlow.ModelDriven.Loaders
+namespace ShapeFlow.Loaders
 {
     public class XmlModelLoader : IModelLoader
     {
-        private readonly ILoggingService _loggingService;
-
         public const string ModelPathParameter = "model-path";
 
-        public XmlModelLoader(ILoggingService loggingService)
-        {
-            _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+        public XmlModelLoader()
+        {            
         }
 
         public string Name => "XmlLoader";
@@ -39,7 +36,7 @@ namespace ShapeFlow.ModelDriven.Loaders
             if (string.IsNullOrWhiteSpace(context.GetParameter(ModelPathParameter)))
             {
                 // TODO: this should be a validation service
-                _loggingService.Error($"The parameter {ModelPathParameter} is required.");
+                AppTrace.Error($"The parameter {ModelPathParameter} is required.");
                 return false;
             }
 

@@ -4,19 +4,17 @@ using System.Composition;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow.Models;
 
-namespace ShapeFlow.ModelDriven.Loaders
+namespace ShapeFlow.Loaders
 {
     internal class JsonModelLoader : IModelLoader
-    {
-        private readonly ILoggingService _loggingService;
+    {        
                 
         public const string ModelPathParameter = "model-path";
 
-        public JsonModelLoader(ILoggingService loggingService)
-        {
-            _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+        public JsonModelLoader()
+        {            
         }
 
         public string Name => "JsonLoader";
@@ -37,7 +35,7 @@ namespace ShapeFlow.ModelDriven.Loaders
             if(string.IsNullOrWhiteSpace(context.GetParameter(ModelPathParameter)))
             {
                 // TODO: this should be a validation service
-                _loggingService.Error($"The parameter {ModelPathParameter} is required.");
+                AppTrace.Error($"The parameter {ModelPathParameter} is required.");
                 return false;
             }
 

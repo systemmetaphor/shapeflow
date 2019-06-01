@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using ShapeFlow.Infrastructure;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
-    internal class TemplateEngineProvider : ITemplateEngineProvider
+    public class TemplateEngineProvider
     {
-        private readonly IExtensibilityService _extensibilityService;
-        private readonly ILoggingService _loggingService;
+        private readonly IExtensibilityService _extensibilityService;        
         private readonly HashSet<ITextTemplateEngine> _engines;
 
-        public TemplateEngineProvider(IExtensibilityService extensibilityService, ILoggingService loggingService)
+        public TemplateEngineProvider(IExtensibilityService extensibilityService)
         {
-            _extensibilityService = extensibilityService ?? throw new ArgumentNullException(nameof(extensibilityService));
-            _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+            _extensibilityService = extensibilityService ?? throw new ArgumentNullException(nameof(extensibilityService));            
             _engines = new HashSet<ITextTemplateEngine>();
             Load();
         }

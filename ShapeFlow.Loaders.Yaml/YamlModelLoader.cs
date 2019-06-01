@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.ModelDriven;
-using ShapeFlow.ModelDriven.Loaders;
-using ShapeFlow.ModelDriven.Models;
+using ShapeFlow;
+using ShapeFlow.Loaders;
+using ShapeFlow.Models;
 using YamlDotNet.RepresentationModel;
 
 namespace ShapeFlow.Loaders.Yaml
@@ -15,12 +15,8 @@ namespace ShapeFlow.Loaders.Yaml
     {
         public const string ModelPathParameter = "model-path";
 
-        private readonly ILoggingService _loggingService;
-
-
-        public YamlModelLoader(ILoggingService loggingService)
-        {
-            _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+        public YamlModelLoader()
+        {            
         }
 
         public string Name => "YamlLoader";
@@ -49,7 +45,7 @@ namespace ShapeFlow.Loaders.Yaml
             if (string.IsNullOrWhiteSpace(context.GetParameter(ModelPathParameter)))
             {
                 // TODO: this should be a validation service
-                _loggingService.Error($"The parameter {ModelPathParameter} is required.");
+                AppTrace.Error($"The parameter {ModelPathParameter} is required.");
                 return false;
             }
 

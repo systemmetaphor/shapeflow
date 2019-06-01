@@ -2,15 +2,12 @@
 using System.IO;
 using ShapeFlow.Infrastructure;
 
-namespace ShapeFlow.ModelDriven
+namespace ShapeFlow
 {
     internal class FileService : IFileService
-    {
-        private readonly ILoggingService _loggingService;
-
-        public FileService(ILoggingService loggingService)
-        {
-            _loggingService = loggingService ?? throw new ArgumentNullException(nameof(loggingService));
+    { 
+        public FileService()
+        {            
         }
 
         public string GetWritePath(string outputPath, string outputRoot=null)
@@ -39,7 +36,7 @@ namespace ShapeFlow.ModelDriven
                 Directory.CreateDirectory(outputDirectory);
             }
 
-            _loggingService.Info("Writing file '{0}'", outputFileName);
+            AppTrace.Information("Writing file '{0}'", outputFileName);
 
             File.WriteAllText(outputFileName, outputText);
         }

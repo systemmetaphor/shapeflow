@@ -120,6 +120,9 @@
   <data name="LogInitializationFailed" xml:space="preserve">
     <value>An unexpected error ocurred while initializing the logging service.</value>
   </data>
+  <data name="RequiredOptionsMissing" xml:space="preserve">
+    <value>It was not possible to execute command '{0}'. {1}</value>
+  </data>
   <data name="UnexpectedErrorOcurred" xml:space="preserve">
     <value>An unexpected error ocurred while attempting to complete the request operation. Check the inner exception for details.</value>
   </data>
