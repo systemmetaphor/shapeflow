@@ -41,7 +41,6 @@ namespace ShapeFlow.Loaders.Excel
             var matchColumn = XlsImportGenerators.DatabaseFriendlyName(context.GetParameter(MatchColumnParameter));
             var ns = context.GetParameter(NamespaceParameter);
             var schemaName = context.GetParameter(SchemaParameter);
-ExcelModelLoad
             int.TryParse(context.GetParameter("LinesToSkip") ?? "0", out int linesToSkip);
 
             var columnsModel = new XlsImportGenerators().GetColumnInfo(fileName, linesToSkip);
@@ -73,10 +72,10 @@ ExcelModelLoad
             {
                 isValid = false;
                 AppTrace.Error($"The parameter {ObjectNameParameter} is required.");
-            }ExcelModelLoad
+            }
 
             if (string.IsNullOrWhiteSpace(context.GetParameter(LineObjectNameParameter)))
-            {ExcelModelLoad
+            {
                 isValid = false;
                 AppTrace.Error($"The parameter {LineObjectNameParameter} is required.");
             }
