@@ -6,5 +6,7 @@ environment:
   SHAPEFLOW_NUGET_API_KEY:
     secure: mxmGXDeMmLt6NJ7WVahFF1XfHfgB/UsMUcspiRCItyhxJhOtDdI+kJZ5+BRTj6Y0
   CAKE_ARGS: -target BuildServer
+  MYGET_API_KEY:
+    secure: O6GvJ2GH/fRSwK/KoxRnk646wF8G7+IHNPsQJ75ay1nzrmpAKSDXME44VQ0zBQzU
 build_script:
 - ps: .\build.cmd

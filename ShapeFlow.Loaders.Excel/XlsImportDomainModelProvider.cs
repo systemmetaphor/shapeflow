@@ -7,7 +7,7 @@ using ShapeFlow.Models;
 namespace ShapeFlow.Loaders.Excel
 {
 
-    public class XlsImportDomainModelProvider : IModelLoader
+    public class ExcelModelLoader: IModelLoader
     {
         private const string FileNameParameter = "fileName";
         private const string ObjectNameParameter = "objectName";
@@ -16,7 +16,7 @@ namespace ShapeFlow.Loaders.Excel
         private const string NamespaceParameter = "namespace";
         private const string SchemaParameter = "schema";
 
-        public XlsImportDomainModelProvider()
+        public ExcelModelLoader()
         {
         }
 
@@ -41,7 +41,7 @@ namespace ShapeFlow.Loaders.Excel
             var matchColumn = XlsImportGenerators.DatabaseFriendlyName(context.GetParameter(MatchColumnParameter));
             var ns = context.GetParameter(NamespaceParameter);
             var schemaName = context.GetParameter(SchemaParameter);
-
+ExcelModelLoad
             int.TryParse(context.GetParameter("LinesToSkip") ?? "0", out int linesToSkip);
 
             var columnsModel = new XlsImportGenerators().GetColumnInfo(fileName, linesToSkip);
@@ -73,10 +73,10 @@ namespace ShapeFlow.Loaders.Excel
             {
                 isValid = false;
                 AppTrace.Error($"The parameter {ObjectNameParameter} is required.");
-            }
+            }ExcelModelLoad
 
             if (string.IsNullOrWhiteSpace(context.GetParameter(LineObjectNameParameter)))
-            {
+            {ExcelModelLoad
                 isValid = false;
                 AppTrace.Error($"The parameter {LineObjectNameParameter} is required.");
             }
