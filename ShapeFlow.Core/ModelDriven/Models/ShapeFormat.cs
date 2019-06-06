@@ -1,6 +1,6 @@
 ﻿namespace ShapeFlow
 {
-    public enum ModelFormat
+    public enum ShapeFormat
     {
         /// <summary>
         /// When a model is null

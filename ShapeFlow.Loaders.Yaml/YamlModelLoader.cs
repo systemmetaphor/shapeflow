@@ -6,12 +6,12 @@ using System.Text;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
 using ShapeFlow.Loaders;
-using ShapeFlow.Models;
+using ShapeFlow.Shapes;
 using YamlDotNet.RepresentationModel;
 
 namespace ShapeFlow.Loaders.Yaml
 {
-    public class YamlModelLoader : IModelLoader
+    public class YamlModelLoader : ILoader
     {
         public const string ModelPathParameter = "model-path";
 
@@ -21,9 +21,9 @@ namespace ShapeFlow.Loaders.Yaml
 
         public string Name => "YamlLoader";
 
-        public ModelFormat Format => throw new NotImplementedException();
+        public ShapeFormat Format => throw new NotImplementedException();
 
-        public ModelContext LoadModel(ModelDeclaration context)
+        public ShapeContext Load(ShapeDeclaration context)
         {
             var modelFilePath = context.GetParameter(ModelPathParameter);
 
@@ -34,13 +34,13 @@ namespace ShapeFlow.Loaders.Yaml
 
                 var model = yamlStream.Documents.FirstOrDefault()?.RootNode;
 
-                var modelContext = new ModelContext(context, new YamlModel(model, ModelFormat.Yaml, context.ModelName, context.Tags));
+                var modelContext = new ShapeContext(context, new YamlModel(model, ShapeFormat.Yaml, context.ModelName, context.Tags));
 
                 return modelContext;
             }
         }
 
-        public bool ValidateArguments(ModelDeclaration context)
+        public bool ValidateArguments(ShapeDeclaration context)
         {
             if (string.IsNullOrWhiteSpace(context.GetParameter(ModelPathParameter)))
             {
@@ -53,16 +53,16 @@ namespace ShapeFlow.Loaders.Yaml
         }
     }
 
-    public class YamlModel : Model
+    public class YamlModel : Shape
     {
-        public YamlModel(YamlNode root, ModelFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
+        public YamlModel(YamlNode root, ShapeFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
         {
             Root = root;
         }
 
         public YamlNode Root { get; }
 
-        public override object GetModelInstance()
+        public override object GetInstance()
         {
             return Root;
         }

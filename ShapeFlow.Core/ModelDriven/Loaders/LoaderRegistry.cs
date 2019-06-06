@@ -9,19 +9,19 @@ namespace ShapeFlow.Loaders
 {
     public class LoaderRegistry
     {
-        private readonly HashSet<IModelLoader> _targets;
+        private readonly HashSet<ILoader> _targets;
         private readonly IExtensibilityService _extensibilityService;
 
         public LoaderRegistry(IExtensibilityService extensibilityService)
         {
-            _targets = new HashSet<IModelLoader>();
+            _targets = new HashSet<ILoader>();
             _extensibilityService = extensibilityService;
 
             // TODO: move this to an initialization method
             Load();
         }
 
-        public bool TryGet(string name, out IModelLoader generator)
+        public bool TryGet(string name, out ILoader generator)
         {
             generator = null;
 
@@ -37,7 +37,7 @@ namespace ShapeFlow.Loaders
         
         private void Load()
         {
-            var targetExtensions = _extensibilityService.LoadExtensions<IModelLoader>();
+            var targetExtensions = _extensibilityService.LoadExtensions<ILoader>();
 
             foreach (var extension in targetExtensions)
             {

@@ -4,12 +4,13 @@ using ShapeFlow.Infrastructure;
 using Mono.Options;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using ShapeFlow.Models;
+using ShapeFlow.Shapes;
 using ShapeFlow.Loaders;
 using ShapeFlow.Loaders.DbModel;
 using ShapeFlow.TemplateEngines;
 using System.Linq;
 using ShapeFlow.Commands;
+using ShapeFlow.Pipelines;
 
 namespace ShapeFlow
 {
@@ -52,17 +53,17 @@ namespace ShapeFlow
         {            
             container.RegisterService<IExtensibilityService, ExtensibilityService>();
             container.RegisterService<IFileService, FileService>();
-            container.RegisterService<ModelManager>();
+            container.RegisterService<ShapeManager>();
             container.RegisterService<ApplicationContext>();
             container.RegisterService<IOutputLanguageInferenceService, OutputLanguageInferenceService>();
             container.RegisterService<ModelToTextProjectionEngine>();
             container.RegisterService<TemplateEngineProvider>();
             container.RegisterService<TextGeneratorRegistry>();
-            container.RegisterService<SolutionEngine>();
+            container.RegisterService<ShapeFlowEngine>();
             container.RegisterService<CommandManagementService>();
 
-            container.RegisterMany<IModelLoader, JsonModelLoader>();
-            container.RegisterMany<IModelLoader, DbModelLoader>();
+            container.RegisterMany<ILoader, JsonLoader>();
+            container.RegisterMany<ILoader, DbModelLoader>();
             container.RegisterMany<ITextTemplateEngine, DotLiquidTemplateEngine>();
         }
 

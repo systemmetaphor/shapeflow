@@ -11,7 +11,7 @@ namespace ShapeFlow
     {
         private Dictionary<string, string> _parameters;
         
-        public Solution(string name, IEnumerable<ModelLoaderDeclaration> loaders, IEnumerable<GeneratorRefDeclaration> generators, IEnumerable<ModelDeclaration> models, IEnumerable<PipelineDeclaration> pipelines)
+        public Solution(string name, IEnumerable<LoaderDeclaration> loaders, IEnumerable<GeneratorRefDeclaration> generators, IEnumerable<ShapeDeclaration> models, IEnumerable<PipelineDeclaration> pipelines)
         {
             Name = name;
             Loaders = loaders;
@@ -23,11 +23,11 @@ namespace ShapeFlow
 
         public string Name { get; }
 
-        public IEnumerable<ModelLoaderDeclaration> Loaders { get; }
+        public IEnumerable<LoaderDeclaration> Loaders { get; }
 
         public IEnumerable<GeneratorRefDeclaration> Generators { get; }
 
-        public IEnumerable<ModelDeclaration> Models { get; }
+        public IEnumerable<ShapeDeclaration> Models { get; }
 
         public IEnumerable<PipelineDeclaration> Pipelines { get; }
 
@@ -57,9 +57,9 @@ namespace ShapeFlow
         {
             var name = root.GetStringPropertyValue("name");
 
-            var loaders = new List<ModelLoaderDeclaration>();
+            var loaders = new List<LoaderDeclaration>();
             var generators = new List<GeneratorRefDeclaration>();
-            var models = new List<ModelDeclaration>();
+            var models = new List<ShapeDeclaration>();
             var pipelines = new List<PipelineDeclaration>();
 
             var result = new Solution(name, loaders, generators, models, pipelines);
@@ -69,7 +69,7 @@ namespace ShapeFlow
             {
                 var packageName = property.Name;
                 var packageVersion = property.Value.Value<string>();
-                loaders.Add(new ModelLoaderDeclaration(packageName, packageVersion));
+                loaders.Add(new LoaderDeclaration(packageName, packageVersion));
             }
 
             var generatorsObject = root.GetValue("generators") as JObject;
@@ -93,10 +93,10 @@ namespace ShapeFlow
                 }
             }
 
-            var modelsArray = root.GetValue("models") as JArray;
-            foreach (JObject modelObject in modelsArray ?? new JArray())
+            var shapesArray = root.GetValue("shapes") as JArray;
+            foreach (JObject shapeObject in shapesArray ?? new JArray())
             {
-                ModelDeclaration modelDeclaration = ModelDeclaration.Parse(result, modelObject);
+                ShapeDeclaration modelDeclaration = ShapeDeclaration.Parse(result, shapeObject);
                 models.Add(modelDeclaration);
             }
 

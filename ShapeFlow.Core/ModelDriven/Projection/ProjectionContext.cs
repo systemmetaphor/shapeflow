@@ -18,8 +18,6 @@ namespace ShapeFlow
 
             Solution = solution;
             Pipeline = pipelineDeclaration;
-            
-            //Generator = generator;
         }
 
         public Solution Solution { get; private set; }
@@ -31,8 +29,6 @@ namespace ShapeFlow
         public InputDeclaration Input => Pipeline?.Input;
 
         public string GeneratorName => Transformation?.GeneratorName;
-
-        //public GeneratorDeclaration Generator { get; }
 
         public ModelToTextOutput Output { get; set; }
 
@@ -77,6 +73,5 @@ namespace ShapeFlow
             _stateEntries.TryGetValue(key, out object result);
             return (T)result;
         }
-
     }
 }

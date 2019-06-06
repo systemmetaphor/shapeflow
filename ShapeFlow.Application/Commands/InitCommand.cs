@@ -38,7 +38,7 @@ namespace ShapeFlow.Commands
             sb.AppendLine(@"      ]");
             sb.AppendLine(@"    }");
             sb.AppendLine(@"  },");
-            sb.AppendLine(@"  ""models"": [");
+            sb.AppendLine(@"  ""shapes"": [");
             sb.AppendLine(@"    {");
             sb.AppendLine($@"      ""name"": ""{ name } Model"",");
             sb.AppendLine(@"      ""tags"": ""dbEntityModel"",");

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using ShapeFlow.Models;
+using ShapeFlow.Shapes;
 
 namespace ShapeFlow
 {
-    public class ModelContext
+    public class ShapeContext
     {
-        public ModelContext(ModelDeclaration declaration, Model model)
+        public ShapeContext(ShapeDeclaration declaration, Shape model)
         {
             Declaration = declaration;
             Model = model;
@@ -13,9 +13,9 @@ namespace ShapeFlow
 
         public Solution Solution => Declaration.Solution;
 
-        public ModelDeclaration Declaration { get; }
+        public ShapeDeclaration Declaration { get; }
 
-        public Model Model { get; }
+        public Shape Model { get; }
 
         public IDictionary<string, string> Parameters => Solution.Parameters;
 

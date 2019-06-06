@@ -36,8 +36,8 @@ namespace ShapeFlow.Tests
                 var solution = Solution.ParseFile("Projects\\DDD.config.json");
                 solution.AddParameters(parameters);
 
-                var engine = container.Activate<PipelineEngine>();
-                engine.Process(new SolutionEventContext(solution));
+                var engine = container.Activate<ShapeFlowEngine>();
+                engine.Run(new SolutionEventContext(solution));
 
                 Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Generated\\DomainObjects.cs")));
             }
@@ -62,9 +62,9 @@ namespace ShapeFlow.Tests
                 var solution = Solution.ParseFile("Projects\\TablesToRecords.config.json");
                 solution.AddParameters(parameters);
 
-                var engine = container.Activate<PipelineEngine>();
+                var engine = container.Activate<ShapeFlowEngine>();
 
-                engine.Process(new SolutionEventContext(solution));
+                engine.Run(new SolutionEventContext(solution));
 
                 Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Generated\\Records.cs")));
             }

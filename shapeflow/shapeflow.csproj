@@ -5,6 +5,9 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Company>www.systemmetaphor.com</Company>
     <Authors>Pedro Salgueiro</Authors>
+    <PackAsTool>true</PackAsTool>
+    <PackageId>ShapeFlow.Tool</PackageId>
+    <ToolCommandName>shapeflow</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>

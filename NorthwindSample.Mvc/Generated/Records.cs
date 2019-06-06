@@ -55,6 +55,53 @@ namespace Entities
 		public string Fax {get; set;}
 		public object HomePage {get; set;}
 	}
+	public class RegionRecord
+	{
+		public int RegionID {get; set;}
+		public object RegionDescription {get; set;}
+	}
+	public class EmployeeTerritoriesRecord
+	{
+		public int EmployeeID {get; set;}
+		public string TerritoryID {get; set;}
+	}
+	public class TerritoriesRecord
+	{
+		public string TerritoryID {get; set;}
+		public object TerritoryDescription {get; set;}
+		public int RegionID {get; set;}
+	}
+	public class CustomerDemographicsRecord
+	{
+		public object CustomerTypeID {get; set;}
+		public object CustomerDesc {get; set;}
+	}
+	public class CustomerCustomerDemoRecord
+	{
+		public object CustomerID {get; set;}
+		public object CustomerTypeID {get; set;}
+	}
+	public class Order_DetailsRecord
+	{
+		public int OrderID {get; set;}
+		public int ProductID {get; set;}
+		public object UnitPrice {get; set;}
+		public object Quantity {get; set;}
+		public object Discount {get; set;}
+	}
+	public class ProductsRecord
+	{
+		public int ProductID {get; set;}
+		public string ProductName {get; set;}
+		public int SupplierID {get; set;}
+		public int CategoryID {get; set;}
+		public string QuantityPerUnit {get; set;}
+		public object UnitPrice {get; set;}
+		public object UnitsInStock {get; set;}
+		public object UnitsOnOrder {get; set;}
+		public object ReorderLevel {get; set;}
+		public object Discontinued {get; set;}
+	}
 	public class OrdersRecord
 	{
 		public int OrderID {get; set;}
@@ -71,53 +118,6 @@ namespace Entities
 		public string ShipRegion {get; set;}
 		public string ShipPostalCode {get; set;}
 		public string ShipCountry {get; set;}
-	}
-	public class ProductsRecord
-	{
-		public int ProductID {get; set;}
-		public string ProductName {get; set;}
-		public int SupplierID {get; set;}
-		public int CategoryID {get; set;}
-		public string QuantityPerUnit {get; set;}
-		public object UnitPrice {get; set;}
-		public object UnitsInStock {get; set;}
-		public object UnitsOnOrder {get; set;}
-		public object ReorderLevel {get; set;}
-		public object Discontinued {get; set;}
-	}
-	public class Order_DetailsRecord
-	{
-		public int OrderID {get; set;}
-		public int ProductID {get; set;}
-		public object UnitPrice {get; set;}
-		public object Quantity {get; set;}
-		public object Discount {get; set;}
-	}
-	public class CustomerCustomerDemoRecord
-	{
-		public object CustomerID {get; set;}
-		public object CustomerTypeID {get; set;}
-	}
-	public class CustomerDemographicsRecord
-	{
-		public object CustomerTypeID {get; set;}
-		public object CustomerDesc {get; set;}
-	}
-	public class RegionRecord
-	{
-		public int RegionID {get; set;}
-		public object RegionDescription {get; set;}
-	}
-	public class TerritoriesRecord
-	{
-		public string TerritoryID {get; set;}
-		public object TerritoryDescription {get; set;}
-		public int RegionID {get; set;}
-	}
-	public class EmployeeTerritoriesRecord
-	{
-		public int EmployeeID {get; set;}
-		public string TerritoryID {get; set;}
 	}
 	public class CustomersRecord
 	{

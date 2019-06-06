@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.Models;
+using ShapeFlow.Shapes;
 
 namespace ShapeFlow.Loaders.Excel
 {
 
-    public class ExcelModelLoader: IModelLoader
+    public class ExcelLoader: ILoader
     {
         private const string FileNameParameter = "fileName";
         private const string ObjectNameParameter = "objectName";
@@ -16,7 +16,7 @@ namespace ShapeFlow.Loaders.Excel
         private const string NamespaceParameter = "namespace";
         private const string SchemaParameter = "schema";
 
-        public ExcelModelLoader()
+        public ExcelLoader()
         {
         }
 
@@ -28,9 +28,9 @@ namespace ShapeFlow.Loaders.Excel
             }
         }
 
-        public ModelFormat Format => ModelFormat.Clr;
+        public ShapeFormat Format => ShapeFormat.Clr;
 
-        public ModelContext LoadModel(ModelDeclaration context)
+        public ShapeContext Load(ShapeDeclaration context)
         {
             var fileName = context.GetParameter(FileNameParameter);
             fileName = fileName.Replace("{{__dirname}}", Environment.CurrentDirectory);
@@ -45,7 +45,7 @@ namespace ShapeFlow.Loaders.Excel
 
             var columnsModel = new XlsImportGenerators().GetColumnInfo(fileName, linesToSkip);
 
-            return new ModelContext(context, new XlsTemplateModel(
+            return new ShapeContext(context, new XlsTemplateModel(
                 new XlsTemplateModelRoot
                 {
                     LineObjectName = lineObjectName,
@@ -55,10 +55,10 @@ namespace ShapeFlow.Loaders.Excel
                     MatchColumnNameOnFile = context.GetParameter(MatchColumnParameter),
                     MatchColumnName = matchColumn,
                     SchemaName = schemaName
-                }, ModelFormat.Clr, context.ModelName, context.Tags));
+                }, ShapeFormat.Clr, context.ModelName, context.Tags));
         }
 
-        public bool ValidateArguments(ModelDeclaration context)
+        public bool ValidateArguments(ShapeDeclaration context)
         {
             var isValid = true;
 
@@ -84,16 +84,16 @@ namespace ShapeFlow.Loaders.Excel
         }
     }
 
-    public class XlsTemplateModel : Model
+    public class XlsTemplateModel : Shape
     {
-        public XlsTemplateModel(XlsTemplateModelRoot root, ModelFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
+        public XlsTemplateModel(XlsTemplateModelRoot root, ShapeFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
         {
             Root = root;
         }
 
         public XlsTemplateModelRoot Root { get; }
 
-        public override object GetModelInstance()
+        public override object GetInstance()
         {
             return Root;
         }

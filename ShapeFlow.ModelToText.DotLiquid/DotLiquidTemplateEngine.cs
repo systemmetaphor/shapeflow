@@ -81,7 +81,7 @@ namespace ShapeFlow.TemplateEngines
 
             var modelContainer = generatorContext.Model;
 
-            if (modelContainer.Format == ModelFormat.Clr)
+            if (modelContainer.Format == ShapeFormat.Clr)
             {
                 // on CLR models we need to configure the engine to allow the public properties
                 // of the model objects
@@ -90,7 +90,7 @@ namespace ShapeFlow.TemplateEngines
 
             Template.NamingConvention = new CSharpNamingConvention();
 
-            var model = modelContainer.GetModelInstance();
+            var model = modelContainer.GetInstance();
 
             if (model is JObject modelJObject)
             {

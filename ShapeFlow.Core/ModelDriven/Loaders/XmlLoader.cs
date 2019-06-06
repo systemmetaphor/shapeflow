@@ -1,37 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.Models;
+using ShapeFlow.Shapes;
 
 namespace ShapeFlow.Loaders
 {
-    public class XmlModelLoader : IModelLoader
+    public class XmlLoader : ILoader
     {
         public const string ModelPathParameter = "model-path";
 
-        public XmlModelLoader()
+        public XmlLoader()
         {            
         }
 
         public string Name => "XmlLoader";
 
-        public ModelFormat Format => ModelFormat.Xml;
+        public ShapeFormat Format => ShapeFormat.Xml;
 
-        public ModelContext LoadModel(ModelDeclaration context)
+        public ShapeContext Load(ShapeDeclaration context)
         {
             var modelFilePath = context.GetParameter(ModelPathParameter);
 
             using (var file = File.OpenRead(modelFilePath))
             {
                 var document = XDocument.Load(file);
-                return new ModelContext(context, new XmlModel(document, ModelFormat.Xml, context.ModelName, context.Tags));
+                return new ShapeContext(context, new XmlShape(document, ShapeFormat.Xml, context.ModelName, context.Tags));
             }
         }
 
-        public bool ValidateArguments(ModelDeclaration context)
+        public bool ValidateArguments(ShapeDeclaration context)
         {
             if (string.IsNullOrWhiteSpace(context.GetParameter(ModelPathParameter)))
             {
@@ -41,21 +40,6 @@ namespace ShapeFlow.Loaders
             }
 
             return true;
-        }
-    }
-
-    public class XmlModel : Model
-    {
-        public XmlModel(XDocument root,  ModelFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
-        {
-            Root = root;
-        }
-
-        public XDocument Root { get; }
-
-        public override object GetModelInstance()
-        {
-            return Root;
         }
     }
 }

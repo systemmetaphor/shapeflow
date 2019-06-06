@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -7,11 +6,10 @@ using Dapper;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
 using ShapeFlow.Loaders;
-using ShapeFlow.Models;
 
 namespace ShapeFlow.Loaders.DbModel
 {
-    public class DbModelLoader : IModelLoader
+    public class DbModelLoader : ILoader
     {
         private const string TableMetadataQuery = @"
 SELECT 
@@ -40,25 +38,36 @@ WHERE
 
         public string Name => "DbModelLoader";
 
-        public ModelFormat Format => ModelFormat.Clr;
+        public ShapeFormat Format => ShapeFormat.Clr;
 
         public DbModelLoader()
         {            
         }
 
-        public ModelContext LoadModel(ModelDeclaration declaration)
+        public ShapeContext Load(ShapeDeclaration declaration)
         {
             var result = new EntityModelRoot();
             
             var tableName = declaration.GetParameter("tableName");
-            
-            var databaseInfo = new DatabaseInfo
+
+            var connectionName = declaration.GetParameter("connectionName");
+            DatabaseInfo databaseInfo;
+
+            if (!string.IsNullOrWhiteSpace(connectionName))
             {
-                Server = declaration.GetParameter("server"),
-                Name = declaration.GetParameter("db"),
-                User = declaration.GetParameter("user"),
-                Password = declaration.GetParameter("password")
-            };
+                var connectionString = DbConnectionDiscovery.GetConnection(connectionName);
+                databaseInfo = DatabaseInfo.FromConnectionString(connectionString);
+            }
+            else
+            {
+                databaseInfo = new DatabaseInfo
+                {
+                    Server = declaration.GetParameter("server"),
+                    Name = declaration.GetParameter("db"),
+                    User = declaration.GetParameter("user"),
+                    Password = declaration.GetParameter("password")
+                };
+            }
 
             var query = TableMetadataQuery;
 
@@ -100,10 +109,10 @@ WHERE
 
             AppTrace.Verbose($"Loaded { result.Entities.Count() } models.");
 
-            return new ModelContext(declaration, new DbModel(result, ModelFormat.Clr,declaration.ModelName, declaration.Tags));
+            return new ShapeContext(declaration, new DbShape(result, ShapeFormat.Clr,declaration.ModelName, declaration.Tags));
         }
 
-        public bool ValidateArguments(ModelDeclaration context)
+        public bool ValidateArguments(ShapeDeclaration context)
         {
             return true;
         }
@@ -236,21 +245,27 @@ WHERE
                 get;
                 set;
             }
-        }
-    }
 
-    public class DbModel : Model
-    {
-        public DbModel(EntityModelRoot root, ModelFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
-        {
-            Root = root;
-        }
+            public static DatabaseInfo FromConnectionString(string connectionString)
+            {
+                try
+                {
+                    var builder = new SqlConnectionStringBuilder(connectionString);
 
-        public EntityModelRoot Root { get; }
-
-        public override object GetModelInstance()
-        {
-            return Root;
+                    return new DatabaseInfo
+                    {
+                        Name = builder.InitialCatalog,
+                        Server = builder.DataSource,
+                        User = builder.UserID,
+                        Password = builder.Password
+                    };
+                }
+                catch (Exception e)
+                {
+                    AppTrace.Warning($"Could not parse the provided connection string: { e.Message } ");
+                    return null;
+                }
+            }
         }
     }
 }

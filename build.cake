@@ -24,8 +24,8 @@ var isRunningOnUnix = IsRunningOnUnix();
 var isRunningOnWindows = IsRunningOnWindows();
 var isRunningOnBuildServer = !string.IsNullOrEmpty(EnvironmentVariable("AGENT_NAME")); // See https://github.com/cake-build/cake/issues/1684#issuecomment-397682686
 var isPullRequest = !string.IsNullOrWhiteSpace(EnvironmentVariable("SYSTEM_PULLREQUEST_PULLREQUESTID"));  // See https://github.com/cake-build/cake/issues/2149
-var buildNumber = TFBuild.Environment.Build.Number.Replace('.', '-');
-var branch = TFBuild.Environment.Repository.Branch;
+var buildNumber = EnvironmentVariable("APPVEYOR_BUILD_NUMBER").Replace('.', '-');
+var branch = EnvironmentVariable("APPVEYOR_REPO_BRANCH");
 
 var releaseNotes = ParseReleaseNotes("./ReleaseNotes.md");
 

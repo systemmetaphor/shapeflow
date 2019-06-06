@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using ShapeFlow.Models;
+using ShapeFlow.Shapes;
 
 namespace ShapeFlow
 {
     public class ProjectionInput
     {
-        public ProjectionInput(ModelContext model)
+        public ProjectionInput(ShapeContext model)
         {
             ModelContext = model;            
         }
 
-        public ModelContext ModelContext { get; }
+        public ShapeContext ModelContext { get; }
 
-        public Model Model => ModelContext.Model;
+        public Shape Model => ModelContext.Model;
 
-        public ModelFormat Format => ModelContext.Model?.Format ?? ModelFormat.None;
+        public ShapeFormat Format => ModelContext.Model?.Format ?? ShapeFormat.None;
 
         public string ModelName => Model.Name;
 

@@ -45,26 +45,29 @@ namespace ShapeFlow
         {
             foreach (var projection in context.Projections)
             {
-                var outputFiles = projection.Output;
-
-                foreach (var outputFile in projection.Output.OutputFiles)
-                {
-                    var fullPath = outputFile.OutputPath;
-
-                    if (!Path.IsPathRooted(fullPath))
-                    {
-                        var root = projection.Solution.GetParameter("project-root");
-                        if (!string.IsNullOrEmpty(root))
-                        {
-                            fullPath = Path.Combine(root, outputFile.OutputPath);
-                        }
-                    }
-
-                    PerformWrite(fullPath, outputFile.Text);
-                }
+                Process(projection, projection.Output);
             }
 
             return context;
+        }
+
+        public void Process(ProjectionContext projection, ModelToTextOutput output)
+        {
+            foreach (var outputFile in output.OutputFiles)
+            {
+                var fullPath = outputFile.OutputPath;
+
+                if (!Path.IsPathRooted(fullPath))
+                {
+                    var root = projection.Solution.GetParameter("project-root");
+                    if (!string.IsNullOrEmpty(root))
+                    {
+                        fullPath = Path.Combine(root, outputFile.OutputPath);
+                    }
+                }
+
+                PerformWrite(fullPath, outputFile.Text);
+            }
         }
     }
 }

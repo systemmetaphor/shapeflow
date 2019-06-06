@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShapeFlow.Models
+namespace ShapeFlow.Shapes
 {
-    public abstract class Model
+    public abstract class Shape
     {
-        protected Model(ModelFormat format, string name, IEnumerable<string> tags)
+        protected Shape(ShapeFormat format, string name, IEnumerable<string> tags)
         {
             Format = format;
             Name = name;
             Tags = tags;
         }
 
-        public ModelFormat Format { get; }
+        public ShapeFormat Format { get; }
 
         public string Name { get; }
 
         public IEnumerable<string> Tags { get; }
 
-        public abstract object GetModelInstance();
+        public abstract object GetInstance();
     }
 }

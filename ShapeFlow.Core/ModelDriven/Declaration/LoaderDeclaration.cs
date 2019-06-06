@@ -2,9 +2,9 @@
 
 namespace ShapeFlow
 {
-    public class ModelLoaderDeclaration
+    public class LoaderDeclaration
     {        
-        public ModelLoaderDeclaration(string packageName, string packageVersion)
+        public LoaderDeclaration(string packageName, string packageVersion)
         {
             if(string.IsNullOrWhiteSpace(packageName))
             {

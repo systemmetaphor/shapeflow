@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.Models;
+using ShapeFlow.Shapes;
 using Newtonsoft.Json;
 
 namespace ShapeFlow
@@ -9,7 +9,7 @@ namespace ShapeFlow
     public class ModelToTextProjectionEngine
     {
         public ModelToTextProjectionEngine(            
-            ModelManager inputManager,
+            ShapeManager inputManager,
             IFileService fileService,
             TemplateEngineProvider templateEngineProvider,
             TextGeneratorRegistry generatorRegistry)
@@ -20,7 +20,7 @@ namespace ShapeFlow
             GeneratorRegistry = generatorRegistry;
         }
         
-        protected ModelManager InputManager { get; }
+        protected ShapeManager InputManager { get; }
 
         protected IFileService FileService { get; }
 
@@ -36,30 +36,35 @@ namespace ShapeFlow
             if (model != null)
             {
                 var input = new ProjectionInput(model);
-
-                // this the generator impl
-
-                GeneratorRegistry.TryGet(context.GeneratorName, out GeneratorDeclaration generatorDecl);
-
-                var transformationRules = generatorDecl.Rules;
-
-                var transformationOutput = new ModelToTextOutput();
-
-                foreach (var tranformationRule in transformationRules)
-                {
-                    var templateEngine = TemplateEngineProvider.GetEngine(tranformationRule.TemplateLanguage);
-                    var transformationOutputFile = templateEngine.Transform(context, input, tranformationRule);
-                    transformationOutput.AddOutputFile(transformationOutputFile);
-                }
-
-                // end gen impl
-
-                context.Output = transformationOutput;
+                               
+                context.Output = Transform(context, input);
 
                 AppTrace.Information("Projection completed.");
             }
 
             return context;
+        }
+
+        public ModelToTextOutput Transform(ProjectionContext context, ProjectionInput input)
+        {
+            // this the generator impl
+
+            GeneratorRegistry.TryGet(context.GeneratorName, out GeneratorDeclaration generatorDecl);
+
+            var transformationRules = generatorDecl.Rules;
+
+            var transformationOutput = new ModelToTextOutput();
+
+            foreach (var tranformationRule in transformationRules)
+            {
+                var templateEngine = TemplateEngineProvider.GetEngine(tranformationRule.TemplateLanguage);
+                var transformationOutputFile = templateEngine.Transform(context, input, tranformationRule);
+                transformationOutput.AddOutputFile(transformationOutputFile);
+            }
+
+            // end gen impl
+
+            return transformationOutput;
         }
     }
 }

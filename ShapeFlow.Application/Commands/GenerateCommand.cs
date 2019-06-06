@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ShapeFlow.Infrastructure;
+using ShapeFlow.Pipelines;
 
 namespace ShapeFlow.Commands
 {
@@ -39,7 +40,7 @@ namespace ShapeFlow.Commands
                 solution.AddParameters(generateOptions.Parameters);
 
                 var ev = new SolutionEventContext(solution);
-                var engine = _container.Resolve<SolutionEngine>();
+                var engine = _container.Resolve<ShapeFlowEngine>();
 
                 engine.Run(ev);
             }

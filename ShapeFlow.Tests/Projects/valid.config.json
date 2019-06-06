@@ -4,9 +4,9 @@
     "shapeflow.modelloaders.excelschema": "^1.0.0"
   },
   "generators": {
-    "shapeflow.codegenerators.excelimport":  "^1.0.0"
+    "shapeflow.codegenerators.excelimport": "^1.0.0"
   },
-  "models": [
+  "shapes": [
     {
       "name": "Customers Import",
       "tags": "importers",
@@ -40,10 +40,10 @@
       "name": "Importers",
       "input": {
         "selector": "?(tag=importers)"
-      },      
+      },
       "transformation": {
-        "name": "Excel Importer",  
-        "generator":  "excelimport"
+        "name": "Excel Importer",
+        "generator": "excelimport"
       },
       "output": {
         "type": "file",

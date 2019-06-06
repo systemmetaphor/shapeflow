@@ -4,11 +4,11 @@ using Newtonsoft.Json.Linq;
 
 namespace ShapeFlow
 {
-    public class ModelDeclaration
+    public class ShapeDeclaration
     {
         private readonly IDictionary<string, string> _parameters;
 
-        public ModelDeclaration(Solution solution, string modelName, string loaderName, IEnumerable<string> tags, Dictionary<string, string> parameters)
+        public ShapeDeclaration(Solution solution, string modelName, string loaderName, IEnumerable<string> tags, Dictionary<string, string> parameters)
         {
             Solution = solution;
             ModelName = modelName;
@@ -27,7 +27,7 @@ namespace ShapeFlow
 
         public IEnumerable<KeyValuePair<string, string>> Parameters => _parameters;
 
-        public static ModelDeclaration Parse(Solution solution, JObject modelObject)
+        public static ShapeDeclaration Parse(Solution solution, JObject modelObject)
         {
             var modelName = modelObject.GetStringPropertyValue("name");
             var loaderName = modelObject.GetStringPropertyValue("loaderName");
@@ -35,7 +35,7 @@ namespace ShapeFlow
             var tags = TagsParser.Parse(tagsText);
             var parametersObject = modelObject.Property("parameters")?.Value as JObject;
             var parameters = parametersObject.ToParametersDictionary();
-            var modelDeclaration = new ModelDeclaration(solution, modelName, loaderName, tags, parameters);
+            var modelDeclaration = new ShapeDeclaration(solution, modelName, loaderName, tags, parameters);
             return modelDeclaration;
         }
 
