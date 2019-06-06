@@ -6,7 +6,7 @@
     <Company>www.systemmetaphor.com</Company>
     <Authors>Pedro Salgueiro</Authors>
     <PackAsTool>true</PackAsTool>
-    <PackageId>shapeflow<PackageId>
+    <PackageId>shapeflow</PackageId>
     <ToolCommandName>shapeflow</ToolCommandName>
   </PropertyGroup>
 
