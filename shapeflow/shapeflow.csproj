@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Company>www.systemmetaphor.com</Company>
     <Authors>Pedro Salgueiro</Authors>
+    <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <PackageId>shapeflow</PackageId>
     <ToolCommandName>shapeflow</ToolCommandName>
