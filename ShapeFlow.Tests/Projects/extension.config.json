@@ -1,0 +1,17 @@
+﻿{
+  "name": "MyErp Code Generation",
+  "projections": {
+    "Persistence": {
+      "packageId": "ShapeFlow.Projections.Persistence",
+      "packageVersion": "1.0.0"
+    }
+  },
+  "shapes": [
+    {
+    }
+  ],
+  "pipelines": [
+    {      
+    }
+  ]
+}

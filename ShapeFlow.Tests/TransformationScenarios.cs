@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
+using ShapeFlow.Declaration;
 using ShapeFlow.Pipelines;
 
 namespace ShapeFlow.Tests
@@ -26,25 +27,23 @@ namespace ShapeFlow.Tests
             // MISSING
             // - process the output decl of the pipeline
 
-            using (var container = ApplicationContainerFactory.Create(Application.RegisterComponents))
-            {
-                var parameters = new Dictionary<string, string>
+            var parameters = new Dictionary<string, string>
                 {
-                    { "project-root", Environment.CurrentDirectory }
+                    { "project-root", Environment.CurrentDirectory },
+                    { "project", "Projects\\DDD.config.json" }
                 };
 
-                var solution = Solution.ParseFile("Projects\\DDD.config.json");
-                solution.AddParameters(parameters);
-
+            using (var container = ApplicationContainerFactory.Create(Application.RegisterComponents))
+            {
                 var engine = container.Activate<ShapeFlowEngine>();
-                engine.Run(new SolutionEventContext(solution));
-
-                Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Generated\\DomainObjects.cs")));
+                engine.Run(parameters);
             }
+
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Generated\\DomainObjects.cs")));
         }
 
         [TestMethod]
-        
+
         [DeploymentItem("Templates\\TablesToRecords.liquid", "Templates")]
         [DeploymentItem("Projects\\TablesToRecords.config.json")]
         public void Db2Code()

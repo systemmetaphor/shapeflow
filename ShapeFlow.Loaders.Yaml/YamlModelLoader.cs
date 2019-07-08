@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
+using ShapeFlow.Declaration;
 using ShapeFlow.Loaders;
 using ShapeFlow.Shapes;
 using YamlDotNet.RepresentationModel;

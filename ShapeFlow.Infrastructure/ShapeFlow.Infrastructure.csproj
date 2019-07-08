@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>    
+    <PackageReference Include="Minimatch" Version="2.0.0" />
+    <PackageReference Include="Mono.Options" Version="5.3.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Reactive" Version="4.1.5" />
+    <PackageReference Include="Unity" Version="5.10.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="InfrastructureErrorMessages.Designer.cs">
+      <DependentUpon>InfrastructureErrorMessages.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="InfrastructureErrorMessages.resx">
+      <LastGenOutput>InfrastructureErrorMessages.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

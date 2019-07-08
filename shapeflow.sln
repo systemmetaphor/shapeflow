@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Core", "ShapeFlow
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.Yaml", "ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj", "{27B37D4E-4712-4BC2-BCFD-42C504861301}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.ModelToText.DotLiquid", "ShapeFlow.ModelToText.DotLiquid\ShapeFlow.ModelToText.DotLiquid.csproj", "{5D2C6C23-C833-4CA9-AEFD-FAF36A9E8851}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Projections.DotLiquid", "ShapeFlow.Projections.DotLiquid\ShapeFlow.Projections.DotLiquid.csproj", "{5D2C6C23-C833-4CA9-AEFD-FAF36A9E8851}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shapeflow", "shapeflow\shapeflow.csproj", "{59DA583A-D5B2-45A6-AAB1-DF0F389DC7FA}"
 EndProject
@@ -27,7 +27,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.Loaders.Excel", "ShapeFlow.Loaders.Excel\ShapeFlow.Loaders.Excel.csproj", "{0347EC9E-D333-4E01-BFC3-EA13543BBAC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.Excel", "ShapeFlow.Loaders.Excel\ShapeFlow.Loaders.Excel.csproj", "{0347EC9E-D333-4E01-BFC3-EA13543BBAC7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Projections.Persistence", "ShapeFlow.Projections.Persistence\ShapeFlow.Projections.Persistence.csproj", "{417E1ABF-0389-4CAD-91B2-E2641011B038}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.PackageManagement.NuGet", "ShapeFlow.PackageManagement.NuGet\ShapeFlow.PackageManagement.NuGet.csproj", "{C2C49EA2-3B69-49C0-B1D5-AE9E3EC56355}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Infrastructure", "ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj", "{845A1B8F-8B84-4162-8D7D-065E44FDB929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +77,18 @@ Global
 		{0347EC9E-D333-4E01-BFC3-EA13543BBAC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0347EC9E-D333-4E01-BFC3-EA13543BBAC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0347EC9E-D333-4E01-BFC3-EA13543BBAC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{417E1ABF-0389-4CAD-91B2-E2641011B038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{417E1ABF-0389-4CAD-91B2-E2641011B038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{417E1ABF-0389-4CAD-91B2-E2641011B038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{417E1ABF-0389-4CAD-91B2-E2641011B038}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2C49EA2-3B69-49C0-B1D5-AE9E3EC56355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2C49EA2-3B69-49C0-B1D5-AE9E3EC56355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2C49EA2-3B69-49C0-B1D5-AE9E3EC56355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2C49EA2-3B69-49C0-B1D5-AE9E3EC56355}.Release|Any CPU.Build.0 = Release|Any CPU
+		{845A1B8F-8B84-4162-8D7D-065E44FDB929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{845A1B8F-8B84-4162-8D7D-065E44FDB929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{845A1B8F-8B84-4162-8D7D-065E44FDB929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{845A1B8F-8B84-4162-8D7D-065E44FDB929}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

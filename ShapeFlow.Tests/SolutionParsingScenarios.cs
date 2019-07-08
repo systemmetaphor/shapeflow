@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ShapeFlow;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using ShapeFlow.Declaration;
 
 namespace ShapeFlow.Tests
 {
@@ -25,9 +26,8 @@ namespace ShapeFlow.Tests
             var solution = Solution.Parse(solutionObject);
 
             Assert.IsNotNull(solution.Name);
-
-            Assert.IsTrue(solution.Loaders.Count() > 0);
-            Assert.IsTrue(solution.Generators.Count() > 0);
+                        
+            Assert.IsTrue(solution.Projections.Count() > 0);
             Assert.IsTrue(solution.Models.Count() > 0);
             Assert.IsTrue(solution.Pipelines.Count() > 0);            
         }

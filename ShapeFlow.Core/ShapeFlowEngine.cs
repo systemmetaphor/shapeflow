@@ -3,7 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShapeFlow.Declaration;
 using ShapeFlow.Pipelines;
+using ShapeFlow.Projections;
 using ShapeFlow.Shapes;
 
 namespace ShapeFlow
@@ -26,6 +28,17 @@ namespace ShapeFlow
             _shapeManager = shapeManager;
             _generatorRegistry = generatorRegistry;
         }                
+
+        public void Run(IDictionary<string, string> parameters)
+        {
+            var solution = Solution.ParseFile(parameters);
+            Run(new SolutionEventContext(solution));
+        }
+
+        public void Run(Solution solution)
+        {
+            Run(new SolutionEventContext(solution));
+        }
 
         public void Run(SolutionEventContext context)
         {

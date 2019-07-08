@@ -154,7 +154,7 @@ namespace ShapeFlow.Loaders.Excel
                 case "Ç": return "C";
                 case "Ó": return "O";
 
-                case "%": return "PERCENTAGEM";
+                case "%": return "PERCENTAGE";
             }
 
             return "_";

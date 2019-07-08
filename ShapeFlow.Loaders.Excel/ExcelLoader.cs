@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Shapes;
 
@@ -51,7 +52,7 @@ namespace ShapeFlow.Loaders.Excel
                     LineObjectName = lineObjectName,
                     ObjectName = objectName,
                     ColumnsToImport = columnsModel,
-                    NamespaceOnCSharp = ns,
+                    Namespace = ns,
                     MatchColumnNameOnFile = context.GetParameter(MatchColumnParameter),
                     MatchColumnName = matchColumn,
                     SchemaName = schemaName

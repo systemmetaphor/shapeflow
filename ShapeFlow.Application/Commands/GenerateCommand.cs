@@ -30,24 +30,24 @@ namespace ShapeFlow.Commands
 
             try
             {
-                var parameters = new Dictionary<string, string>
+                if(string.IsNullOrWhiteSpace(generateOptions.ProjectFile) || !File.Exists(generateOptions.ProjectFile))
                 {
-                    { "project-root", Environment.CurrentDirectory }
+                    AppTrace.Error("It was not possible to find the shapeflow project file.");
+                    return 0;
+                }
+
+                var parameters = new Dictionary<string, string>(generateOptions.Parameters)
+                {
+                    { "project-root", Environment.CurrentDirectory },
+                    { "project", generateOptions.ProjectFile }
                 };
-
-                var solution = Solution.ParseFile(generateOptions.ProjectFile);
-                solution.AddParameters(parameters);
-                solution.AddParameters(generateOptions.Parameters);
-
-                var ev = new SolutionEventContext(solution);
+                
                 var engine = _container.Resolve<ShapeFlowEngine>();
-
-                engine.Run(ev);
+                engine.Run(parameters);
             }
             catch (ApplicationOptionException ex)
             {
-                AppTrace.Error("Invalid command line arguments. See exception for details.", ex);
-                Console.WriteLine(ex.Message);
+                AppTrace.Error("Invalid command line arguments. See exception for details.", ex);                
             }
 
             return 0;

@@ -1,10 +1,8 @@
 ﻿{
   "name": "Generate Records based on Tables",
-  "generators": {
+  "projections": {
     "TablesToRecords": {
-      "version": "1.0.0",
-      "loaderName": "DbModelLoader",
-      "packageRoot": "$(project-root)",
+      "version": "1.0.0",      
       "rules": [
         {
           "templateName": "Templates\\TablesToRecords.liquid",
@@ -23,26 +21,23 @@
         "db": "Northwind",
         "user": "sa",
         "password": "qaz123WSX",
-        "namespace" :  "Entities"
+        "namespace": "Entities"
       }
     }
   ],
   "pipelines": [
     {
       "name": "Sales Model Data Tier",
-
       "input": {
         "selector": "Sales Model"
       },
-
       "transformation": {
         "name": "Sales Model EF 6 Data Tier",
-        "generator": "TablesToRecords",
+        "projection": "TablesToRecords",
         "input": {
           "selector": "Sales Model"
         }
       },
-
       "output": {
         "type": "file",
         "parameters": {

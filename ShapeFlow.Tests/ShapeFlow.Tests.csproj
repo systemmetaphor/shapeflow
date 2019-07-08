@@ -16,9 +16,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ShapeFlow.Application\ShapeFlow.Application.csproj" />
     <ProjectReference Include="..\ShapeFlow.Core\ShapeFlow.Core.csproj" />
+    <ProjectReference Include="..\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj" />
     <ProjectReference Include="..\ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj" />
     <ProjectReference Include="..\ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj" />
-    <ProjectReference Include="..\ShapeFlow.ModelToText.DotLiquid\ShapeFlow.ModelToText.DotLiquid.csproj" />
+    <ProjectReference Include="..\ShapeFlow.Projections.DotLiquid\ShapeFlow.Projections.DotLiquid.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +39,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Projects\DDD.config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Projects\extension.config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Projects\valid.config.json">

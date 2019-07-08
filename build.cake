@@ -24,7 +24,7 @@ var isRunningOnUnix = IsRunningOnUnix();
 var isRunningOnWindows = IsRunningOnWindows();
 var isRunningOnBuildServer = !string.IsNullOrEmpty(EnvironmentVariable("AGENT_NAME")); // See https://github.com/cake-build/cake/issues/1684#issuecomment-397682686
 var isPullRequest = !string.IsNullOrWhiteSpace(EnvironmentVariable("SYSTEM_PULLREQUEST_PULLREQUESTID"));  // See https://github.com/cake-build/cake/issues/2149
-var buildNumber = EnvironmentVariable("APPVEYOR_BUILD_NUMBER").Replace('.', '-');
+var buildNumber = (EnvironmentVariable("APPVEYOR_BUILD_NUMBER") ?? string.Empty).Replace('.', '-');
 var branch = EnvironmentVariable("APPVEYOR_REPO_BRANCH");
 
 var releaseNotes = ParseReleaseNotes("./ReleaseNotes.md");
@@ -179,27 +179,11 @@ Task("Create-Tools-Package")
     .IsDependentOn("Publish-Client")
     .WithCriteria(() => isRunningOnWindows)
     .Does(() =>
-    {        
-        var nuspec = GetFiles("./shapeflow/*.nuspec").FirstOrDefault();
-        if (nuspec == null)
-        {            
-            throw new InvalidOperationException("Could not find tools nuspec.");
-        }
-        var pattern = string.Format("bin\\{0}\\netcoreapp2.1\\publish\\**\\*", configuration);  // This is needed to get around a Mono scripting issue (see #246, #248, #249)
-        NuGetPack(nuspec, new NuGetPackSettings
-        {
-            Version = semVersion,
-            BasePath = nuspec.GetDirectory(),
+    {   
+        DotNetCorePack("./shapeflow/shapeflow.csproj", new DotNetCorePackSettings {
+            Configuration = configuration,
             OutputDirectory = nugetRoot,
-            Symbols = false,
-            Files = new [] 
-            { 
-                new NuSpecContent 
-                { 
-                    Source = pattern,
-                    Target = "tools\\netcoreapp2.1"
-                } 
-            }
+            MSBuildSettings = msBuildSettings
         });
     });
 

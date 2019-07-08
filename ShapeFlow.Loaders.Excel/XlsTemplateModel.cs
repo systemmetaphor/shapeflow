@@ -7,7 +7,7 @@ namespace ShapeFlow.Loaders.Excel
 {
     public class XlsTemplateModelRoot
     {
-        public string NamespaceOnCSharp { get; set; }
+        public string Namespace { get; set; }
 
         public string LineObjectName { get; set; }
 
@@ -23,11 +23,12 @@ namespace ShapeFlow.Loaders.Excel
         {
             get
             {
-                return ColumnsToImport?.Where(c => !c.NameOnDatabase.Equals(MatchColumnName)).ToArray() ?? Enumerable.Empty<XlsColumnInfo>();
+                return ColumnsToImport?
+                    .Where(c => !c.NameOnDatabase.Equals(MatchColumnName))
+                    .ToArray() ?? Enumerable.Empty<XlsColumnInfo>();
             }
         }
 
-        public string MatchColumnName { get; set; }
-                               
+        public string MatchColumnName { get; set; }                               
     }
 }

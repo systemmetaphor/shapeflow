@@ -7,20 +7,18 @@ using System.Collections.Generic;
 using ShapeFlow.Shapes;
 using ShapeFlow.Loaders;
 using ShapeFlow.Loaders.DbModel;
-using ShapeFlow.TemplateEngines;
 using System.Linq;
 using ShapeFlow.Commands;
 using ShapeFlow.Pipelines;
+using ShapeFlow.Projections;
+using ShapeFlow.Projections.DotLiquid;
 
 namespace ShapeFlow
 {
     public static class Application
     {
-        private static ApplicationOptions _options;
-
         static Application()
         {
-            _options = new ApplicationOptions();
         }
 
         public static void Run(string[] args)
@@ -41,13 +39,12 @@ namespace ShapeFlow
                 commandSystem.Execute(commandName, commandArguments);
             }
         }
-
+                
         public static void Register(IContainer container)
         {
             RegisterComponents(container);
             RegisterCommands(container);
-        }
-        
+        }        
 
         public static void RegisterComponents(IContainer container)
         {            

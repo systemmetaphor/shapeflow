@@ -1,10 +1,8 @@
 ﻿{
   "name": "Generate Records based on Tables",
-  "generators": {
+  "projections": {
     "TablesToRecords": {
       "version": "1.0.0",
-      "loaderName": "DbModelLoader",
-      "packageRoot": "$(project-root)",
       "rules": [
         {
           "templateName": "Templates\\TablesToRecords.liquid",
@@ -36,7 +34,7 @@
 
       "transformation": {
         "name": "Sales Model Entities",
-        "generator": "TablesToRecords",
+        "projection": "TablesToRecords",
         "input": {
           "selector": "Sales Model"
         }

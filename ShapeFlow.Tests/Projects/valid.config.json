@@ -1,10 +1,15 @@
 ﻿{
   "name": "MyErp Code Generation",
-  "loaders": {
-    "shapeflow.modelloaders.excelschema": "^1.0.0"
-  },
-  "generators": {
-    "shapeflow.codegenerators.excelimport": "^1.0.0"
+  "projections": {
+    "DDDGenerator": {
+      "version": "1.0.0",
+      "rules": [
+        {
+          "templateName": "Templates\\DomainObjects.liquid",
+          "outputPathTemplate": "Generated\\DomainObjects.cs"
+        }
+      ]
+    }
   },
   "shapes": [
     {
@@ -43,7 +48,7 @@
       },
       "transformation": {
         "name": "Excel Importer",
-        "generator": "excelimport"
+        "projection": "excelimport"
       },
       "output": {
         "type": "file",

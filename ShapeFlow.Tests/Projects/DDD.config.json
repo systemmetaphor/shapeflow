@@ -1,10 +1,8 @@
 ﻿{
   "name": "DDD Code Generation",  
-  "generators": {
+  "projections": {
     "DDDGenerator": {
-      "version":  "1.0.0",
-      "loaderName": "JsonLoader",
-      "packageRoot": "$(project-root)",
+      "version":  "1.0.0",      
       "rules": [
         {
           "templateName": "Templates\\DomainObjects.liquid",
@@ -31,7 +29,7 @@
       },
       "transformation": {
         "name": "Sales Model Entities",
-        "generator": "DDDGenerator"
+        "projection": "DDDGenerator"
       },
       "output": {
         "type": "file",

@@ -5,6 +5,7 @@ using System.Linq;
 using Dapper;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
+using ShapeFlow.Declaration;
 using ShapeFlow.Loaders;
 
 namespace ShapeFlow.Loaders.DbModel
@@ -46,7 +47,7 @@ WHERE
 
         public ShapeContext Load(ShapeDeclaration declaration)
         {
-            var result = new EntityModelRoot();
+            var result = new DatabaseModelRoot();
             
             var tableName = declaration.GetParameter("tableName");
 
@@ -84,21 +85,21 @@ WHERE
                 var grouped = lines.GroupBy(l => l.ObjectName);
                 foreach(var g in grouped)
                 {
-                    var m = new EntityModel
+                    var m = new TableModel
                     {
                         ObjectName = SafeName(g.Key)
                     };
 
-                    m.AddProperties(g.OrderBy(p => p.PropertyPosition).Select(p => new PropertyModel
+                    m.AddColumn(g.OrderBy(p => p.PropertyPosition).Select(p => new ColumnModel
                     {
                         DateTimePrecision = p.DateTimePrecision,
-                        PropertyDefaultValue = p.PropertyDefaultValue,
-                        PropertyLength = p.PropertyLength,
-                        PropertyName = p.PropertyName,
-                        PropertyPosition = p.PropertyPosition,
-                        PropertyPrecision = p.PropertyPrecision,
-                        PropertyPrecisionRadix = p.PropertyPrecisionRadix,
-                        PropertySqlDataType = p.PropertySqlDataType,
+                        DefaultValue = p.PropertyDefaultValue,
+                        Length = p.PropertyLength,
+                        Name = p.PropertyName,
+                        Position = p.PropertyPosition,
+                        Precision = p.PropertyPrecision,
+                        PrecisionRadix = p.PropertyPrecisionRadix,
+                        SqlDataType = p.PropertySqlDataType,
                         Scale = p.Scale,
                         SqlIsNullable = p.SqlIsNullable
                     }));
@@ -109,7 +110,7 @@ WHERE
 
             AppTrace.Verbose($"Loaded { result.Entities.Count() } models.");
 
-            return new ShapeContext(declaration, new DbShape(result, ShapeFormat.Clr,declaration.ModelName, declaration.Tags));
+            return new ShapeContext(declaration, new DatabaseModelShape(result, ShapeFormat.Clr,declaration.ModelName, declaration.Tags));
         }
 
         public bool ValidateArguments(ShapeDeclaration context)
