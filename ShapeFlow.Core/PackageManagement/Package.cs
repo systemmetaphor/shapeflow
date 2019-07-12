@@ -18,6 +18,5 @@ namespace ShapeFlow.PackageManagement
         public string Version { get; }
         
         public MetadataPart Metadata { get; }
-
     }
 }

@@ -9,7 +9,7 @@
         { 
             PackageName = decl.PackageId;
             PackageVersion = decl.Version;
-            Declaration = decl;
+            Projection = decl;
         }
 
         /// <summary>
@@ -23,9 +23,9 @@
         public string PackageVersion { get; }
 
         /// <summary>
-        /// Holds an inline declaration of a projection.
+        /// The projection metadata.
         /// </summary>
-        public ProjectionDeclaration Declaration { get; }
+        public ProjectionDeclaration Projection { get; }
 
         /// <summary>
         /// Gets a flag indicating if the referenced projection is an inline one.

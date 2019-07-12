@@ -1,8 +1,29 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard1.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Templates\DbContext.liquid" />
+    <None Remove="Templates\Records.liquid" />
+    <None Remove="Templates\Repository.liquid" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Templates\DbContext.liquid">
+      <Pack>true</Pack>
+      <PackagePath>content\templates</PackagePath>
+    </Content>
+    <Content Include="Templates\Records.liquid" >
+      <Pack>true</Pack>
+      <PackagePath>content\templates</PackagePath>
+    </Content>
+    <Content Include="Templates\Repository.liquid" >
+      <Pack>true</Pack>
+      <PackagePath>content\templates</PackagePath>
+    </Content>
+  </ItemGroup>
+  
 </Project>

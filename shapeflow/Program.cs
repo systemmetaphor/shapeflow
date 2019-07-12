@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
 
 namespace shapeflow
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             AppTrace.AddListener(new ColorConsoleTraceListener { TraceOutputOptions = System.Diagnostics.TraceOptions.None });
-            Application.Run(args);
+            await Application.Run(args);
         }
     }
 }

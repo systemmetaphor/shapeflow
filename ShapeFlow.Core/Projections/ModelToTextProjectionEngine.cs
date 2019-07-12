@@ -11,7 +11,7 @@ namespace ShapeFlow.Projections
             ShapeManager inputManager,
             IFileService fileService,
             TemplateEngineProvider templateEngineProvider,
-            TextGeneratorRegistry generatorRegistry)
+            ProjectionRegistry generatorRegistry)
         {            
             InputManager = inputManager ?? throw new ArgumentNullException(nameof(inputManager));
             FileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
@@ -25,7 +25,7 @@ namespace ShapeFlow.Projections
 
         protected TemplateEngineProvider TemplateEngineProvider { get; }
 
-        protected TextGeneratorRegistry GeneratorRegistry { get; }
+        protected ProjectionRegistry GeneratorRegistry { get; }
 
         public ProjectionContext Transform(ProjectionContext context)
         {

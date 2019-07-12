@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Pipelines;
 
@@ -18,7 +19,7 @@ namespace ShapeFlow.Commands
 
         public override string Name => "generate";
 
-        protected override int OnExecute(CommandOptions options)
+        protected override async Task<int> OnExecute(CommandOptions options)
         {
             var generateOptions = (GenerateOptions)options;
             
@@ -43,7 +44,7 @@ namespace ShapeFlow.Commands
                 };
                 
                 var engine = _container.Resolve<ShapeFlowEngine>();
-                engine.Run(parameters);
+                await engine.Run(parameters);
             }
             catch (ApplicationOptionException ex)
             {

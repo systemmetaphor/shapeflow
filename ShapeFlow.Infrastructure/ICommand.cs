@@ -14,6 +14,6 @@ namespace ShapeFlow.Infrastructure
 
         string Name { get; }
 
-        int Execute(IEnumerable<string> arguments);           
+        Task<int> Execute(IEnumerable<string> arguments);           
     }
 }

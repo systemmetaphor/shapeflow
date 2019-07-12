@@ -2,7 +2,7 @@
 
 namespace ShapeFlow.Projections
 {
-    public interface ITextGeneratorExtension
+    public interface IProjectionExtension
     {       
         ProjectionDeclaration Declaration { get; }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
 
 namespace ShapeFlow.Commands
@@ -17,7 +18,7 @@ namespace ShapeFlow.Commands
 
         public override string Name => "init";
 
-        protected override int OnExecute(CommandOptions options)
+        protected override Task<int> OnExecute(CommandOptions options)
         {
             var directory = Environment.CurrentDirectory;
             var name = Path.GetFileNameWithoutExtension(directory);
@@ -105,7 +106,7 @@ namespace ShapeFlow.Commands
             file = Path.Combine(directory, "templates\\TablesToRecords.liquid");
             _fileService.PerformWrite(file, sb.ToString());
 
-            return 0;
+            return Task.FromResult(0);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShapeFlow.Infrastructure;
 
@@ -35,11 +36,11 @@ namespace ShapeFlow.Tests.Infrastructure
 
             public bool Executed { get; set; }
 
-            protected override int OnExecute(CommandOptions options)
+            protected override Task<int> OnExecute(CommandOptions options)
             {
                 Executed = true;
 
-                return 0;
+                return Task.FromResult(0);
             }
         }
 
@@ -49,11 +50,11 @@ namespace ShapeFlow.Tests.Infrastructure
 
             public bool Executed { get; set; }
 
-            protected override int OnExecute(CommandOptions options)
+            protected override Task<int> OnExecute(CommandOptions options)
             {
                 Executed = true;
 
-                return 0;
+                return Task.FromResult(0);
             }
         }
 

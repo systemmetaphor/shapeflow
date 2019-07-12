@@ -1,49 +1,42 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ShapeFlow.Declaration;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace ShapeFlow.Tests
 {
     [TestClass]
     public class ExtensionTests
     {
+        private const string ExtensionsProjectFilePath = "Projects\\extension.config.json";
+
         [TestMethod]
-        public void ExtensionLoadingHappyPath()
+        public async Task ExtensionLoadingHappyPath()
         {
-            // the solution declares the assembly via package / version
+            // create the test bed project
 
-            var solution = Solution.ParseFile("Projects\\extension.config.json");
-            var projection = solution.Projections.FirstOrDefault();
-            Assert.IsNotNull(projection);
-            Assert.IsFalse(string.IsNullOrWhiteSpace(projection.PackageName));
-            Assert.IsFalse(string.IsNullOrWhiteSpace(projection.PackageVersion));
+            var testBedHelper = new SolutionTestBedHelper();
+            testBedHelper.Create();
 
-            // find the extension class and activate it
+            testBedHelper.AddFile(ExtensionsProjectFilePath);
+            var projectFileName = Path.GetFileName(ExtensionsProjectFilePath);
+
+            // generate the parameters object
                         
             var parameters = new Dictionary<string, string>
             {
-                { "project-root", Environment.CurrentDirectory },
-                { "project", "Projects\\extension.config.json" }
+                { "project-root", testBedHelper.SolutionDir },
+                { "project", projectFileName }
             };
-
-            solution.AddParameters(parameters);
 
             using(var container = ApplicationContainerFactory.Create(Application.Register))
             {
+                // assemble the engine an run it
                 var engine = container.Resolve<ShapeFlowEngine>();
-                engine.Run(new SolutionEventContext(solution));
+                await engine.Run(parameters);
             }
 
-            // get the metadata, parse it and register the parts comming from the extension
-
-
-
-            // assemble and run
-
-            // verify
+            Assert.IsTrue(testBedHelper.FileExists("Records\\records.generated.cs"));
         }
     }
 }

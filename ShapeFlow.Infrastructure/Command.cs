@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Mono.Options;
 
 namespace ShapeFlow.Infrastructure
@@ -29,12 +30,12 @@ namespace ShapeFlow.Infrastructure
             }
         }
 
-        public int Execute(IEnumerable<string> arguments)
+        public async Task<int> Execute(IEnumerable<string> arguments)
         {               
-            return OnExecute(GetOptions(arguments));                        
+            return await OnExecute(GetOptions(arguments));                        
         }
                         
-        protected abstract int OnExecute(CommandOptions options);
+        protected abstract Task<int> OnExecute(CommandOptions options);
                 
         protected virtual CommandOptions GetOptions(IEnumerable<string> arguments)
         {

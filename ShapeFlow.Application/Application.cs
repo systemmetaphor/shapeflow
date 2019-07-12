@@ -8,7 +8,10 @@ using ShapeFlow.Shapes;
 using ShapeFlow.Loaders;
 using ShapeFlow.Loaders.DbModel;
 using System.Linq;
+using System.Threading.Tasks;
 using ShapeFlow.Commands;
+using ShapeFlow.PackageManagement;
+using ShapeFlow.PackageManagement.NuGet;
 using ShapeFlow.Pipelines;
 using ShapeFlow.Projections;
 using ShapeFlow.Projections.DotLiquid;
@@ -21,7 +24,7 @@ namespace ShapeFlow
         {
         }
 
-        public static void Run(string[] args)
+        public static async Task Run(string[] args)
         {
             using (var currentContainer = ApplicationContainerFactory.Create(Register))
             {
@@ -36,7 +39,11 @@ namespace ShapeFlow
                 var commandArguments = args.Skip(1).ToArray();
 
                 var commandSystem = currentContainer.Resolve<CommandManagementService>();
-                commandSystem.Execute(commandName, commandArguments);
+                var result = await commandSystem.Execute(commandName, commandArguments);
+                if (result < 0)
+                {
+                    AppTrace.Error("Command failed.");
+                }
             }
         }
                 
@@ -55,9 +62,10 @@ namespace ShapeFlow
             container.RegisterService<IOutputLanguageInferenceService, OutputLanguageInferenceService>();
             container.RegisterService<ModelToTextProjectionEngine>();
             container.RegisterService<TemplateEngineProvider>();
-            container.RegisterService<TextGeneratorRegistry>();
+            container.RegisterService<ProjectionRegistry>();
             container.RegisterService<ShapeFlowEngine>();
             container.RegisterService<CommandManagementService>();
+            container.RegisterService<PackageManagerFactory, NugetPackageManagerFactory>();
 
             container.RegisterMany<ILoader, JsonLoader>();
             container.RegisterMany<ILoader, DbModelLoader>();

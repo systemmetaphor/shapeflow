@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using DotNetFileUtils;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
+using ShapeFlow.PackageManagement;
+using Path = System.IO.Path;
 
 namespace ShapeFlow.Declaration
 {
@@ -17,10 +22,6 @@ namespace ShapeFlow.Declaration
         /// <summary>
         /// Initializes a new instance of the <see cref="TransformationDeclaration"/> class.
         /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="modelType">Type of the domain model.</param>
-        /// <param name="rules">The rules.</param>
-        /// <param name="location">The location.</param>
         private  ProjectionDeclaration()
         {
         }
@@ -85,6 +86,45 @@ namespace ShapeFlow.Declaration
             private set;
         }
 
+        public static ProjectionDeclaration FromPackageDirectory(PackageInfo package)
+        {
+            var directoryPath = new DirectoryPath(package.Root);
+            var contentPath = directoryPath.Combine("Content");
+            var metadataFile = contentPath.CombineWithFilePath(new FilePath("shapeflow.package.json"));
+            if (File.Exists(metadataFile.FullPath))
+            {
+                return FromFile(metadataFile.FullPath);
+            }
+            else
+            {
+                // use conventions to derive the metadata
+                var globber = new Globber();
+                var fullGlobPattern = contentPath.Combine(".\\**\\*.liquid");
+                var templates = globber.Match(fullGlobPattern.FullPath);
+                templates = templates
+                    .OfType<FilePath>()
+                    .Select(contentPath.GetRelativePath)
+                    .ToArray();
+
+                var parameters = new List<ParameterDeclaration>();
+
+                var rules = templates
+                    .Select(template => new TransformationRuleDeclaration(template.FullPath, false, template.FullPath))
+                    .ToList();
+
+                var decl = new ProjectionDeclaration
+                {
+                    Name = package.Name,
+                    Parameters = parameters,
+                    Rules = rules,
+                    Location = contentPath.FullPath,
+                    PackageId =package.Name,
+                    Version = package.Version
+                };
+
+                return decl;
+            }
+        }
 
         public static ProjectionDeclaration FromFile(string path)
         {
@@ -109,35 +149,38 @@ namespace ShapeFlow.Declaration
         public static ProjectionDeclaration Parse(JObject transformationObject, string transformationName = null)
         {
             var packageName = transformationName ?? "default";
-            var version = string.Empty;
 
             // when its an inline decl it gets the name from the property holding the decl object
             transformationName = transformationName ?? transformationObject.GetStringPropertyValue("name");
-            transformationObject.GetStringPropertyValue("version");
+            var version = transformationObject.GetStringPropertyValue("version");
             var parametersArray = transformationObject.GetValue("parameters") as JArray ?? new JArray();
             var parameters = new List<ParameterDeclaration>();
-            foreach (JObject parametersObject in parametersArray)
+            foreach (var jToken in parametersArray)
             {
+                var parametersObject = (JObject) jToken;
                 var parameterDeclaration = ParameterDeclaration.Parse(parametersObject);
                 parameters.Add(parameterDeclaration);
             }
 
             var rulesArray = transformationObject.GetValue("rules") as JArray ?? new JArray();
             var rules = new List<TransformationRuleDeclaration>();
-            foreach (JObject ruleObject in rulesArray)
+            foreach (var jToken in rulesArray)
             {
+                var ruleObject = (JObject) jToken;
                 var ruleDeclaration = TransformationRuleDeclaration.Parse(ruleObject);
                 rules.Add(ruleDeclaration);
             }
 
             var location = transformationObject.GetStringPropertyValue("location");
 
-            var transformation = new ProjectionDeclaration();
-            transformation.Name = transformationName;
-            transformation.Parameters = parameters;
-            transformation.Rules = rules;
-            transformation.Location = location;
-            transformation.Version = version;
+            var transformation = new ProjectionDeclaration
+            {
+                Name = transformationName,
+                Parameters = parameters,
+                Rules = rules,
+                Location = location,
+                Version = version
+            };
 
             if (transformationObject.ContainsKey("packageId"))
             {
@@ -147,6 +190,11 @@ namespace ShapeFlow.Declaration
             transformation.PackageId = packageName;
 
             return transformation;
+        }
+
+        public void OverrideName(string packageName)
+        {
+            Name = packageName;
         }
     }
 }

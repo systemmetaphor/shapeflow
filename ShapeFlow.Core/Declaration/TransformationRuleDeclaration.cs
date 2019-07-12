@@ -49,17 +49,6 @@ namespace ShapeFlow.Declaration
 
         public IDictionary<string,string> Parameters { get; }
 
-        protected TransformationDeclaration Parent
-        {
-            get;
-            private set;
-        }
-
-        internal void SetParent(TransformationDeclaration parent)
-        {
-            Parent = parent;
-        }
-
         public static TransformationRuleDeclaration Parse(JObject ruleObject)
         {
             var templateName = ruleObject.GetStringPropertyValue("templateName");

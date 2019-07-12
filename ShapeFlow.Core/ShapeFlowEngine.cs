@@ -15,34 +15,34 @@ namespace ShapeFlow
         private readonly ModelToTextProjectionEngine _engine;
         private readonly IFileService _fileService;
         private readonly ShapeManager _shapeManager;
-        private readonly TextGeneratorRegistry _generatorRegistry;
+        private readonly ProjectionRegistry _projectionRegistry;
 
         public ShapeFlowEngine(
             ModelToTextProjectionEngine engine, 
             IFileService fileService,
             ShapeManager shapeManager,
-            TextGeneratorRegistry generatorRegistry)
+            ProjectionRegistry projectionRegistry)
         {           
             _engine = engine;
             _fileService = fileService;
             _shapeManager = shapeManager;
-            _generatorRegistry = generatorRegistry;
+            _projectionRegistry = projectionRegistry;
         }                
 
-        public void Run(IDictionary<string, string> parameters)
+        public async Task Run(IDictionary<string, string> parameters)
         {
             var solution = Solution.ParseFile(parameters);
-            Run(new SolutionEventContext(solution));
+            await Run(new SolutionEventContext(solution));
         }
 
-        public void Run(Solution solution)
+        public async Task Run(Solution solution)
         {
-            Run(new SolutionEventContext(solution));
+            await Run(new SolutionEventContext(solution));
         }
 
-        public void Run(SolutionEventContext context)
+        public async Task Run(SolutionEventContext context)
         {
-            context = _generatorRegistry.Process(context);
+            context = await _projectionRegistry.Process(context);
 
             var transformationPipeline = new TransformationPipeline();
             foreach(var pipeline in context.Solution.Pipelines)

@@ -3,27 +3,6 @@ using ShapeFlow.Declaration;
 
 namespace ShapeFlow.PackageManagement
 {
-    public class PackageInfo
-    {
-        public PackageInfo(
-            string packageName,
-            string packageVersion,
-            string packageRoot)
-        {
-            Name = packageName;
-            Version = packageVersion;
-            Root = packageRoot;
-        }
-
-        public string Name { get; }
-
-        public string Version { get; }
-
-        public string Root { get; }
-
-        public bool IsInstalled => !string.IsNullOrWhiteSpace(Root);
-    }
-
     public abstract class PackageManager
     {
         private readonly Solution _solution;
@@ -39,7 +18,7 @@ namespace ShapeFlow.PackageManagement
 
         public abstract Task<PackageInfo> TryInstallPackage(string packageName, string packageVersion);
 
-        public async Task<string> ResolvePackageRoot(string packageName, string packageVersion)
+        public async Task<PackageInfo> ResolvePackage(string packageName, string packageVersion)
         {
             PackageInfo info = await GetPackageAsync(packageName, packageVersion);
 
@@ -53,7 +32,7 @@ namespace ShapeFlow.PackageManagement
                 return null;
             }
 
-            return info.Root;
+            return info;
         }
     }
 }

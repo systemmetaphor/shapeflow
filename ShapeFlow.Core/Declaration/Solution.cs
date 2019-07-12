@@ -7,29 +7,10 @@ using ShapeFlow.Infrastructure;
 
 namespace ShapeFlow.Declaration
 {
-    public class MetadataPart
-    {
-        public MetadataPart(string name, IEnumerable<ProjectionRefDeclaration> generators, IEnumerable<ShapeDeclaration> models, IEnumerable<PipelineDeclaration> pipelines)
-        {
-            Name = name;
-            Projections = generators;
-            Models = models;
-            Pipelines = pipelines;
-        }
-
-        public string Name { get; }
-
-        public IEnumerable<ProjectionRefDeclaration> Projections { get; }
-
-        public IEnumerable<ShapeDeclaration> Models { get; }
-
-        public IEnumerable<PipelineDeclaration> Pipelines { get; }
-    }
-
     public class Solution : MetadataPart
     {
-        private Dictionary<string, string> _parameters;
-        private string _rootFolder;
+        private readonly Dictionary<string, string> _parameters;
+        private readonly string _rootFolder;
         
         public Solution(string name, IEnumerable<ProjectionRefDeclaration> generators, IEnumerable<ShapeDeclaration> models, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
             : base(name, generators, models, pipelines)
@@ -68,19 +49,32 @@ namespace ShapeFlow.Declaration
 
         public static Solution ParseFile(IDictionary<string, string> parameters)
         {
-            if(parameters.TryGetValue("project", out string projectPath))
+            parameters.TryGetValue("project-root", out string projectSolutionDirectory);
+
+            if (!parameters.TryGetValue("project", out string projectFilePath))
             {
-                var result = ParseFile(projectPath);
-                result.AddParameters(parameters);
-                return result;
+                return null;
             }
 
-            return null;
+            if (!string.IsNullOrWhiteSpace(projectSolutionDirectory))
+            {
+                projectFilePath = Path.Combine(projectSolutionDirectory, projectFilePath);
+            }
+
+            if (!File.Exists(projectFilePath))
+            {
+                throw  new FileNotFoundException("It was not possible to find the shapeflow project file.", projectFilePath);
+            }
+
+            var result = ParseFile(projectFilePath, projectSolutionDirectory);
+            result.AddParameters(parameters);
+            return result;
+
         }
 
-        public static Solution ParseFile(string path)
+        public static Solution ParseFile(string path, string rootFolder = "")
         {
-            return Parse(JObject.Parse(File.ReadAllText(path)), Path.GetDirectoryName(path));
+            return Parse(JObject.Parse(File.ReadAllText(path)), string.IsNullOrWhiteSpace(rootFolder) ? Path.GetDirectoryName(path) : rootFolder);
         }
 
         public static Solution Parse(JObject root, string rootFolder = "")
@@ -117,16 +111,26 @@ namespace ShapeFlow.Declaration
             }
 
             var shapesArray = root.GetValue("shapes") as JArray;
-            foreach (JObject shapeObject in shapesArray ?? new JArray())
+            foreach (var jToken in shapesArray ?? new JArray())
             {
-                ShapeDeclaration modelDeclaration = ShapeDeclaration.Parse(result, shapeObject);
+                if (!(jToken is JObject shapeObject))
+                {
+                    continue;
+                }
+
+                var modelDeclaration = ShapeDeclaration.Parse(result, shapeObject);
                 models.Add(modelDeclaration);
             }
 
             var pipelinesArray = root.GetValue("pipelines") as JArray;
-            foreach (JObject pipelineObject in pipelinesArray ?? new JArray())
+            foreach (var jToken in pipelinesArray ?? new JArray())
             {
-                PipelineDeclaration pipeline = PipelineDeclaration.Parse(pipelineObject);
+                if (!(jToken is JObject pipelineObject))
+                {
+                    continue;
+                }
+
+                var pipeline = PipelineDeclaration.Parse(pipelineObject);
                 if(pipeline == null)
                 {
                     continue;
