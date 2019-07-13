@@ -3,12 +3,12 @@ using ShapeFlow.Declaration;
 
 namespace ShapeFlow.Projections
 {
-    public class ProjectionContext
+    public class PipelineContext
     {
         private readonly Dictionary<string, string> _parameters;
         private readonly Dictionary<string, object> _stateEntries;
 
-        public ProjectionContext(
+        public PipelineContext(
             Solution solution, 
            PipelineDeclaration pipelineDeclaration)
         {

@@ -10,6 +10,6 @@ namespace ShapeFlow
 
         SolutionEventContext Process(SolutionEventContext context);
 
-        void Process(ProjectionContext projection, ModelToTextOutput outputFiles);
+        void Process(PipelineContext pipeline, ModelToTextOutput outputFiles);
     }
 }

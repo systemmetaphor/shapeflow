@@ -72,35 +72,31 @@ namespace ShapeFlow.Projections
             // handle package declarations
             foreach (var generator in ev.Solution.Projections.Where(g => !g.IsInline))
             {
-                var packageInfo = await packageManager.ResolvePackage(generator.PackageName, generator.PackageVersion);
-                if (!string.IsNullOrWhiteSpace(packageInfo.Root))
+                var packageInfo = await packageManager.ResolvePackage(generator.PackageId, generator.Version);
+                if (string.IsNullOrWhiteSpace(packageInfo.Root))
                 {
-                    var packageMetadata = GetPackageMetadata(packageInfo);
-                    if (packageMetadata != null)
-                    {
-                        packageMetadata.OverrideName(generator.Projection.Name);
-                        Add(packageMetadata, packageInfo);
-                    }
+                    continue;
+                }
+
+                var packageMetadata = AppendPackageMetadata(generator, packageInfo);
+                if (packageMetadata != null)
+                {
+                    Add(packageMetadata, packageInfo);
                 }
             }
 
             // handle inline projection declarations
             foreach (var generator in ev.Solution.Projections.Where(g => g.IsInline))
             {
-                Add(generator.Projection, string.Empty);
+                Add(generator, string.Empty);
             }
 
             return ev;
         }
 
-        private ProjectionDeclaration GetPackageMetadata(PackageInfo packageInfo)
+        private ProjectionDeclaration AppendPackageMetadata(ProjectionDeclaration existingDeclaration, PackageInfo packageInfo)
         {
-            // packageRootDirectory = GetInstalledPath
-
-            var dir = new DirectoryPath(packageInfo.Root);
-            var content = dir.Combine("Content");
-
-            return  ProjectionDeclaration.FromPackageDirectory(packageInfo);
+            return  ProjectionDeclaration.AppendPackageMetadata(existingDeclaration, packageInfo);
         }
 
         private void Load()

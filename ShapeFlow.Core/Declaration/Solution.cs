@@ -12,7 +12,7 @@ namespace ShapeFlow.Declaration
         private readonly Dictionary<string, string> _parameters;
         private readonly string _rootFolder;
         
-        public Solution(string name, IEnumerable<ProjectionRefDeclaration> generators, IEnumerable<ShapeDeclaration> models, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
+        public Solution(string name, IEnumerable<ProjectionDeclaration> generators, IEnumerable<ShapeDeclaration> models, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
             : base(name, generators, models, pipelines)
         {
             _parameters = new Dictionary<string, string>();
@@ -86,7 +86,7 @@ namespace ShapeFlow.Declaration
                 rootFolder = Environment.CurrentDirectory;
             }
                         
-            var generators = new List<ProjectionRefDeclaration>();
+            var generators = new List<ProjectionDeclaration>();
             var models = new List<ShapeDeclaration>();
             var pipelines = new List<PipelineDeclaration>();
 
@@ -99,10 +99,8 @@ namespace ShapeFlow.Declaration
                 if (property.Value.Type == JTokenType.Object)
                 {
                     var declObject = property.Value as JObject;
-
                     var decl = ProjectionDeclaration.Parse(declObject, property.Name);
-                    
-                    generators.Add(new ProjectionRefDeclaration(decl));
+                    generators.Add(decl);
                 }                
                 else
                 {

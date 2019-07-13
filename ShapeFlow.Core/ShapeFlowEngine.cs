@@ -47,8 +47,8 @@ namespace ShapeFlow
             var transformationPipeline = new TransformationPipeline();
             foreach(var pipeline in context.Solution.Pipelines)
             {
-                var projectionContext = new ProjectionContext(context.Solution, pipeline);
-                var transformationHandler = new ProjectionPipelineHandler(projectionContext, _engine, _fileService);
+                var pipelineContext = new PipelineContext(context.Solution, pipeline);
+                var transformationHandler = new ProjectionPipelineHandler(pipelineContext, _engine, _fileService);
                 transformationPipeline.AddHandler(transformationHandler);
             }
 

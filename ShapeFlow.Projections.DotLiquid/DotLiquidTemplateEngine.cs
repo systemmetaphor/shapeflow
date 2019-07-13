@@ -28,33 +28,34 @@ namespace ShapeFlow.Projections.DotLiquid
 
         public string TemplateLanguage => TextTemplateLanguages.DotLiquid;
 
-        public ModelToTextOutputFile Transform(ProjectionContext transformationContext, ProjectionInput input, TransformationRuleDeclaration tranformationRule)
+        public ModelToTextOutputFile Transform(PipelineContext pipelineContext, ProjectionInput input, ProjectionDeclaration projection, ProjectionRuleDeclaration projectionRule)
         {
-            var hash = transformationContext.GetStateEntry<Hash>(HashStateKey);
+            var hash = pipelineContext.GetStateEntry<Hash>(HashStateKey);
             if (hash == null)
             {
                 hash = PrepareHash(input);
-                transformationContext.AddStateEntry(HashStateKey, hash);
+                pipelineContext.AddStateEntry(HashStateKey, hash);
             }
 
-            var templateFile = _fileProvider.GetFile(transformationContext, tranformationRule);
+            var templateFile = _fileProvider.GetFile(pipelineContext, projection, projectionRule);
             ModelToTextOutputFile result;
             try
             {
                 var template = Template.Parse(templateFile.Text);
                 var output = template.Render(hash);
 
-                var outputPath = string.Empty;
+                string outputPath;
 
-                if (string.IsNullOrWhiteSpace(tranformationRule.OutputPathTemplate))
+                if (string.IsNullOrWhiteSpace(projectionRule.OutputPathTemplate))
                 {
-                    var templateFileName = tranformationRule.TemplateName;
+                    var templateFileName = projectionRule.TemplateName;
                     var languageExtension = _inferenceService.InferFileExtension(output);
-                    outputPath = Path.ChangeExtension(templateFileName, languageExtension);
+                    outputPath = Path.ChangeExtension(templateFileName, ".generated.txt");
+                    outputPath = Path.ChangeExtension(outputPath, languageExtension);
                 }
                 else
                 {
-                    var nameTemplate = Template.Parse(tranformationRule.OutputPathTemplate);
+                    var nameTemplate = Template.Parse(projectionRule.OutputPathTemplate);
                     outputPath = nameTemplate.Render(hash);
                 }
 
@@ -148,7 +149,7 @@ namespace ShapeFlow.Projections.DotLiquid
             return allParameters;
         }
 
-        public string TransformString(ProjectionContext targetContext, ProjectionInput input, string outputPathRule)
+        public string TransformString(PipelineContext targetContext, ProjectionInput input, string outputPathRule)
         {
             var hash = PrepareHash(input);
             var template = Template.Parse(outputPathRule);

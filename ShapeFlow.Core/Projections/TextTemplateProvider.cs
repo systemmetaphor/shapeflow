@@ -1,38 +1,32 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using DotNetFileUtils;
 using ShapeFlow.Declaration;
 
 namespace ShapeFlow.Projections
 {
     public class TextTemplateProvider
     {
-        public TextTemplateProvider()
+        public TextTemplate GetFile(PipelineContext context, ProjectionDeclaration projection, ProjectionRuleDeclaration file)
         {
-        }
-
-        public TextTemplate GetFile(ProjectionContext context, TransformationRuleDeclaration file)
-        {
-            if(file.IsEmbedded)
-            {
-                return TextTemplate.Create(file, GetResourceStream(file.TemplateName));
-            }
-            else
-            {
-                return TextTemplate.Create(file, ResolveRulePath(context, file));
-            }
+            return file.IsEmbedded ? TextTemplate.Create(file, GetResourceStream(file.TemplateName)) 
+                : TextTemplate.Create(file, ResolveRulePath(context, projection, file));
         }
 
         protected string GetResourceText(string resourceName)
         {
-            string result = null;
+            string result;
+            
             var resourceStream = GetResourceStream(resourceName);
-            if (resourceStream != null)
+            if (resourceStream == null)
             {
-                using (var reader = new StreamReader(resourceStream))
-                {
-                    result = reader.ReadToEnd();
-                }
+                return null;
+            }
+
+            using (var reader = new StreamReader(resourceStream))
+            {
+                result = reader.ReadToEnd();
             }
 
             return result;
@@ -88,10 +82,11 @@ namespace ShapeFlow.Projections
             return result;
         }
 
-        protected string ResolveRulePath(ProjectionContext context, TransformationRuleDeclaration rule)
-        {            
-            var requestedFile = rule.TemplateName;
-            return requestedFile;
+        protected string ResolveRulePath(PipelineContext context, ProjectionDeclaration projection, ProjectionRuleDeclaration rule)
+        {
+            var projectionDeploymentDirectory = new DirectoryPath(projection.Location);
+            var filePath = projectionDeploymentDirectory.CombineWithFilePath(rule.TemplateName);
+            return filePath.FullPath;
         }        
     }
 }

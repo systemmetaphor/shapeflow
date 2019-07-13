@@ -44,7 +44,7 @@ namespace ShapeFlow.Declaration
         /// <value>
         /// The rules used to project the model into the desired output..
         /// </value>
-        public IEnumerable<TransformationRuleDeclaration> Rules
+        public IEnumerable<ProjectionRuleDeclaration> Rules
         {
             get;
             private set;
@@ -86,7 +86,12 @@ namespace ShapeFlow.Declaration
             private set;
         }
 
-        public static ProjectionDeclaration FromPackageDirectory(PackageInfo package)
+        /// <summary>
+        /// Gets a flag indicating if the referenced projection is an inline one.
+        /// </summary>
+        public bool IsInline => string.IsNullOrWhiteSpace(PackageId);
+
+        public static ProjectionDeclaration AppendPackageMetadata(ProjectionDeclaration existingDeclaration, PackageInfo package)
         {
             var directoryPath = new DirectoryPath(package.Root);
             var contentPath = directoryPath.Combine("Content");
@@ -95,35 +100,27 @@ namespace ShapeFlow.Declaration
             {
                 return FromFile(metadataFile.FullPath);
             }
-            else
-            {
-                // use conventions to derive the metadata
-                var globber = new Globber();
-                var fullGlobPattern = contentPath.Combine(".\\**\\*.liquid");
-                var templates = globber.Match(fullGlobPattern.FullPath);
-                templates = templates
-                    .OfType<FilePath>()
-                    .Select(contentPath.GetRelativePath)
-                    .ToArray();
 
-                var parameters = new List<ParameterDeclaration>();
+            // use conventions to derive the metadata
+            var globber = new Globber();
+            var fullGlobPattern = contentPath.Combine(".\\**\\*.liquid");
+            var templates = globber.Match(fullGlobPattern.FullPath);
+            templates = templates
+                .OfType<FilePath>()
+                .Select(contentPath.GetRelativePath)
+                .ToArray();
 
-                var rules = templates
-                    .Select(template => new TransformationRuleDeclaration(template.FullPath, false, template.FullPath))
-                    .ToList();
+            var parameters = new List<ParameterDeclaration>();
 
-                var decl = new ProjectionDeclaration
-                {
-                    Name = package.Name,
-                    Parameters = parameters,
-                    Rules = rules,
-                    Location = contentPath.FullPath,
-                    PackageId =package.Name,
-                    Version = package.Version
-                };
-
-                return decl;
-            }
+            var rules = templates
+                .Select(template => new ProjectionRuleDeclaration(template.FullPath))
+                .ToList();
+                
+            existingDeclaration.Parameters = parameters;
+            existingDeclaration.Rules = rules;
+            existingDeclaration.Location = contentPath.FullPath;
+                
+            return existingDeclaration;
         }
 
         public static ProjectionDeclaration FromFile(string path)
@@ -163,11 +160,11 @@ namespace ShapeFlow.Declaration
             }
 
             var rulesArray = transformationObject.GetValue("rules") as JArray ?? new JArray();
-            var rules = new List<TransformationRuleDeclaration>();
+            var rules = new List<ProjectionRuleDeclaration>();
             foreach (var jToken in rulesArray)
             {
                 var ruleObject = (JObject) jToken;
-                var ruleDeclaration = TransformationRuleDeclaration.Parse(ruleObject);
+                var ruleDeclaration = ProjectionRuleDeclaration.Parse(ruleObject);
                 rules.Add(ruleDeclaration);
             }
 
@@ -190,11 +187,6 @@ namespace ShapeFlow.Declaration
             transformation.PackageId = packageName;
 
             return transformation;
-        }
-
-        public void OverrideName(string packageName)
-        {
-            Name = packageName;
         }
     }
 }

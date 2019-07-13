@@ -5,7 +5,7 @@ namespace ShapeFlow.Declaration
     public class MetadataPart
     {
         public MetadataPart(string name, 
-            IEnumerable<ProjectionRefDeclaration> generators, 
+            IEnumerable<ProjectionDeclaration> generators, 
             IEnumerable<ShapeDeclaration> models, 
             IEnumerable<PipelineDeclaration> pipelines)
         {
@@ -17,7 +17,7 @@ namespace ShapeFlow.Declaration
 
         public string Name { get; }
 
-        public IEnumerable<ProjectionRefDeclaration> Projections { get; }
+        public IEnumerable<ProjectionDeclaration> Projections { get; }
 
         public IEnumerable<ShapeDeclaration> Models { get; }
 

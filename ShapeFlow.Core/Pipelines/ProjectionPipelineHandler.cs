@@ -5,32 +5,32 @@ namespace ShapeFlow.Pipelines
 {
     public class ProjectionPipelineHandler : PipelineHandler
     {
-        private readonly ProjectionContext _projectionContext;
+        private readonly PipelineContext _pipelineContext;
         private readonly ModelToTextProjectionEngine _modelToTextProjectionEngine;
         private readonly IFileService _fileService;
 
         public ProjectionPipelineHandler(
-            ProjectionContext projectionContex, 
+            PipelineContext pipelineContext, 
             ModelToTextProjectionEngine modelToTextProjectionEngine,
             IFileService fileService)
         {
-            _projectionContext = projectionContex;
+            _pipelineContext = pipelineContext;
             _modelToTextProjectionEngine = modelToTextProjectionEngine;
             _fileService = fileService;
         }
 
-        public override string Name => _projectionContext.Pipeline.Name;
+        public override string Name => _pipelineContext.Pipeline.Name;
 
         protected override void ProcessShape(ShapeContext context)
         {
-            var output = _modelToTextProjectionEngine.Transform(_projectionContext, new ProjectionInput(context));
-            _fileService.Process(_projectionContext, output);
+            var output = _modelToTextProjectionEngine.Transform(_pipelineContext, new ProjectionInput(context));
+            _fileService.Process(_pipelineContext, output);
         }
 
         protected override bool ShouldProcess(ShapeContext context)
         {
             // naif implementation of filter
-            return _projectionContext.Input.Selector.Equals(context.Model.Name, StringComparison.OrdinalIgnoreCase);
+            return _pipelineContext.Input.Selector.Equals(context.Model.Name, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

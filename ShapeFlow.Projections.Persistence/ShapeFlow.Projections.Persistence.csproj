@@ -6,23 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Templates\DbContext.liquid" />
-    <None Remove="Templates\Records.liquid" />
-    <None Remove="Templates\Repository.liquid" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Templates\DbContext.liquid">
+    <Content Include="Records\DbContext.liquid">
       <Pack>true</Pack>
-      <PackagePath>content\templates</PackagePath>
+      <PackagePath>content\Records</PackagePath>
     </Content>
-    <Content Include="Templates\Records.liquid" >
+    <Content Include="Records\Records.liquid">
       <Pack>true</Pack>
-      <PackagePath>content\templates</PackagePath>
+      <PackagePath>content\Records</PackagePath>
     </Content>
-    <Content Include="Templates\Repository.liquid" >
+    <Content Include="Repositories\Repository.liquid">
       <Pack>true</Pack>
-      <PackagePath>content\templates</PackagePath>
+      <PackagePath>content\Repositories</PackagePath>
     </Content>
   </ItemGroup>
   

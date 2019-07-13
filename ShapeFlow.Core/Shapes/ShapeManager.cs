@@ -31,13 +31,13 @@ namespace ShapeFlow.Shapes
 
         public ShapeContext GetOrLoad(ShapeDeclaration declaration) 
         {
-            ShapeContext modelRoot = Get(declaration.ModelName);
+            var modelRoot = Get(declaration.ModelName);
             if(modelRoot != null)
             {
                 return modelRoot;
             }
 
-            if (_loaderRegistry.TryGet(declaration.LoaderName, out ILoader loader))
+            if (_loaderRegistry.TryGet(declaration.LoaderName, out var loader))
             {
                 // load the domain model                                              
                 modelRoot = loader?.Load(declaration) ??

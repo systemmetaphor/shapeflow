@@ -52,7 +52,7 @@ namespace ShapeFlow
             return context;
         }
 
-        public void Process(ProjectionContext projection, ModelToTextOutput output)
+        public void Process(PipelineContext pipeline, ModelToTextOutput output)
         {
             foreach (var outputFile in output.OutputFiles)
             {
@@ -60,7 +60,7 @@ namespace ShapeFlow
 
                 if (!Path.IsPathRooted(fullPath))
                 {
-                    var root = projection.Solution.GetParameter("project-root");
+                    var root = pipeline.Solution.GetParameter("project-root");
                     if (!string.IsNullOrEmpty(root))
                     {
                         fullPath = Path.Combine(root, outputFile.OutputPath);

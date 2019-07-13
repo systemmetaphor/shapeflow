@@ -5,20 +5,20 @@ using ShapeFlow.Projections;
 
 namespace ShapeFlow.Declaration
 {
-    public class TransformationRuleDeclaration
+    public class ProjectionRuleDeclaration
     {
-        public TransformationRuleDeclaration(string templateName)
+        public ProjectionRuleDeclaration(string templateName)
             : this(templateName, false, null)
         {
         }
 
-        public TransformationRuleDeclaration(string templateName, bool isEmbeddedTemplate, string outputPathTemplate)
+        public ProjectionRuleDeclaration(string templateName, bool isEmbeddedTemplate, string outputPathTemplate)
             : this(templateName, TextTemplateLanguages.DotLiquid, isEmbeddedTemplate, outputPathTemplate)
 
         {
         }
 
-        public TransformationRuleDeclaration(string templateName, string templateLanguage, bool isEmbeddedTemplate, string outputPathTemplate)
+        public ProjectionRuleDeclaration(string templateName, string templateLanguage, bool isEmbeddedTemplate, string outputPathTemplate)
         {            
             TemplateName = templateName;
             TemplateLanguage = templateLanguage;
@@ -49,12 +49,12 @@ namespace ShapeFlow.Declaration
 
         public IDictionary<string,string> Parameters { get; }
 
-        public static TransformationRuleDeclaration Parse(JObject ruleObject)
+        public static ProjectionRuleDeclaration Parse(JObject ruleObject)
         {
             var templateName = ruleObject.GetStringPropertyValue("templateName");
             var outputPathTemplate = ruleObject.GetStringPropertyValue("outputPathTemplate");
             var isEmbedded = ruleObject.GetValue("isEmbedded")?.Value<bool>() ?? false;
-            var ruleDeclaration = new TransformationRuleDeclaration(templateName, isEmbedded, outputPathTemplate);
+            var ruleDeclaration = new ProjectionRuleDeclaration(templateName, isEmbedded, outputPathTemplate);
             return ruleDeclaration;
         }
     }

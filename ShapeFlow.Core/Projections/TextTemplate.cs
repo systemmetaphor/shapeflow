@@ -8,19 +8,19 @@ namespace ShapeFlow.Projections
     {        
         private string _text;
 
-        private TextTemplate(TransformationRuleDeclaration step, string path)
+        private TextTemplate(ProjectionRuleDeclaration step, string path)
         {
             Rule = step;
             Path = path;                 
         }
 
-        private TextTemplate(TransformationRuleDeclaration step, Stream stream)
+        private TextTemplate(ProjectionRuleDeclaration step, Stream stream)
         {
             Rule = step;
             Stream = stream;
         }
 
-        public TransformationRuleDeclaration Rule { get; }
+        public ProjectionRuleDeclaration Rule { get; }
 
         public string Path { get; }
 
@@ -40,12 +40,12 @@ namespace ShapeFlow.Projections
             }
         }
 
-        public static TextTemplate Create(TransformationRuleDeclaration rule, string path)
+        public static TextTemplate Create(ProjectionRuleDeclaration rule, string path)
         {
             return new TextTemplate(rule, path);       
         }
 
-        public static TextTemplate Create(TransformationRuleDeclaration rule, Stream stream)
+        public static TextTemplate Create(ProjectionRuleDeclaration rule, Stream stream)
         {
             return new TextTemplate(rule, stream);
         }

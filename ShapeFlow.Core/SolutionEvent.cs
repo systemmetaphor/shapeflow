@@ -14,11 +14,11 @@ namespace ShapeFlow
         }
 
         public SolutionEventContext(SolutionEventContext previous)
-            : this(previous, Enumerable.Empty<ProjectionContext>())
+            : this(previous, Enumerable.Empty<PipelineContext>())
         {
         }
 
-        public SolutionEventContext(SolutionEventContext previous, IEnumerable<ProjectionContext> projections)
+        public SolutionEventContext(SolutionEventContext previous, IEnumerable<PipelineContext> projections)
         {
             Solution = previous.Solution ?? throw new ArgumentNullException(nameof(previous));
             Projections = projections;
@@ -26,6 +26,6 @@ namespace ShapeFlow
 
         public Solution Solution { get; }
 
-        public IEnumerable<ProjectionContext> Projections { get; }
+        public IEnumerable<PipelineContext> Projections { get; }
     }
 }

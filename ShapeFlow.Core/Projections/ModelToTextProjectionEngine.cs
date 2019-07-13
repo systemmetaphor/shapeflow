@@ -27,37 +27,37 @@ namespace ShapeFlow.Projections
 
         protected ProjectionRegistry GeneratorRegistry { get; }
 
-        public ProjectionContext Transform(ProjectionContext context)
+        public PipelineContext Transform(PipelineContext pipelineContext)
         {
             var modelManager = InputManager;
 
-            var model = modelManager.Get(context.Input.Selector);
+            var model = modelManager.Get(pipelineContext.Input.Selector);
             if (model != null)
             {
                 var input = new ProjectionInput(model);
                                
-                context.Output = Transform(context, input);
+                pipelineContext.Output = Transform(pipelineContext, input);
 
                 AppTrace.Information("Projection completed.");
             }
 
-            return context;
+            return pipelineContext;
         }
 
-        public ModelToTextOutput Transform(ProjectionContext context, ProjectionInput input)
+        public ModelToTextOutput Transform(PipelineContext pipelineContext, ProjectionInput input)
         {
             // this the generator impl
 
-            GeneratorRegistry.TryGet(context.GeneratorName, out ProjectionDeclaration generatorDecl);
+            GeneratorRegistry.TryGet(pipelineContext.GeneratorName, out ProjectionDeclaration projection);
 
-            var transformationRules = generatorDecl.Rules;
+            var transformationRules = projection.Rules;
 
             var transformationOutput = new ModelToTextOutput();
 
             foreach (var tranformationRule in transformationRules)
             {
                 var templateEngine = TemplateEngineProvider.GetEngine(tranformationRule.TemplateLanguage);
-                var transformationOutputFile = templateEngine.Transform(context, input, tranformationRule);
+                var transformationOutputFile = templateEngine.Transform(pipelineContext, input, projection, tranformationRule);
                 transformationOutput.AddOutputFile(transformationOutputFile);
             }
 
