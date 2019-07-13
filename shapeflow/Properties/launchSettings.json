@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "shapeflow": {
-      "commandName": "Project",
-      "workingDirectory": "..\\NorthwindSample.Mvc"
-    }
-  }
-}

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>ShapeFlow</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShapeFlow.Core\ShapeFlow.Core.csproj" />
+    <ProjectReference Include="..\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj" />
+    <ProjectReference Include="..\ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj" />
+    <ProjectReference Include="..\ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj" />
+    <ProjectReference Include="..\ShapeFlow.PackageManagement.NuGet\ShapeFlow.PackageManagement.NuGet.csproj" />
+    <ProjectReference Include="..\ShapeFlow.TemplateEngines.DotLiquid\ShapeFlow.TemplateEngines.DotLiquid.csproj" />
+  </ItemGroup>
+
+</Project>

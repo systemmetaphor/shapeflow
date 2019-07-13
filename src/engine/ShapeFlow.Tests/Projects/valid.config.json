@@ -1,0 +1,61 @@
+﻿{
+  "name": "MyErp Code Generation",
+  "projections": {
+    "DDDGenerator": {
+      "version": "1.0.0",
+      "rules": [
+        {
+          "templateName": "Templates\\DomainObjects.liquid",
+          "outputPathTemplate": "Generated\\DomainObjects.cs"
+        }
+      ]
+    }
+  },
+  "shapes": [
+    {
+      "name": "Customers Import",
+      "tags": "importers",
+      "loaderName": "ExcelSchema",
+      "parameters": {
+        "model-path": "importexport\\customers.template.xlsx",
+        "importer-name": "CustomerFile"
+      }
+    },
+    {
+      "name": "Partners Import",
+      "loaderName": "ExcelSchema",
+      "tags": "importers",
+      "parameters": {
+        "model-path": "importexport\\partners.template.xlsx",
+        "importer-name": "PartnersFile"
+      }
+    },
+    {
+      "name": "Employees Import",
+      "loaderName": "ExcelSchema",
+      "tags": "importers",
+      "parameters": {
+        "model-path": "importexport\\employees.template.xlsx",
+        "importer-name": "EmployeesFile"
+      }
+    }
+  ],
+  "pipelines": [
+    {
+      "name": "Importers",
+      "input": {
+        "selector": "?(tag=importers)"
+      },
+      "transformation": {
+        "name": "Excel Importer",
+        "projection": "excelimport"
+      },
+      "output": {
+        "type": "file",
+        "parameters": {
+          "output-mode": "overwrite"
+        }
+      }
+    }
+  ]
+}

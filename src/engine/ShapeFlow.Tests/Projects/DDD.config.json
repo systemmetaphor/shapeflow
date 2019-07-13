@@ -1,0 +1,42 @@
+﻿{
+  "name": "DDD Code Generation",  
+  "projections": {
+    "DDDGenerator": {
+      "version":  "1.0.0",      
+      "rules": [
+        {
+          "templateName": "Templates\\DomainObjects.liquid",
+          "outputPathTemplate": "Generated\\DomainObjects.cs"
+        }
+      ]
+    }
+  },
+  "shapes": [
+    {
+      "name": "Sales Model",
+      "tags": "domainEntityModel",
+      "loaderName": "JsonLoader",
+      "parameters": {
+        "model-path": "Models\\Order.json"
+      }
+    }
+  ],
+  "pipelines": [
+    {
+      "name": "Sales Model DDD Entities",
+      "input": {
+        "selector": "Sales Model"
+      },
+      "transformation": {
+        "name": "Sales Model Entities",
+        "projection": "DDDGenerator"
+      },
+      "output": {
+        "type": "file",
+        "parameters": {
+          "output-mode": "overwrite"
+        }
+      }
+    }
+  ]
+}
