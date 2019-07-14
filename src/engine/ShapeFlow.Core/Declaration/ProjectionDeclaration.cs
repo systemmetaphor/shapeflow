@@ -145,7 +145,7 @@ namespace ShapeFlow.Declaration
 
         public static ProjectionDeclaration Parse(JObject transformationObject, string transformationName = null)
         {
-            var packageName = transformationName ?? "default";
+            
 
             // when its an inline decl it gets the name from the property holding the decl object
             transformationName = transformationName ?? transformationObject.GetStringPropertyValue("name");
@@ -178,6 +178,8 @@ namespace ShapeFlow.Declaration
                 Location = location,
                 Version = version
             };
+
+            string packageName = null;
 
             if (transformationObject.ContainsKey("packageId"))
             {

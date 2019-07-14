@@ -37,7 +37,7 @@ var msBuildSettings = new DotNetCoreMSBuildSettings()
     .WithProperty("AssemblyVersion", version)
     .WithProperty("FileVersion", version);
 
-var buildDir = Directory("./shapeflow/bin") + Directory(configuration);
+var buildDir = Directory("./src/engine/shapeflow/bin") + Directory(configuration);
 var buildResultDir = Directory("./build");
 var nugetRoot = buildResultDir + Directory("nuget");
 var chocoRoot = buildResultDir + Directory("choco");
@@ -68,7 +68,7 @@ Task("Patch-Assembly-Info")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        var file = "./SolutionInfo.cs";
+        var file = "./src/engine/SolutionInfo.cs";
         CreateAssemblyInfo(file, new AssemblyInfoSettings {
             Product = "SHAPEFLOW",
             Copyright = "Copyright \xa9 shapeflow Contributors",
@@ -82,7 +82,7 @@ Task("Restore-Packages")
     .IsDependentOn("Patch-Assembly-Info")
     .Does(() =>
     {
-        DotNetCoreRestore("./shapeflow.sln", new DotNetCoreRestoreSettings
+        DotNetCoreRestore("./src/engine/shapeflow.sln", new DotNetCoreRestoreSettings
         {
             MSBuildSettings = msBuildSettings
         });
@@ -92,7 +92,7 @@ Task("Build")
     .IsDependentOn("Restore-Packages")
     .Does(() =>
     {
-        DotNetCoreBuild("./shapeflow.sln", new DotNetCoreBuildSettings
+        DotNetCoreBuild("./src/engine/shapeflow.sln", new DotNetCoreBuildSettings
         {
             Configuration = configuration,
             NoRestore = true,
@@ -104,7 +104,7 @@ Task("Publish-Client")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        DotNetCorePublish("./shapeflow/shapeflow.csproj", new DotNetCorePublishSettings
+        DotNetCorePublish("./src/engine/shapeflow/shapeflow.csproj", new DotNetCorePublishSettings
         {
             Configuration = configuration,
             NoBuild = true,
@@ -114,7 +114,7 @@ Task("Publish-Client")
 
 Task("Run-Unit-Tests")
     .IsDependentOn("Build")
-    .DoesForEach(GetFiles("./tests/**/*.csproj"), project =>
+    .DoesForEach(GetFiles("./src/engine/tests/**/*.csproj"), project =>
     {
         DotNetCoreTestSettings testSettings = new DotNetCoreTestSettings()
         {
@@ -157,11 +157,18 @@ Task("Create-Library-Packages")
     .Does(() =>
     {        
         // Get the set of projects to package
-        List<FilePath> projects = new List<FilePath>(GetFiles("./src/**/*.csproj"));
+        List<FilePath> projects = new List<FilePath>(GetFiles("./src/engine/**/*.csproj"));
         
         // Package all nuspecs
         foreach (var project in projects)
         {
+            // temporary patch to prevent from trying
+            // to pack the test bed projects
+            if(project.FullPath.Contains("tests"))
+            {
+                continue;
+            }
+
             DotNetCorePack(
                 MakeAbsolute(project).ToString(),
                 new DotNetCorePackSettings
@@ -180,7 +187,7 @@ Task("Create-Tools-Package")
     .WithCriteria(() => isRunningOnWindows)
     .Does(() =>
     {   
-        DotNetCorePack("./shapeflow/shapeflow.csproj", new DotNetCorePackSettings {
+        DotNetCorePack("./src/engine/shapeflow/shapeflow.csproj", new DotNetCorePackSettings {
             Configuration = configuration,
             OutputDirectory = nugetRoot,
             MSBuildSettings = msBuildSettings

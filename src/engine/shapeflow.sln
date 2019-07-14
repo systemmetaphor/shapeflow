@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.TemplateEngines.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shapeflow", "shapeflow\shapeflow.csproj", "{59DA583A-D5B2-45A6-AAB1-DF0F389DC7FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Tests", "ShapeFlow.Tests\ShapeFlow.Tests.csproj", "{0B2040C5-888B-4714-ACD4-C0EB11F3D2F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Tests", "tests\ShapeFlow.Tests\ShapeFlow.Tests.csproj", "{0B2040C5-888B-4714-ACD4-C0EB11F3D2F7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.DbModel", "ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj", "{90922BD3-E522-4C1E-8DB0-38E4CEDF5F20}"
 EndProject
