@@ -242,7 +242,7 @@ $CAKE_EXE_INVOCATION = if ($IsLinux -or $IsMacOS) {
 
 # Preparing the database required for tests
 
-if(Test-Path $env:APPVEYOR) {
+if($env:APPVEYOR -eq $true) {
 
     [reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.Smo") | Out-Null
     [reflection.assembly]::LoadWithPartialName("Microsoft.SqlServer.SqlWmiManagement") | Out-Null

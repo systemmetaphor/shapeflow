@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ShapeFlow.TemplateEngines.T4
 {
-    internal static class CallContext
+    public static class CallContext
     {
         static ConcurrentDictionary<string, AsyncLocal<object>> state = new ConcurrentDictionary<string, AsyncLocal<object>>();
 

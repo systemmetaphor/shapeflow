@@ -1,6 +1,8 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Mono.TextTemplating;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Declaration;
@@ -56,7 +58,25 @@ namespace ShapeFlow.TemplateEngines.T4
         private string TransformCore(ShapeContext input, string templateName, string templateFileText, ref string outputPath)
         {
             var generator = new TemplateGenerator();
-            generator.AddDirectiveProcessor("property", typeof(TemplateArgumentDirectiveProcessor).FullName,
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                if (assembly.IsDynamic)
+                {
+                    continue;
+                }
+
+                if (generator.Refs.Contains(assembly.Location))
+                {
+                    continue;
+                }
+
+                generator.Refs.Add(assembly.Location);
+            }
+
+
+            generator.AddDirectiveProcessor("PropertyProcessor", typeof(TemplateArgumentDirectiveProcessor).FullName,
                 this.GetType().Assembly.FullName);
 
             var modelContainer = input.Model;
@@ -87,6 +107,18 @@ namespace ShapeFlow.TemplateEngines.T4
             }
             
             generator.ProcessTemplate(templateName, templateFileText, ref outputPath, out var outputText);
+
+            if (generator.Errors.HasErrors)
+            {
+                var builder = new StringBuilder();
+
+                foreach (CompilerError generatorError in generator.Errors)
+                {
+                    builder.AppendLine(generatorError.ErrorText);
+                }
+
+                throw new InvalidOperationException(builder.ToString());
+            }
 
             return outputText;
         }
