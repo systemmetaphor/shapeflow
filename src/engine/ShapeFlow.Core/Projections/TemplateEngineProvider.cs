@@ -17,6 +17,14 @@ namespace ShapeFlow.Projections
             Load();
         }
 
+        public IEnumerable<string> TemplateSearchExpressions
+        {
+            get
+            {
+                return _engines.Select(e => e.TemplateSearchExpression).Distinct().ToArray();
+            }
+        }
+
         public ITextTemplateEngine GetEngine(string language)
         {            
             var engine = _engines.Where(p => language.Equals(p.TemplateLanguage, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();

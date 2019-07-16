@@ -7,8 +7,9 @@ using DotLiquid.NamingConventions;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
+using ShapeFlow.Projections;
 
-namespace ShapeFlow.Projections.DotLiquid
+namespace ShapeFlow.TemplateEngines.DotLiquid
 {
     public class DotLiquidTemplateEngine : ITextTemplateEngine
     {
@@ -24,20 +25,23 @@ namespace ShapeFlow.Projections.DotLiquid
         {
             _fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
             _inferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
+            TemplateSearchExpression = ".\\**\\*.liquid";
         }
 
         public string TemplateLanguage => TextTemplateLanguages.DotLiquid;
 
-        public ModelToTextOutputFile Transform(PipelineContext pipelineContext, ProjectionInput input, ProjectionDeclaration projection, ProjectionRuleDeclaration projectionRule)
+        public string TemplateSearchExpression { get; }
+
+        public ModelToTextOutputFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
-            var hash = pipelineContext.GetStateEntry<Hash>(HashStateKey);
+            var hash = projectionContext.GetStateEntry<Hash>(HashStateKey);
             if (hash == null)
             {
-                hash = PrepareHash(input);
-                pipelineContext.AddStateEntry(HashStateKey, hash);
+                hash = PrepareHash(projectionContext.Input);
+                projectionContext.AddStateEntry(HashStateKey, hash);
             }
 
-            var templateFile = _fileProvider.GetFile(pipelineContext, projection, projectionRule);
+            var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
             ModelToTextOutputFile result;
             try
             {
@@ -70,16 +74,24 @@ namespace ShapeFlow.Projections.DotLiquid
             return result;
         }
 
-        private static Hash PrepareHash(ProjectionInput generatorContext)
+        public string TransformString(ProjectionContext projectionContext,  string outputPathRule)
+        {
+            var hash = PrepareHash(projectionContext.Input);
+            var template = Template.Parse(outputPathRule);
+            var output = template.Render(hash);
+            return output;
+        }
+
+        private static Hash PrepareHash(ShapeContext projectionInput)
         {
             Hash hash = null;
-            if (generatorContext == null)
+            if (projectionInput == null)
             {
                 hash = new Hash();
                 return hash;
             }
 
-            var modelContainer = generatorContext.Model;
+            var modelContainer = projectionInput.Model;
 
             if (modelContainer.Format == ShapeFormat.Clr)
             {
@@ -107,7 +119,7 @@ namespace ShapeFlow.Projections.DotLiquid
                 hash = Hash.FromAnonymousObject(modelContainer);
             }
 
-            foreach (var p in GetParameters(generatorContext))
+            foreach (var p in projectionInput.Parameters)
             {
                 if (!hash.ContainsKey(p.Key))
                 {
@@ -116,45 +128,6 @@ namespace ShapeFlow.Projections.DotLiquid
             }
 
             return hash;
-        }
-
-        private static IEnumerable<KeyValuePair<string, string>> GetParameters(ProjectionInput generatorContext)
-        {
-            var allParameters = new Dictionary<string, string>();
-
-            foreach (var parameter in generatorContext.Parameters)
-            {
-                if (allParameters.ContainsKey(parameter.Key))
-                {
-                    allParameters[parameter.Key] = parameter.Value;
-                }
-                else
-                {
-                    allParameters.Add(parameter.Key, parameter.Value);
-                }
-            }
-
-            foreach (var parameter in generatorContext.ModelContext.Parameters)
-            {
-                if (allParameters.ContainsKey(parameter.Key))
-                {
-                    allParameters[parameter.Key] = parameter.Value;
-                }
-                else
-                {
-                    allParameters.Add(parameter.Key, parameter.Value);
-                }
-            }
-
-            return allParameters;
-        }
-
-        public string TransformString(PipelineContext targetContext, ProjectionInput input, string outputPathRule)
-        {
-            var hash = PrepareHash(input);
-            var template = Template.Parse(outputPathRule);
-            var output = template.Render(hash);
-            return output;
         }
 
         private static void PrepareDotLiquidEngine(Type rootType)

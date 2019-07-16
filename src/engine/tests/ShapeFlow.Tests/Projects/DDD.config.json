@@ -21,14 +21,13 @@
       }
     }
   ],
-  "pipelines": [
+  "pipeline": [
     {
-      "name": "Sales Model DDD Entities",
+      "name": "Sales Model Entities",
       "input": {
         "selector": "Sales Model"
       },
-      "transformation": {
-        "name": "Sales Model Entities",
+      "projectionRef": {
         "projection": "DDDGenerator"
       },
       "output": {

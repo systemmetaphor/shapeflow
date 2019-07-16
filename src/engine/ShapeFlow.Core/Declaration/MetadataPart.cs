@@ -6,12 +6,12 @@ namespace ShapeFlow.Declaration
     {
         public MetadataPart(string name, 
             IEnumerable<ProjectionDeclaration> generators, 
-            IEnumerable<ShapeDeclaration> models, 
+            IEnumerable<ShapeDeclaration> shapeDeclarations, 
             IEnumerable<PipelineDeclaration> pipelines)
         {
             Name = name;
             Projections = generators;
-            Models = models;
+            ShapeDeclarations = shapeDeclarations;
             Pipelines = pipelines;
         }
 
@@ -19,7 +19,7 @@ namespace ShapeFlow.Declaration
 
         public IEnumerable<ProjectionDeclaration> Projections { get; }
 
-        public IEnumerable<ShapeDeclaration> Models { get; }
+        public IEnumerable<ShapeDeclaration> ShapeDeclarations { get; }
 
         public IEnumerable<PipelineDeclaration> Pipelines { get; }
     }

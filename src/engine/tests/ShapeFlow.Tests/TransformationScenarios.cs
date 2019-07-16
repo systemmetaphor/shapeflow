@@ -20,7 +20,7 @@ namespace ShapeFlow.Tests
         }
 
         [TestMethod]
-        [DeploymentItem("Models\\Order.json", "Models")]
+        [DeploymentItem("ShapeDeclarations\\Order.json", "ShapeDeclarations")]
         [DeploymentItem("Templates\\DomainObjects.liquid", "Templates")]
         [DeploymentItem("Projects\\DDD.config.json")]
         public async Task SimpleModel2Code()
@@ -44,7 +44,7 @@ namespace ShapeFlow.Tests
         }
 
         [TestMethod]
-
+        [TestCategory("ExcludeFromBuildServer")]
         [DeploymentItem("Templates\\TablesToRecords.liquid", "Templates")]
         [DeploymentItem("Projects\\TablesToRecords.config.json")]
         public async Task Db2Code()
@@ -64,7 +64,7 @@ namespace ShapeFlow.Tests
 
                 var engine = container.Activate<ShapeFlowEngine>();
 
-                await engine.Run(new SolutionEventContext(solution));
+                await engine.Run(solution);
 
                 Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Generated\\Records.cs")));
             }

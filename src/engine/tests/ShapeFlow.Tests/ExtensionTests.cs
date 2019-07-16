@@ -11,6 +11,7 @@ namespace ShapeFlow.Tests
         private const string ExtensionsProjectFilePath = "Projects\\extension.config.json";
 
         [TestMethod]
+        [TestCategory("ExcludeFromBuildServer")]
         public async Task ExtensionLoadingHappyPath()
         {
             // create the test bed project

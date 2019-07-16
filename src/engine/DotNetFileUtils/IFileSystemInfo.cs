@@ -13,7 +13,7 @@ namespace DotNetFileUtils
         /// Gets the path to the entry.
         /// </summary>
         /// <value>The path.</value>
-        Path Path { get; }
+        PathBase Path { get; }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="IFileSystemInfo"/> exists.

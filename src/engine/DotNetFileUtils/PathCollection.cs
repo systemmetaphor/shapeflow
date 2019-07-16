@@ -10,11 +10,11 @@ using System.Linq;
 namespace DotNetFileUtils
 {
     /// <summary>
-    /// A collection of <see cref="Path"/>.
+    /// A collection of <see cref="PathBase"/>.
     /// </summary>
-    public sealed class PathCollection : IEnumerable<Path>
+    public sealed class PathCollection : IEnumerable<PathBase>
     {
-        private readonly HashSet<Path> _paths;
+        private readonly HashSet<PathBase> _paths;
 
         /// <summary>
         /// Gets the number of paths in the collection.
@@ -37,7 +37,7 @@ namespace DotNetFileUtils
         /// </summary>
         /// <param name="comparer">The comparer.</param>
         public PathCollection(PathComparer comparer)
-            : this(Enumerable.Empty<Path>(), comparer)
+            : this(Enumerable.Empty<PathBase>(), comparer)
         {
         }
 
@@ -45,7 +45,7 @@ namespace DotNetFileUtils
         /// Initializes a new instance of the <see cref="PathCollection"/> class.
         /// </summary>
         /// <param name="paths">The paths.</param>
-        public PathCollection(IEnumerable<Path> paths)
+        public PathCollection(IEnumerable<PathBase> paths)
             : this(paths, PathComparer.Default)
         {
         }
@@ -56,14 +56,14 @@ namespace DotNetFileUtils
         /// <param name="paths">The paths.</param>
         /// <param name="comparer">The comparer.</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="comparer"/> is <c>null</c>.</exception>
-        public PathCollection(IEnumerable<Path> paths, PathComparer comparer)
+        public PathCollection(IEnumerable<PathBase> paths, PathComparer comparer)
         {
             if (comparer == null)
             {
                 throw new ArgumentNullException(nameof(comparer));
             }
             Comparer = comparer;
-            _paths = new HashSet<Path>(paths, comparer);
+            _paths = new HashSet<PathBase>(paths, comparer);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace DotNetFileUtils
         /// <returns>
         ///   <c>true</c> if the path was added; <c>false</c> if the path was already present.
         /// </returns>
-        public bool Add(Path path)
+        public bool Add(PathBase path)
         {
             return _paths.Add(path);
         }
@@ -82,7 +82,7 @@ namespace DotNetFileUtils
         /// Adds the specified paths to the collection.
         /// </summary>
         /// <param name="paths">The paths to add.</param>
-        public void Add(IEnumerable<Path> paths)
+        public void Add(IEnumerable<PathBase> paths)
         {
             if (paths == null)
             {
@@ -101,7 +101,7 @@ namespace DotNetFileUtils
         /// <returns>
         ///   <c>true</c> if the path was removed; <c>false</c> if the path was not found in the collection.
         /// </returns>
-        public bool Remove(Path path)
+        public bool Remove(PathBase path)
         {
             return _paths.Remove(path);
         }
@@ -110,7 +110,7 @@ namespace DotNetFileUtils
         /// Removes the specified paths from the collection.
         /// </summary>
         /// <param name="paths">The paths to remove.</param>
-        public void Remove(IEnumerable<Path> paths)
+        public void Remove(IEnumerable<PathBase> paths)
         {
             if (paths == null)
             {
@@ -127,7 +127,7 @@ namespace DotNetFileUtils
         /// <param name="path">The path to add.</param>
         /// <returns>A new <see cref="PathCollection"/> that contains the provided path as
         /// well as the paths in the original collection.</returns>
-        public static PathCollection operator +(PathCollection collection, Path path)
+        public static PathCollection operator +(PathCollection collection, PathBase path)
         {
             if (collection == null)
             {
@@ -140,7 +140,7 @@ namespace DotNetFileUtils
         /// <param name="collection">The collection.</param>
         /// <param name="paths">The paths to add.</param>
         /// <returns>A new <see cref="PathCollection"/> with the content of both collections.</returns>
-        public static PathCollection operator +(PathCollection collection, IEnumerable<Path> paths)
+        public static PathCollection operator +(PathCollection collection, IEnumerable<PathBase> paths)
         {
             if (collection == null)
             {
@@ -155,7 +155,7 @@ namespace DotNetFileUtils
         /// <param name="collection">The collection.</param>
         /// <param name="path">The path to remove.</param>
         /// <returns>A new <see cref="PathCollection"/> that do not contain the provided path.</returns>
-        public static PathCollection operator -(PathCollection collection, Path path)
+        public static PathCollection operator -(PathCollection collection, PathBase path)
         {
             if (collection == null)
             {
@@ -172,7 +172,7 @@ namespace DotNetFileUtils
         /// <param name="collection">The collection.</param>
         /// <param name="paths">The paths to remove.</param>
         /// <returns>A new <see cref="PathCollection"/> that do not contain the provided paths.</returns>
-        public static PathCollection operator -(PathCollection collection, IEnumerable<Path> paths)
+        public static PathCollection operator -(PathCollection collection, IEnumerable<PathBase> paths)
         {
             if (collection == null)
             {
@@ -189,7 +189,7 @@ namespace DotNetFileUtils
         /// <returns>
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<Path> GetEnumerator()
+        public IEnumerator<PathBase> GetEnumerator()
         {
             return _paths.GetEnumerator();
         }

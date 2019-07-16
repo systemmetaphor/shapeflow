@@ -61,7 +61,7 @@ namespace ShapeFlow.Commands
             sb.AppendLine($@"        ""selector"": ""{ name } Model""");
             sb.AppendLine(@"      },");
             sb.AppendLine(@"");
-            sb.AppendLine(@"      ""transformation"": {");
+            sb.AppendLine(@"      ""projectionRef"": {");
             sb.AppendLine($@"        ""name"": ""{ name } Model Data Tier"",");
             sb.AppendLine(@"        ""generator"": ""TablesToRecords"",");
             sb.AppendLine(@"        ""input"": {");

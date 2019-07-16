@@ -49,15 +49,15 @@ namespace DotNetFileUtils
         }
 
         /// <summary>
-        /// Returns <see cref="Path" /> instances matching the specified pattern.
+        /// Returns <see cref="PathBase" /> instances matching the specified pattern.
         /// </summary>
         /// <param name="pattern">The pattern to match.</param>
         /// <param name="predicate">The predicate used to filter directories based on file system information.</param>
         /// <returns>
-        ///   <see cref="Path" /> instances matching the specified pattern.
+        ///   <see cref="PathBase" /> instances matching the specified pattern.
         /// </returns>
         [Obsolete("Please use the Match overload that accept globber settings instead.", false)]
-        public IEnumerable<Path> Match(string pattern, Func<IDirectory, bool> predicate)
+        public IEnumerable<PathBase> Match(string pattern, Func<IDirectory, bool> predicate)
         {
             if (pattern == null)
             {
@@ -65,7 +65,7 @@ namespace DotNetFileUtils
             }
             if (string.IsNullOrWhiteSpace(pattern))
             {
-                return Enumerable.Empty<Path>();
+                return Enumerable.Empty<PathBase>();
             }
 
             return Match(pattern, new GlobberSettings
@@ -75,14 +75,14 @@ namespace DotNetFileUtils
         }
 
         /// <summary>
-        /// Returns <see cref="Path" /> instances matching the specified pattern.
+        /// Returns <see cref="PathBase" /> instances matching the specified pattern.
         /// </summary>
         /// <param name="pattern">The pattern to match.</param>
         /// <param name="settings">The globber settings.</param>
         /// <returns>
-        ///   <see cref="Path" /> instances matching the specified pattern.
+        ///   <see cref="PathBase" /> instances matching the specified pattern.
         /// </returns>
-        public IEnumerable<Path> Match(string pattern, GlobberSettings settings)
+        public IEnumerable<PathBase> Match(string pattern, GlobberSettings settings)
         {
             if (pattern == null)
             {
@@ -90,7 +90,7 @@ namespace DotNetFileUtils
             }
             if (string.IsNullOrWhiteSpace(pattern))
             {
-                return Enumerable.Empty<Path>();
+                return Enumerable.Empty<PathBase>();
             }
 
             // Parse the pattern into an AST.

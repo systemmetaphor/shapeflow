@@ -23,7 +23,8 @@ ipch
 *.pdb
 /*.~vsd
 *UpgradeWizard*
-.vs/*
+**/.vs/*
 TestResult.xml
 .vscode
 *.nupkg
+**/.shapeflow/*

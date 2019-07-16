@@ -1,0 +1,94 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Mono.TextTemplating;
+using Newtonsoft.Json.Linq;
+using ShapeFlow.Declaration;
+using ShapeFlow.Infrastructure;
+using ShapeFlow.Projections;
+using ShapeFlow.Shapes;
+
+namespace ShapeFlow.TemplateEngines.T4
+{
+    public class T4TemplateEngine : ITextTemplateEngine
+    {
+        private readonly TextTemplateProvider _fileProvider;
+        private readonly IOutputLanguageInferenceService _inferenceService;
+
+        public T4TemplateEngine(TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
+        {
+            _fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
+            _inferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
+
+            TemplateLanguage = TextTemplateLanguages.T4;
+            TemplateSearchExpression = ".\\**\\*.tt";
+        }
+
+        public string TemplateLanguage { get; }
+
+        public string TemplateSearchExpression { get; }
+
+        public ModelToTextOutputFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        {
+            var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
+            var templateFileText = templateFile.Text;
+
+            string outputPath = null;
+            var outputText = TransformCore(projectionContext.Input, projectionRule.TemplateName, templateFileText, ref outputPath);
+
+            if (string.IsNullOrWhiteSpace(outputPath) && !string.IsNullOrWhiteSpace(outputText))
+            {
+                var templateFileName = projectionRule.TemplateName;
+                var languageExtension = _inferenceService.InferFileExtension(outputText);
+                outputPath = Path.ChangeExtension(templateFileName, ".generated.txt");
+                outputPath = Path.ChangeExtension(outputPath, languageExtension);
+            }
+
+            return new ModelToTextOutputFile(outputText, outputPath);
+        }
+
+        public string TransformString(ProjectionContext projectionContext, string inputText)
+        {
+            string outputPath = null;
+            return TransformCore(projectionContext.Input, string.Empty, inputText, ref outputPath);
+        }
+
+        private string TransformCore(ShapeContext input, string templateName, string templateFileText, ref string outputPath)
+        {
+            var generator = new TemplateGenerator();
+            generator.AddDirectiveProcessor("property", typeof(TemplateArgumentDirectiveProcessor).FullName,
+                this.GetType().Assembly.FullName);
+
+            var modelContainer = input.Model;
+            var inputs = new Dictionary<string, object>();
+            var model = modelContainer.GetInstance();
+
+            if (model is JObject modelJObject)
+            {
+                model = modelJObject.ToDictionary();
+            }
+
+            if (model is IDictionary<string, object> modelDictionary)
+            {
+                foreach (var kvp in modelDictionary)
+                {
+                    inputs.Add(kvp.Key, kvp.Value);
+                }
+            }
+
+            foreach (var p in input.Parameters)
+            {
+                inputs.Add(p.Key, p.Value);
+            }
+
+            foreach (var i in inputs)
+            {
+                CallContext.SetData(i.Key, i.Value);
+            }
+            
+            generator.ProcessTemplate(templateName, templateFileText, ref outputPath, out var outputText);
+
+            return outputText;
+        }
+    }
+}

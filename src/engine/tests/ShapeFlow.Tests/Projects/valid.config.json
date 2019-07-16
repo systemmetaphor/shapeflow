@@ -40,14 +40,13 @@
       }
     }
   ],
-  "pipelines": [
+  "pipeline": [
     {
-      "name": "Importers",
+      "name": "Excel Importers",
       "input": {
         "selector": "?(tag=importers)"
       },
-      "transformation": {
-        "name": "Excel Importer",
+      "projectionRef": {
         "projection": "excelimport"
       },
       "output": {

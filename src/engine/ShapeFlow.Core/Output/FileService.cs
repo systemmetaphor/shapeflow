@@ -41,18 +41,8 @@ namespace ShapeFlow
 
             File.WriteAllText(outputFileName, outputText);
         }
-
-        public SolutionEventContext Process(SolutionEventContext context)
-        {
-            foreach (var projection in context.Projections)
-            {
-                Process(projection, projection.Output);
-            }
-
-            return context;
-        }
-
-        public void Process(PipelineContext pipeline, ModelToTextOutput output)
+        
+        public void Process(ProjectionContext projection, ModelToTextOutput output)
         {
             foreach (var outputFile in output.OutputFiles)
             {
@@ -60,7 +50,7 @@ namespace ShapeFlow
 
                 if (!Path.IsPathRooted(fullPath))
                 {
-                    var root = pipeline.Solution.GetParameter("project-root");
+                    var root = projection.Solution.GetParameter("project-root");
                     if (!string.IsNullOrEmpty(root))
                     {
                         fullPath = Path.Combine(root, outputFile.OutputPath);

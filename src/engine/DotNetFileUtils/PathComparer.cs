@@ -8,9 +8,9 @@ using System.Collections.Generic;
 namespace DotNetFileUtils
 {
     /// <summary>
-    /// Compares <see cref="Path"/> instances.
+    /// Compares <see cref="PathBase"/> instances.
     /// </summary>
-    public sealed class PathComparer : IEqualityComparer<Path>
+    public sealed class PathComparer : IEqualityComparer<PathBase>
     {
         /// <summary>
         /// The default path comparer.
@@ -54,14 +54,14 @@ namespace DotNetFileUtils
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="Path"/> instances are equal.
+        /// Determines whether the specified <see cref="PathBase"/> instances are equal.
         /// </summary>
-        /// <param name="x">The first <see cref="Path"/> to compare.</param>
-        /// <param name="y">The second <see cref="Path"/> to compare.</param>
+        /// <param name="x">The first <see cref="PathBase"/> to compare.</param>
+        /// <param name="y">The second <see cref="PathBase"/> to compare.</param>
         /// <returns>
-        /// True if the specified <see cref="Path"/> instances are equal; otherwise, false.
+        /// True if the specified <see cref="PathBase"/> instances are equal; otherwise, false.
         /// </returns>
-        public bool Equals(Path x, Path y)
+        public bool Equals(PathBase x, PathBase y)
         {
             if (x == null && y == null)
             {
@@ -80,13 +80,13 @@ namespace DotNetFileUtils
         }
 
         /// <summary>
-        /// Returns a hash code for the specified <see cref="Path"/>.
+        /// Returns a hash code for the specified <see cref="PathBase"/>.
         /// </summary>
         /// <param name="obj">The path.</param>
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
-        public int GetHashCode(Path obj)
+        public int GetHashCode(PathBase obj)
         {
             if (obj == null)
             {

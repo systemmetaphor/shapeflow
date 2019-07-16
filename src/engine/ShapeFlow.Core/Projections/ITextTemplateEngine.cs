@@ -6,12 +6,10 @@ namespace ShapeFlow.Projections
     {
         string TemplateLanguage { get; }
 
-        ModelToTextOutputFile Transform(
-            PipelineContext pipelineContext, 
-            ProjectionInput input,  
-            ProjectionDeclaration projection,
-            ProjectionRuleDeclaration projectionRule);
+        string TemplateSearchExpression { get; }
 
-        string TransformString(PipelineContext generatorContext, ProjectionInput input, string inputText);
+        ModelToTextOutputFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule);
+
+        string TransformString(ProjectionContext projectionContext, string inputText);
     }
 }

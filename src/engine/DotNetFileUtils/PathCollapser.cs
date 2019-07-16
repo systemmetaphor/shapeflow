@@ -10,7 +10,7 @@ namespace DotNetFileUtils
 {
     internal static class PathCollapser
     {
-        public static string Collapse(Path path)
+        public static string Collapse(PathBase path)
         {
             if (path == null)
             {

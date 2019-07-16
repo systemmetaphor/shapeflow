@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DotNetFileUtils;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.PackageManagement;
-using Path = System.IO.Path;
 
 namespace ShapeFlow.Declaration
 {
     /// <summary>
-    /// A generator converts an input model using a set of transformation rules into a set of output files.     
-    /// This class holds the configuration required to set a new transformation.
+    /// A generator converts an input model using a set of projectionRef rules into a set of output files.     
+    /// This class holds the configuration required to set a new projectionRef.
     /// </summary>
     /// <remarks>
-    /// The outputs represent what is expected on the end of the transformation process.
+    /// The outputs represent what is expected on the end of the projectionRef process.
     /// </remarks>
     public class ProjectionDeclaration
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TransformationDeclaration"/> class.
+        /// Initializes a new instance of the <see cref="ProjectionRefDeclaration"/> class.
         /// </summary>
-        private  ProjectionDeclaration()
+        private ProjectionDeclaration()
         {
         }
 
         /// <summary>
-        /// Gets an user friendly name for the transformation.
+        /// Gets an user friendly name for the projectionRef.
         /// </summary>
         /// <value>
         /// The name.
@@ -50,6 +48,9 @@ namespace ShapeFlow.Declaration
             private set;
         }
 
+        /// <summary>
+        /// Gets the parameters required by the projection.
+        /// </summary>
         public IEnumerable<ParameterDeclaration> Parameters
         {
             get;
@@ -57,13 +58,13 @@ namespace ShapeFlow.Declaration
         }
 
         /// <summary>
-        /// Gets the location of the transformation.
+        /// Gets the location of the projectionRef.
         /// </summary>
         /// <value>
-        /// The location of the transformation..
+        /// The location of the projectionRef..
         /// </value>
         /// <remarks>
-        /// This value will be used to locate the transformation templates and if applicable other transformation dependencies.
+        /// This value will be used to locate the projectionRef templates and if applicable other projectionRef dependencies.
         /// </remarks>
         public string Location
         {
@@ -71,6 +72,9 @@ namespace ShapeFlow.Declaration
             private set;
         }
 
+        /// <summary>
+        /// Gets the version of the projection.
+        /// </summary>
         public string Version
         {
             get;
@@ -87,12 +91,30 @@ namespace ShapeFlow.Declaration
         }
 
         /// <summary>
-        /// Gets a flag indicating if the referenced projection is an inline one.
+        /// Gets a flag indicating if the referenced projection is declared inline on the project file.
         /// </summary>
         public bool IsInline => string.IsNullOrWhiteSpace(PackageId);
 
-        public static ProjectionDeclaration AppendPackageMetadata(ProjectionDeclaration existingDeclaration, PackageInfo package)
+        /// <summary>
+        /// Loads the package metadata from the configuration file (shapeflow.package.json)
+        /// or infers it based on the contents of the nuget package Content folder.
+        /// </summary>
+        /// <param name="existingDeclaration"></param>
+        /// <param name="package"></param>
+        /// <param name="searchExpressions"></param>
+        /// <remarks>
+        /// Because we don't know what kind of templates to expect we depend on the
+        /// caller to pass list of globs (searchExpressions). In the normal flow this
+        /// is done by reading the SearchExpression property on each template engine.
+        /// </remarks>
+        /// <returns></returns>
+        public static ProjectionDeclaration LoadOrInferMetadata(
+            ProjectionDeclaration existingDeclaration,
+            PackageInfo package,
+            IEnumerable<string> searchExpressions)
         {
+            var rules = new List<string>();
+
             var directoryPath = new DirectoryPath(package.Root);
             var contentPath = directoryPath.Combine("Content");
             var metadataFile = contentPath.CombineWithFilePath(new FilePath("shapeflow.package.json"));
@@ -102,32 +124,41 @@ namespace ShapeFlow.Declaration
             }
 
             // use conventions to derive the metadata
+
             var globber = new Globber();
-            var fullGlobPattern = contentPath.Combine(".\\**\\*.liquid");
-            var templates = globber.Match(fullGlobPattern.FullPath);
-            templates = templates
-                .OfType<FilePath>()
-                .Select(contentPath.GetRelativePath)
-                .ToArray();
+            foreach (var searchExpression in searchExpressions)
+            {
+                var fullGlobPattern = contentPath.Combine(searchExpression);
+                var templates = globber.Match(fullGlobPattern.FullPath);
+                templates = templates
+                    .OfType<FilePath>()
+                    .Select(contentPath.GetRelativePath)
+                    .ToArray();
+
+                rules.AddRange(
+                    templates
+                    .Select(template => template.FullPath)
+                    .ToList());
+            }
 
             var parameters = new List<ParameterDeclaration>();
-
-            var rules = templates
-                .Select(template => new ProjectionRuleDeclaration(template.FullPath))
-                .ToList();
-                
             existingDeclaration.Parameters = parameters;
-            existingDeclaration.Rules = rules;
+            existingDeclaration.Rules = rules.Distinct().Select(s => new ProjectionRuleDeclaration(s)).ToArray();
             existingDeclaration.Location = contentPath.FullPath;
-                
+
             return existingDeclaration;
         }
 
+        /// <summary>
+        /// Reads the projection metadata from the given file.
+        /// </summary>
+        /// <param name="path">The file.</param>
+        /// <returns>The projection metadata.</returns>
         public static ProjectionDeclaration FromFile(string path)
         {
             var directory = Path.GetDirectoryName(path);
 
-            if(string.IsNullOrWhiteSpace(directory))
+            if (string.IsNullOrWhiteSpace(directory))
             {
                 directory = System.Environment.CurrentDirectory;
             }
@@ -143,18 +174,21 @@ namespace ShapeFlow.Declaration
             return result;
         }
 
+        /// <summary>
+        /// Reads the projection metadata from the given json object.
+        /// </summary>
+        /// <param name="transformationObject">The json object.</param>
+        /// <param name="transformationName">The name of the projectionRef.</param>
+        /// <returns>The projection metadata.</returns>
         public static ProjectionDeclaration Parse(JObject transformationObject, string transformationName = null)
         {
-            
-
-            // when its an inline decl it gets the name from the property holding the decl object
             transformationName = transformationName ?? transformationObject.GetStringPropertyValue("name");
             var version = transformationObject.GetStringPropertyValue("version");
             var parametersArray = transformationObject.GetValue("parameters") as JArray ?? new JArray();
             var parameters = new List<ParameterDeclaration>();
             foreach (var jToken in parametersArray)
             {
-                var parametersObject = (JObject) jToken;
+                var parametersObject = (JObject)jToken;
                 var parameterDeclaration = ParameterDeclaration.Parse(parametersObject);
                 parameters.Add(parameterDeclaration);
             }
@@ -163,7 +197,7 @@ namespace ShapeFlow.Declaration
             var rules = new List<ProjectionRuleDeclaration>();
             foreach (var jToken in rulesArray)
             {
-                var ruleObject = (JObject) jToken;
+                var ruleObject = (JObject)jToken;
                 var ruleDeclaration = ProjectionRuleDeclaration.Parse(ruleObject);
                 rules.Add(ruleDeclaration);
             }

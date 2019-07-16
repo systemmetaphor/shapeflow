@@ -13,12 +13,17 @@ namespace ShapeFlow.Projections
         private readonly HashSet<TargetRegistration> _targets;
         private readonly IExtensibilityService _extensibilityService;
         private readonly PackageManagerFactory _packageManagerFactory;
+        private readonly TemplateEngineProvider _templateEngineProvider;
 
-        public ProjectionRegistry(IExtensibilityService extensibilityService, PackageManagerFactory packageManagerFactory)
+        public ProjectionRegistry(
+            IExtensibilityService extensibilityService, 
+            PackageManagerFactory packageManagerFactory,
+            TemplateEngineProvider templateEngineProvider)
         {
             _packageManagerFactory = packageManagerFactory;
             _targets = new HashSet<TargetRegistration>();
             _extensibilityService = extensibilityService;
+            _templateEngineProvider = templateEngineProvider;
 
             // TODO: move this to an initialization method
             Load();
@@ -59,18 +64,13 @@ namespace ShapeFlow.Projections
             public  PackageInfo PackageInfo { get; set; }
         }
 
-        public IProjectionExtension GetExtension(ProjectionDeclaration t)
-        {
-            return _targets.First(element => element.Configuration.Name == t.Name).Extension;
-        }
-
-        public async Task<SolutionEventContext> Process(SolutionEventContext ev)
+        public async Task<Solution> Process(Solution solution)
         {
             // load packages
-            var packageManager = _packageManagerFactory.Create(ev.Solution);
+            var packageManager = _packageManagerFactory.Create(solution);
 
             // handle package declarations
-            foreach (var generator in ev.Solution.Projections.Where(g => !g.IsInline))
+            foreach (var generator in solution.Projections.Where(g => !g.IsInline))
             {
                 var packageInfo = await packageManager.ResolvePackage(generator.PackageId, generator.Version);
                 if (string.IsNullOrWhiteSpace(packageInfo.Root))
@@ -86,17 +86,19 @@ namespace ShapeFlow.Projections
             }
 
             // handle inline projection declarations
-            foreach (var generator in ev.Solution.Projections.Where(g => g.IsInline))
+            foreach (var generator in solution.Projections.Where(g => g.IsInline))
             {
                 Add(generator, string.Empty);
             }
 
-            return ev;
+            return solution;
         }
 
         private ProjectionDeclaration AppendPackageMetadata(ProjectionDeclaration existingDeclaration, PackageInfo packageInfo)
         {
-            return  ProjectionDeclaration.AppendPackageMetadata(existingDeclaration, packageInfo);
+            var searchExpressions = _templateEngineProvider.TemplateSearchExpressions;
+
+            return  ProjectionDeclaration.LoadOrInferMetadata(existingDeclaration, packageInfo, searchExpressions);
         }
 
         private void Load()

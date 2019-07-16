@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetFileUtils", "DotNetFi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.PackageManagement.NuGet", "ShapeFlow.PackageManagement.NuGet\ShapeFlow.PackageManagement.NuGet.csproj", "{477DB16D-B813-415C-BA17-620E01FC8A2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.TemplateEngines.T4", "ShapeFlow.TemplateEngines.T4\ShapeFlow.TemplateEngines.T4.csproj", "{1D6A5FE1-653E-468C-A327-D65F6FA08023}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{477DB16D-B813-415C-BA17-620E01FC8A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{477DB16D-B813-415C-BA17-620E01FC8A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{477DB16D-B813-415C-BA17-620E01FC8A2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D6A5FE1-653E-468C-A327-D65F6FA08023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D6A5FE1-653E-468C-A327-D65F6FA08023}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D6A5FE1-653E-468C-A327-D65F6FA08023}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D6A5FE1-653E-468C-A327-D65F6FA08023}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

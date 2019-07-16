@@ -1,19 +1,15 @@
-﻿using System;
-using System.IO;
-using ShapeFlow.Infrastructure;
-using Mono.Options;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using ShapeFlow.Shapes;
-using ShapeFlow.Loaders;
-using ShapeFlow.Loaders.DbModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using ShapeFlow.Commands;
+using ShapeFlow.Infrastructure;
+using ShapeFlow.Loaders;
+using ShapeFlow.Loaders.DbModel;
 using ShapeFlow.PackageManagement;
 using ShapeFlow.PackageManagement.NuGet;
 using ShapeFlow.Projections;
-using ShapeFlow.Projections.DotLiquid;
+using ShapeFlow.Shapes;
+using ShapeFlow.TemplateEngines.DotLiquid;
+using ShapeFlow.TemplateEngines.T4;
 
 namespace ShapeFlow
 {
@@ -59,7 +55,7 @@ namespace ShapeFlow
             container.RegisterService<ShapeManager>();
             container.RegisterService<ApplicationContext>();
             container.RegisterService<IOutputLanguageInferenceService, OutputLanguageInferenceService>();
-            container.RegisterService<ModelToTextProjectionEngine>();
+            container.RegisterService<ProjectionEngine>();
             container.RegisterService<TemplateEngineProvider>();
             container.RegisterService<ProjectionRegistry>();
             container.RegisterService<ShapeFlowEngine>();
@@ -69,6 +65,7 @@ namespace ShapeFlow
             container.RegisterMany<ILoader, JsonLoader>();
             container.RegisterMany<ILoader, DbModelLoader>();
             container.RegisterMany<ITextTemplateEngine, DotLiquidTemplateEngine>();
+            container.RegisterMany<ITextTemplateEngine, T4TemplateEngine>();
         }
 
         public static void RegisterCommands(IContainer container)

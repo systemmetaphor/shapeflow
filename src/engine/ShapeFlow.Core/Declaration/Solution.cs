@@ -10,10 +10,9 @@ namespace ShapeFlow.Declaration
     public class Solution : MetadataPart
     {
         private readonly Dictionary<string, string> _parameters;
-        private readonly string _rootFolder;
-        
-        public Solution(string name, IEnumerable<ProjectionDeclaration> generators, IEnumerable<ShapeDeclaration> models, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
-            : base(name, generators, models, pipelines)
+
+        public Solution(string name, IEnumerable<ProjectionDeclaration> generators, IEnumerable<ShapeDeclaration> shapeDeclarations, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
+            : base(name, generators, shapeDeclarations, pipelines)
         {
             _parameters = new Dictionary<string, string>();
 
@@ -25,12 +24,12 @@ namespace ShapeFlow.Declaration
             // I have opted not to assert if the root folder exists because it would tie the constructor to the Directory
             // class and would make it harder to move to a virtual filesystem design
             
-            _rootFolder = rootFolder;
+            RootDirectory = rootFolder;
         }         
 
         public IDictionary<string, string> Parameters => _parameters;
 
-        public string RootDirectory => _rootFolder;
+        public string RootDirectory { get; }
 
         public void AddParameters(IDictionary<string, string> parameters)
         {
@@ -120,8 +119,8 @@ namespace ShapeFlow.Declaration
                 models.Add(modelDeclaration);
             }
 
-            var pipelinesArray = root.GetValue("pipelines") as JArray;
-            foreach (var jToken in pipelinesArray ?? new JArray())
+            var pipelineArray = root.GetValue("pipeline") as JArray;
+            foreach (var jToken in pipelineArray ?? new JArray())
             {
                 if (!(jToken is JObject pipelineObject))
                 {

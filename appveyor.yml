@@ -10,3 +10,5 @@ environment:
     secure: O6GvJ2GH/fRSwK/KoxRnk646wF8G7+IHNPsQJ75ay1nzrmpAKSDXME44VQ0zBQzU
 build_script:
 - ps: .\build.cmd
+services:
+  - mssql2017

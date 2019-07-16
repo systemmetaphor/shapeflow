@@ -15,7 +15,7 @@ namespace DotNetFileUtils
 
         public DirectoryPath Path { get; }
 
-        Path IFileSystemInfo.Path => Path;
+        PathBase IFileSystemInfo.Path => Path;
 
         public bool Exists => _directory.Exists;
 

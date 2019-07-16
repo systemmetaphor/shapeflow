@@ -5,12 +5,12 @@ namespace ShapeFlow.Declaration
 {
     public class PipelineDeclaration
     {
-        public PipelineDeclaration(string name, string selector, InputDeclaration input, TransformationDeclaration transformation, OutputDeclaration ouputer)
+        public PipelineDeclaration(string name, string selector, InputDeclaration input, ProjectionRefDeclaration projectionRef, OutputDeclaration output)
         {
             Name = name;
-            Transformation = transformation;
+            ProjectionRef = projectionRef;
             Selector = selector;
-            Output = ouputer;
+            Output = output;
             Input = input;
         }
 
@@ -18,33 +18,35 @@ namespace ShapeFlow.Declaration
 
         public string Selector { get; }
 
-        public TransformationDeclaration Transformation { get; }
+        public ProjectionRefDeclaration ProjectionRef { get; }
 
         public OutputDeclaration Output { get; }
 
         public InputDeclaration Input { get; } 
 
+        public  ProjectionDeclaration Projection { get; internal set; }
+        
         public static PipelineDeclaration Parse(JObject pipelineObject)
         {
             var pipelineName = pipelineObject.GetStringPropertyValue("name");
             var selectorText = pipelineObject.GetStringPropertyValue("selector");
-            var transformationObject = pipelineObject.GetValue("transformation") as JObject;
+            var transformationObject = pipelineObject.GetValue("projectionRef") as JObject;
             var inputObject = pipelineObject.GetValue("input") as JObject;
-            var outputerObject = pipelineObject.GetValue("output") as JObject;
+            var outputObject = pipelineObject.GetValue("output") as JObject;
 
             if(transformationObject == null)
             {
                 return null;
             }
 
-            var transformation = TransformationDeclaration.Parse(transformationObject);
+            var transformation = ProjectionRefDeclaration.Parse(transformationObject);
 
-            if (outputerObject == null)
+            if (outputObject == null)
             {
                 return null;
             }
 
-            var output = OutputDeclaration.Parse(outputerObject);
+            var output = OutputDeclaration.Parse(outputObject);
 
             if (inputObject == null)
             {

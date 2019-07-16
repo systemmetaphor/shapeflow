@@ -41,7 +41,7 @@ namespace ShapeFlow.Shapes
             {
                 // load the domain model                                              
                 modelRoot = loader?.Load(declaration) ??
-                    throw new InvalidOperationException($"It was not possible to load a model provider for '{ declaration.LoaderName }'. Check the transformation configuration to see if there is one and just one provider for '{ declaration.LoaderName }'.");
+                    throw new InvalidOperationException($"It was not possible to load a model provider for '{ declaration.LoaderName }'. Check the projectionRef configuration to see if there is one and just one provider for '{ declaration.LoaderName }'.");
 
                 _shapes.Add(declaration.ModelName, modelRoot);
             }
@@ -59,14 +59,14 @@ namespace ShapeFlow.Shapes
             return null;
         }
 
-        public SolutionEventContext Process(SolutionEventContext ev)
+        public Solution Process(Solution solution)
         {
-            foreach (var modelDecl in ev.Solution.Models)
+            foreach (var modelDecl in solution.ShapeDeclarations)
             {
                 GetOrLoad(modelDecl);
             }
 
-            return ev;
+            return solution;
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShapeFlow.Declaration;
+using ShapeFlow.Infrastructure;
 using ShapeFlow.Pipelines;
 using ShapeFlow.Projections;
 using ShapeFlow.Shapes;
@@ -12,51 +11,68 @@ namespace ShapeFlow
 {
     public class ShapeFlowEngine
     {
-        private readonly ModelToTextProjectionEngine _engine;
-        private readonly IFileService _fileService;
         private readonly ShapeManager _shapeManager;
         private readonly ProjectionRegistry _projectionRegistry;
+        private readonly Dictionary<Solution, SolutionPipeline> _solutionPipelines;
+        private readonly IContainer _container;
 
-        public ShapeFlowEngine(
-            ModelToTextProjectionEngine engine, 
-            IFileService fileService,
-            ShapeManager shapeManager,
-            ProjectionRegistry projectionRegistry)
-        {           
-            _engine = engine;
-            _fileService = fileService;
+        public ShapeFlowEngine(ShapeManager shapeManager, ProjectionRegistry projectionRegistry, IContainer container)
+        {
             _shapeManager = shapeManager;
             _projectionRegistry = projectionRegistry;
-        }                
+            _solutionPipelines = new Dictionary<Solution, SolutionPipeline>();
+            _container = container;
+        }
 
         public async Task Run(IDictionary<string, string> parameters)
         {
             var solution = Solution.ParseFile(parameters);
-            await Run(new SolutionEventContext(solution));
+            await Run(solution);
         }
 
         public async Task Run(Solution solution)
         {
-            await Run(new SolutionEventContext(solution));
+            solution = await _projectionRegistry.Process(solution);
+            try
+            {
+                GetOrAssemblePipeline(solution).PublishAll();
+            }
+            catch (Exception e)
+            {
+                AppTrace.Error(e.Message);
+                AppTrace.Verbose(e.ToString());
+            }
+            
+            ClosePipeline(solution);
         }
 
-        public async Task Run(SolutionEventContext context)
+        private void ClosePipeline(Solution solution)
         {
-            context = await _projectionRegistry.Process(context);
+            _solutionPipelines.Remove(solution);
+        }
 
-            var transformationPipeline = new TransformationPipeline();
-            foreach(var pipeline in context.Solution.Pipelines)
+        private SolutionPipeline GetOrAssemblePipeline(Solution solution)
+        {
+            if (_solutionPipelines.TryGetValue(solution, out var solutionPipeline))
             {
-                var pipelineContext = new PipelineContext(context.Solution, pipeline);
-                var transformationHandler = new ProjectionPipelineHandler(pipelineContext, _engine, _fileService);
-                transformationPipeline.AddHandler(transformationHandler);
+                return solutionPipeline;
             }
 
-            foreach (var modelDecl in context.Solution.Models)
+            solutionPipeline = new SolutionPipeline(solution, _container);
+
+            foreach (var pipeline in solution.Pipelines)
             {
-                var shapeContext = _shapeManager.GetOrLoad(modelDecl);
-                transformationPipeline.Publish(shapeContext);
+                _projectionRegistry.TryGet(pipeline.ProjectionRef.ProjectionName,
+                    out ProjectionDeclaration projectionDecl);
+                pipeline.Projection = projectionDecl;
+
+                var transformationHandler = new ProjectionPipelineHandler(pipeline);
+                solutionPipeline.AddHandler(transformationHandler);
             }
+
+            _solutionPipelines.Add(solution, solutionPipeline);
+
+            return solutionPipeline;
         }
     }
 }

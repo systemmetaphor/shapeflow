@@ -24,7 +24,7 @@
       }
     }
   ],
-  "pipelines": [
+  "pipeline": [
     {
       "name": "Sales Model DDD Entities",
 
@@ -32,12 +32,8 @@
         "selector": "Sales Model"
       },
 
-      "transformation": {
-        "name": "Sales Model Entities",
-        "projection": "TablesToRecords",
-        "input": {
-          "selector": "Sales Model"
-        }
+      "projectionRef": {
+        "projection": "TablesToRecords"
       },
 
       "output": {

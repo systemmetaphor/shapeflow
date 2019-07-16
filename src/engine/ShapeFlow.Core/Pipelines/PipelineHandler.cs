@@ -1,10 +1,24 @@
 ﻿using System;
+using ShapeFlow.Declaration;
+using ShapeFlow.Projections;
 
 namespace ShapeFlow.Pipelines
 {
     public abstract class PipelineHandler : IObserver<ShapeContext>
     {
-        public abstract string Name { get; }
+        protected PipelineHandler(PipelineDeclaration pipelineDeclaration)
+        {
+            PipelineDeclaration = pipelineDeclaration;
+        }
+
+        public PipelineDeclaration PipelineDeclaration
+        {
+            get;
+        }
+
+        public string Name => PipelineDeclaration.Name;
+
+        internal SolutionPipeline Parent { get; set; }
 
         public void OnCompleted()
         {            

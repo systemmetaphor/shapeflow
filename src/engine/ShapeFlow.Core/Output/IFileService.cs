@@ -8,8 +8,7 @@ namespace ShapeFlow
 
         void PerformWrite(string outputPath, string outputText);
 
-        SolutionEventContext Process(SolutionEventContext context);
 
-        void Process(PipelineContext pipeline, ModelToTextOutput outputFiles);
+        void Process(ProjectionContext projection, ModelToTextOutput outputFiles);
     }
 }

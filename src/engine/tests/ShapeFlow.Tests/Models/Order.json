@@ -1,6 +1,7 @@
 ﻿{
   "name": "Simplified order domain model",
   "description": "A sample model to be part of ShapeFlow documentation",
+  "namespace":  "OrderManagement",
   "entities": [
     {
       "domainName": "Order",

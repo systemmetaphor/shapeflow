@@ -16,9 +16,9 @@ namespace ShapeFlow.Tests
     {
         [TestMethod]
         [DeploymentItem("Projects\\valid.config.json")]
-        [DeploymentItem("Models\\customers.template.xlsx", "importexport")]
-        [DeploymentItem("Models\\partners.template.xlsx", "importexport")]
-        [DeploymentItem("Models\\employees.template.xlsx", "importexport")]
+        [DeploymentItem("ShapeDeclarations\\customers.template.xlsx", "importexport")]
+        [DeploymentItem("ShapeDeclarations\\partners.template.xlsx", "importexport")]
+        [DeploymentItem("ShapeDeclarations\\employees.template.xlsx", "importexport")]
 
         public void CanParseValidFile()
         {
@@ -28,7 +28,7 @@ namespace ShapeFlow.Tests
             Assert.IsNotNull(solution.Name);
                         
             Assert.IsTrue(solution.Projections.Count() > 0);
-            Assert.IsTrue(solution.Models.Count() > 0);
+            Assert.IsTrue(solution.ShapeDeclarations.Count() > 0);
             Assert.IsTrue(solution.Pipelines.Count() > 0);            
         }
     }

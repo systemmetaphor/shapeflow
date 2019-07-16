@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace {{namespace}}
 {
-{% for item in Root.Entities -%}
-	public class {{item.ObjectName}}Record
+{% for item in entities -%}
+	public class {{item.domainName}}Record
 	{
-{% for property in item.Properties -%}
-		public {{property.PropertyDotNetType}} {{property.PropertyName}} {get; set;}
+{% for property in item.properties -%}
+		public {{property.nativeType}} {{property.domainName}} {get; set;}
 {% endfor -%}
 	}
 {% endfor -%}

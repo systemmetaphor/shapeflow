@@ -8,10 +8,10 @@ namespace ShapeFlow.Projections
 {
     public class TextTemplateProvider
     {
-        public TextTemplate GetFile(PipelineContext context, ProjectionDeclaration projection, ProjectionRuleDeclaration file)
+        public TextTemplate GetFile(ProjectionContext context, ProjectionRuleDeclaration file)
         {
             return file.IsEmbedded ? TextTemplate.Create(file, GetResourceStream(file.TemplateName)) 
-                : TextTemplate.Create(file, ResolveRulePath(context, projection, file));
+                : TextTemplate.Create(file, ResolveRulePath(context, file));
         }
 
         protected string GetResourceText(string resourceName)
@@ -82,9 +82,9 @@ namespace ShapeFlow.Projections
             return result;
         }
 
-        protected string ResolveRulePath(PipelineContext context, ProjectionDeclaration projection, ProjectionRuleDeclaration rule)
+        protected string ResolveRulePath(ProjectionContext context, ProjectionRuleDeclaration rule)
         {
-            var projectionDeploymentDirectory = new DirectoryPath(projection.Location);
+            var projectionDeploymentDirectory = new DirectoryPath(context.PipelineDeclaration.Projection.Location);
             var filePath = projectionDeploymentDirectory.CombineWithFilePath(rule.TemplateName);
             return filePath.FullPath;
         }        

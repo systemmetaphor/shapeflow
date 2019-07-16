@@ -10,7 +10,7 @@ namespace DotNetFileUtils
     /// <summary>
     /// Represents a directory path.
     /// </summary>
-    public sealed class DirectoryPath : Path
+    public sealed class DirectoryPath : PathBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectoryPath"/> class.
