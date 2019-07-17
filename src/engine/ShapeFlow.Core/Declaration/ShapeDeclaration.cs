@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
 
@@ -8,16 +9,24 @@ namespace ShapeFlow.Declaration
     {
         private readonly IDictionary<string, string> _parameters;
 
-        public ShapeDeclaration(Solution solution, string modelName, string loaderName, IEnumerable<string> tags, Dictionary<string, string> parameters)
+        public ShapeDeclaration(string modelName, string loaderName)
+            : this(modelName, loaderName, Enumerable.Empty<string>())
         {
-            Solution = solution;
+        }
+
+        public ShapeDeclaration(string modelName, string loaderName, IEnumerable<string> tags)
+            : this(modelName, loaderName, tags, new Dictionary<string, string>())
+        {
+        }
+
+
+        public ShapeDeclaration(string modelName, string loaderName, IEnumerable<string> tags, Dictionary<string, string> parameters)
+        {
             ModelName = modelName;
             LoaderName = loaderName;
             Tags = tags;
             _parameters = parameters;
         }
-
-        public Solution Solution { get; }
 
         public string ModelName { get; }
 
@@ -27,7 +36,7 @@ namespace ShapeFlow.Declaration
 
         public IEnumerable<KeyValuePair<string, string>> Parameters => _parameters;
 
-        public static ShapeDeclaration Parse(Solution solution, JObject modelObject)
+        public static ShapeDeclaration Parse(JObject modelObject)
         {
             var modelName = modelObject.GetStringPropertyValue("name");
             var loaderName = modelObject.GetStringPropertyValue("loaderName");
@@ -35,7 +44,7 @@ namespace ShapeFlow.Declaration
             var tags = TagsParser.Parse(tagsText);
             var parametersObject = modelObject.Property("parameters")?.Value as JObject;
             var parameters = parametersObject?.ToParametersDictionary() ?? new Dictionary<string, string>();
-            var modelDeclaration = new ShapeDeclaration(solution, modelName, loaderName, tags, parameters);
+            var modelDeclaration = new ShapeDeclaration(modelName, loaderName, tags, parameters);
             return modelDeclaration;
         }
 

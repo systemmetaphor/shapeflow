@@ -8,7 +8,7 @@ namespace ShapeFlow.Projections
 
         string TemplateSearchExpression { get; }
 
-        ModelToTextOutputFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule);
+        FileSetFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule);
 
         string TransformString(ProjectionContext projectionContext, string inputText);
     }

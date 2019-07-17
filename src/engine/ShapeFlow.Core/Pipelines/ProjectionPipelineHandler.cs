@@ -16,14 +16,14 @@ namespace ShapeFlow.Pipelines
         
         public string Selector => _pipelineDeclaration.Input.Selector;
 
-        protected override void ProcessShape(ShapeContext context)
+        protected override void Process(ShapeContext context)
         {
             var projectionEngine = Parent.GetService<ProjectionEngine>();
             var fileService = Parent.GetService<IFileService>();
             
-            var pipelineContext = new ProjectionContext(Parent.Solution, PipelineDeclaration, context);
-            var output = projectionEngine.Transform(pipelineContext);
-            fileService.Process(pipelineContext, output);
+            var projectionContext = new ProjectionContext(Parent.Solution, PipelineDeclaration, context);
+            var output = projectionEngine.Transform(projectionContext);
+            fileService.Process(projectionContext);
         }
 
         protected override bool ShouldProcess(ShapeContext context)

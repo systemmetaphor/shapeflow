@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,7 +34,7 @@ namespace ShapeFlow.Loaders.Yaml
 
                 var model = yamlStream.Documents.FirstOrDefault()?.RootNode;
 
-                var modelContext = new ShapeContext(context, new YamlModel(model, ShapeFormat.Yaml, context.ModelName, context.Tags));
+                var modelContext = new ShapeContext(context, new YamlShape(model, ShapeFormat.Yaml, context.ModelName, context.Tags));
 
                 return modelContext;
             }
@@ -51,21 +50,6 @@ namespace ShapeFlow.Loaders.Yaml
             }
 
             return true;
-        }
-    }
-
-    public class YamlModel : Shape
-    {
-        public YamlModel(YamlNode root, ShapeFormat format, string name, IEnumerable<string> tags) : base(format, name, tags)
-        {
-            Root = root;
-        }
-
-        public YamlNode Root { get; }
-
-        public override object GetInstance()
-        {
-            return Root;
         }
     }
 }

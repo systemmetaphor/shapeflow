@@ -1,8 +1,8 @@
 ﻿namespace ShapeFlow.Projections
 {
-    public class ModelToTextOutputFile
+    public class FileSetFile
     {
-        public ModelToTextOutputFile(string text, string outputPath)
+        public FileSetFile(string text, string outputPath)
         {            
             Text = text;
             OutputPath = outputPath;

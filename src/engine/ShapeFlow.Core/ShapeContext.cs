@@ -12,17 +12,8 @@ namespace ShapeFlow
             Model = model;
         }
 
-        public Solution Solution => Declaration.Solution;
-
         public ShapeDeclaration Declaration { get; }
 
         public Shape Model { get; }
-
-        public IDictionary<string, string> Parameters => Solution.Parameters;
-
-        public string GetParameter(string name)
-        {
-            return Declaration.GetParameter(name);
-        }
     }
 }

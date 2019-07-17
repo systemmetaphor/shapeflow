@@ -30,13 +30,13 @@ namespace ShapeFlow.TemplateEngines.T4
 
         public string TemplateSearchExpression { get; }
 
-        public ModelToTextOutputFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        public FileSetFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
             var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
             var templateFileText = templateFile.Text;
 
             string outputPath = null;
-            var outputText = TransformCore(projectionContext.Input, projectionRule.TemplateName, templateFileText, ref outputPath);
+            var outputText = TransformCore(projectionContext, projectionRule.TemplateName, templateFileText, ref outputPath);
 
             if (string.IsNullOrWhiteSpace(outputPath) && !string.IsNullOrWhiteSpace(outputText))
             {
@@ -46,16 +46,16 @@ namespace ShapeFlow.TemplateEngines.T4
                 outputPath = Path.ChangeExtension(outputPath, languageExtension);
             }
 
-            return new ModelToTextOutputFile(outputText, outputPath);
+            return new FileSetFile(outputText, outputPath);
         }
 
         public string TransformString(ProjectionContext projectionContext, string inputText)
         {
             string outputPath = null;
-            return TransformCore(projectionContext.Input, string.Empty, inputText, ref outputPath);
+            return TransformCore(projectionContext, string.Empty, inputText, ref outputPath);
         }
 
-        private string TransformCore(ShapeContext input, string templateName, string templateFileText, ref string outputPath)
+        private string TransformCore(ProjectionContext context, string templateName, string templateFileText, ref string outputPath)
         {
             var generator = new TemplateGenerator();
 
@@ -79,7 +79,7 @@ namespace ShapeFlow.TemplateEngines.T4
             generator.AddDirectiveProcessor("PropertyProcessor", typeof(TemplateArgumentDirectiveProcessor).FullName,
                 this.GetType().Assembly.FullName);
 
-            var modelContainer = input.Model;
+            var modelContainer = context.Input.Model;
             var inputs = new Dictionary<string, object>();
             var model = modelContainer.GetInstance();
 
@@ -96,7 +96,7 @@ namespace ShapeFlow.TemplateEngines.T4
                 }
             }
 
-            foreach (var p in input.Parameters)
+            foreach (var p in context.Solution.Parameters)
             {
                 inputs.Add(p.Key, p.Value);
             }

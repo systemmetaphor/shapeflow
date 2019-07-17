@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Shapes;
@@ -23,24 +25,33 @@ namespace ShapeFlow.Projections
 
         protected TemplateEngineProvider TemplateEngineProvider { get; }
 
-        public ModelToTextOutput Transform(ProjectionContext projectionContext)
+        public ProjectionContext Transform(ProjectionContext projectionContext)
         {
             // this the generator impl
 
             var projectionRules = projectionContext.PipelineDeclaration.Projection.Rules;
 
-            var transformationOutput = new ModelToTextOutput();
+            var transformationOutput = new FileSetShape(projectionContext.PipelineDeclaration.Name);
 
             foreach (var projectionRule in projectionRules)
             {
                 var templateEngine = TemplateEngineProvider.GetEngine(projectionRule.TemplateLanguage);
                 var transformationOutputFile = templateEngine.Transform(projectionContext, projectionRule);
-                transformationOutput.AddOutputFile(transformationOutputFile);
+                transformationOutput.FileSet.AddFile(transformationOutputFile);
             }
 
             // end gen impl
 
-            return transformationOutput;
+            var outputShapeDecl = new ShapeDeclaration(
+                projectionContext.PipelineDeclaration.Name, 
+                typeof(ProjectionEngine).FullName, 
+                Enumerable.Empty<string>(), 
+                new Dictionary<string, string>());
+
+            // problem with the Shape Declaration
+            projectionContext.Output = new ShapeContext(outputShapeDecl, transformationOutput);
+
+            return projectionContext;
         }
     }
 }

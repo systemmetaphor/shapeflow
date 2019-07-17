@@ -8,6 +8,10 @@ namespace ShapeFlow.Shapes
 {
     public abstract class Shape
     {
+        protected Shape(ShapeFormat format, string name) : this(format, name, Enumerable.Empty<string>())
+        {
+        }
+
         protected Shape(ShapeFormat format, string name, IEnumerable<string> tags)
         {
             Format = format;

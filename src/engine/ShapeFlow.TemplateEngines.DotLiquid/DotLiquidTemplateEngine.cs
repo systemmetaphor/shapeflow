@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Projections;
+using ShapeFlow.Shapes;
 
 namespace ShapeFlow.TemplateEngines.DotLiquid
 {
@@ -32,17 +33,17 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
 
         public string TemplateSearchExpression { get; }
 
-        public ModelToTextOutputFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        public FileSetFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
             var hash = projectionContext.GetStateEntry<Hash>(HashStateKey);
             if (hash == null)
             {
-                hash = PrepareHash(projectionContext.Input);
+                hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters);
                 projectionContext.AddStateEntry(HashStateKey, hash);
             }
 
             var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
-            ModelToTextOutputFile result;
+            FileSetFile result;
             try
             {
                 var template = Template.Parse(templateFile.Text);
@@ -63,7 +64,7 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
                     outputPath = nameTemplate.Render(hash);
                 }
 
-                result = new ModelToTextOutputFile(output, outputPath);
+                result = new FileSetFile(output, outputPath);
             }
             catch (Exception e)
             {
@@ -76,13 +77,13 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
 
         public string TransformString(ProjectionContext projectionContext,  string outputPathRule)
         {
-            var hash = PrepareHash(projectionContext.Input);
+            var hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters);
             var template = Template.Parse(outputPathRule);
             var output = template.Render(hash);
             return output;
         }
 
-        private static Hash PrepareHash(ShapeContext projectionInput)
+        private static Hash PrepareHash(ShapeContext projectionInput, IDictionary<string, string> parameters)
         {
             Hash hash = null;
             if (projectionInput == null)
@@ -119,7 +120,7 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
                 hash = Hash.FromAnonymousObject(modelContainer);
             }
 
-            foreach (var p in projectionInput.Parameters)
+            foreach (var p in parameters)
             {
                 if (!hash.ContainsKey(p.Key))
                 {

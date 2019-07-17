@@ -9,6 +9,6 @@ namespace ShapeFlow
         void PerformWrite(string outputPath, string outputText);
 
 
-        void Process(ProjectionContext projection, ModelToTextOutput outputFiles);
+        void Process(ProjectionContext projection);
     }
 }

@@ -115,7 +115,7 @@ namespace ShapeFlow.Declaration
                     continue;
                 }
 
-                var modelDeclaration = ShapeDeclaration.Parse(result, shapeObject);
+                var modelDeclaration = ShapeDeclaration.Parse(shapeObject);
                 models.Add(modelDeclaration);
             }
 

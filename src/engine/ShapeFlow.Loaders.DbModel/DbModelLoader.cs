@@ -7,6 +7,7 @@ using ShapeFlow.Infrastructure;
 using ShapeFlow;
 using ShapeFlow.Declaration;
 using ShapeFlow.Loaders;
+using ShapeFlow.Shapes;
 
 namespace ShapeFlow.Loaders.DbModel
 {

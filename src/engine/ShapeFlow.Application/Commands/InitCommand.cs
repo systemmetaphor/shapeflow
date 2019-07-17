@@ -26,7 +26,7 @@ namespace ShapeFlow.Commands
             var sb = new System.Text.StringBuilder();
             sb.AppendLine(@"{");
             sb.AppendLine($@"  ""name"": ""Generate { name } files"",");
-            sb.AppendLine(@"  ""generators"": {");
+            sb.AppendLine(@"  ""projections"": {");
             sb.AppendLine(@"    ""TablesToRecords"": {");
             sb.AppendLine(@"      ""version"": ""1.0.0"",");
             sb.AppendLine(@"      ""loaderName"": ""DbModelLoader"",");
@@ -53,7 +53,7 @@ namespace ShapeFlow.Commands
             sb.AppendLine(@"      }");
             sb.AppendLine(@"    }");
             sb.AppendLine(@"  ],");
-            sb.AppendLine(@"  ""pipelines"": [");
+            sb.AppendLine(@"  ""pipeline"": [");
             sb.AppendLine(@"    {");
             sb.AppendLine($@"      ""name"": ""{ name } Model Data Tier"",");
             sb.AppendLine(@"");

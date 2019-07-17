@@ -23,6 +23,8 @@ namespace ShapeFlow.Projections
         public PipelineDeclaration PipelineDeclaration { get; }
         
         public ShapeContext Input { get; } 
+
+        public ShapeContext Output { get; internal set; }
        
         public string GetParameter(string name)
         {

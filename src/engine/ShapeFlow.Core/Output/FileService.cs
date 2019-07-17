@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Projections;
+using ShapeFlow.Shapes;
 
 namespace ShapeFlow
 {
@@ -42,8 +44,19 @@ namespace ShapeFlow
             File.WriteAllText(outputFileName, outputText);
         }
         
-        public void Process(ProjectionContext projection, ModelToTextOutput output)
+        public void Process(ProjectionContext projection)
         {
+            if (projection.Output.Model.Format != ShapeFormat.FileSet)
+            {
+                return;
+            }
+
+            var output = projection.Output.Model.GetInstance() as FileSet;
+            if (output?.OutputFiles == null || !output.OutputFiles.Any())
+            {
+                return;
+            }
+
             foreach (var outputFile in output.OutputFiles)
             {
                 var fullPath = outputFile.OutputPath;

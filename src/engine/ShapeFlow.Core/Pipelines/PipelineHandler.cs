@@ -32,13 +32,12 @@ namespace ShapeFlow.Pipelines
         {
             if(ShouldProcess(shapeContext))
             {
-                ProcessShape(shapeContext);
+                Process(shapeContext);
             }
         }
 
-        protected abstract void ProcessShape(ShapeContext context);
+        protected abstract void Process(ShapeContext context);
 
         protected abstract bool ShouldProcess(ShapeContext context);
-
     }
 }
