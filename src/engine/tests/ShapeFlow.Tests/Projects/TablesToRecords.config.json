@@ -3,10 +3,10 @@
   "projections": {
     "TablesToRecords": {
       "version": "1.0.0",
+      "rulesBasePath": "Rules",
       "rules": [
         {
-          "templateName": "Templates\\TablesToRecords.liquid",
-          "outputPathTemplate": "Generated\\Records.cs"
+          "fileName": "Data\\Records.liquid"
         }
       ]
     }

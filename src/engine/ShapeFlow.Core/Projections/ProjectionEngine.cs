@@ -12,18 +12,18 @@ namespace ShapeFlow.Projections
         public ProjectionEngine(            
             ShapeManager inputManager,
             IFileService fileService,
-            TemplateEngineProvider templateEngineProvider)
+            RuleLanguageProvider ruleLanguageProvider)
         {            
             InputManager = inputManager ?? throw new ArgumentNullException(nameof(inputManager));
             FileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
-            TemplateEngineProvider = templateEngineProvider ?? throw new ArgumentNullException(nameof(templateEngineProvider));
+            RuleLanguageProvider = ruleLanguageProvider ?? throw new ArgumentNullException(nameof(ruleLanguageProvider));
         }
         
         protected ShapeManager InputManager { get; }
 
         protected IFileService FileService { get; }
 
-        protected TemplateEngineProvider TemplateEngineProvider { get; }
+        protected RuleLanguageProvider RuleLanguageProvider { get; }
 
         public ProjectionContext Transform(ProjectionContext projectionContext)
         {
@@ -31,26 +31,25 @@ namespace ShapeFlow.Projections
 
             var projectionRules = projectionContext.PipelineDeclaration.Projection.Rules;
 
-            var transformationOutput = new FileSetShape(projectionContext.PipelineDeclaration.Name);
+            // based on the projection expression determine the output shape
 
+            var transformationOutput = new FileSetShape(projectionContext.PipelineDeclaration.Name);
+            var outputShapeDecl = new ShapeDeclaration(
+                projectionContext.PipelineDeclaration.Name,
+                typeof(ProjectionEngine).FullName,
+                Enumerable.Empty<string>(),
+                new Dictionary<string, string>());
+            
+            projectionContext.Output = new ShapeContext(outputShapeDecl, transformationOutput);
+            
             foreach (var projectionRule in projectionRules)
             {
-                var templateEngine = TemplateEngineProvider.GetEngine(projectionRule.TemplateLanguage);
-                var transformationOutputFile = templateEngine.Transform(projectionContext, projectionRule);
-                transformationOutput.FileSet.AddFile(transformationOutputFile);
+                var templateEngine = RuleLanguageProvider.GetEngine(projectionRule.Language);
+                projectionContext = templateEngine.Transform(projectionContext, projectionRule);
             }
 
             // end gen impl
-
-            var outputShapeDecl = new ShapeDeclaration(
-                projectionContext.PipelineDeclaration.Name, 
-                typeof(ProjectionEngine).FullName, 
-                Enumerable.Empty<string>(), 
-                new Dictionary<string, string>());
-
-            // problem with the Shape Declaration
-            projectionContext.Output = new ShapeContext(outputShapeDecl, transformationOutput);
-
+           
             return projectionContext;
         }
     }

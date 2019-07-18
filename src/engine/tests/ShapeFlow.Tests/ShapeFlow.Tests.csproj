@@ -47,14 +47,14 @@
     <None Update="Projects\valid.config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Templates\DomainObjects.liquid">
+    <None Update="Rules\DomainObjects\Aggregates.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Templates\SimpleT4.tt">
+    <None Update="Rules\DomainObjects\Aggregates.tt">
       <Generator></Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Templates\TablesToRecords.liquid">
+    <None Update="Rules\Data\Records.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

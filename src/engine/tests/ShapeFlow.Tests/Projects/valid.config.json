@@ -3,10 +3,10 @@
   "projections": {
     "DDDGenerator": {
       "version": "1.0.0",
+      "rulesBasePath": "Rules",
       "rules": [
         {
-          "templateName": "Templates\\DomainObjects.liquid",
-          "outputPathTemplate": "Generated\\DomainObjects.cs"
+          "fileName": "DomainObjects\\Aggregates.liquid"
         }
       ]
     }

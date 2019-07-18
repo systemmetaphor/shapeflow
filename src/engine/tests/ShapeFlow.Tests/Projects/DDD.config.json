@@ -2,11 +2,12 @@
   "name": "DDD Code Generation",  
   "projections": {
     "DDDGenerator": {
-      "version":  "1.0.0",      
+      "version": "1.0.0",
+      "expression": "json(1)->fileset(1)", 
+      "rulesBasePath": "Rules",
       "rules": [
         {
-          "templateName": "Templates\\DomainObjects.liquid",
-          "outputPathTemplate": "Generated\\DomainObjects.cs"
+          "fileName": "DomainObjects\\Aggregates.liquid"
         }
       ]
     }

@@ -95,6 +95,12 @@ namespace ShapeFlow.Declaration
         /// </summary>
         public bool IsInline => string.IsNullOrWhiteSpace(PackageId);
 
+        public string RulesBasePath
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Loads the package metadata from the configuration file (shapeflow.package.json)
         /// or infers it based on the contents of the nuget package Content folder.
@@ -203,6 +209,7 @@ namespace ShapeFlow.Declaration
             }
 
             var location = transformationObject.GetStringPropertyValue("location");
+            var rulesBasePath = transformationObject.GetStringPropertyValue("rulesBasePath");
 
             var transformation = new ProjectionDeclaration
             {
@@ -210,7 +217,8 @@ namespace ShapeFlow.Declaration
                 Parameters = parameters,
                 Rules = rules,
                 Location = location,
-                Version = version
+                Version = version,
+                RulesBasePath =  rulesBasePath
             };
 
             string packageName = null;

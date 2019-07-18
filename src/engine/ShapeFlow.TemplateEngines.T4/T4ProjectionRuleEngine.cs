@@ -12,41 +12,55 @@ using ShapeFlow.Shapes;
 
 namespace ShapeFlow.TemplateEngines.T4
 {
-    public class T4TemplateEngine : ITextTemplateEngine
+    public class T4ProjectionRuleEngine : IProjectionRuleEngine
     {
         private readonly TextTemplateProvider _fileProvider;
         private readonly IOutputLanguageInferenceService _inferenceService;
 
-        public T4TemplateEngine(TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
+        public T4ProjectionRuleEngine(TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
         {
             _fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
             _inferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
 
-            TemplateLanguage = TextTemplateLanguages.T4;
-            TemplateSearchExpression = ".\\**\\*.tt";
+            RuleLanguage = TextTemplateLanguages.T4;
+            RuleSearchExpression = ".\\**\\*.tt";
         }
 
-        public string TemplateLanguage { get; }
+        public string RuleLanguage { get; }
 
-        public string TemplateSearchExpression { get; }
+        public string RuleSearchExpression { get; }
 
-        public FileSetFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        public ProjectionContext Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
+            if (projectionContext.Output.Model.Format != ShapeFormat.FileSet)
+            {
+                throw new InvalidOperationException($"The language {RuleLanguage} can only output shapes of {nameof(ShapeFormat.FileSet)} format.");
+            }
+
+            var outputSet = projectionContext.Output.Model.GetInstance() as FileSet;
+            if (outputSet == null)
+            {
+                throw new InvalidOperationException($"You must set a non null {nameof(FileSet)} shape on the projection output shape.");
+            }
+
             var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
             var templateFileText = templateFile.Text;
 
             string outputPath = null;
-            var outputText = TransformCore(projectionContext, projectionRule.TemplateName, templateFileText, ref outputPath);
+            var outputText = TransformCore(projectionContext, projectionRule.FileName, templateFileText, ref outputPath);
 
             if (string.IsNullOrWhiteSpace(outputPath) && !string.IsNullOrWhiteSpace(outputText))
             {
-                var templateFileName = projectionRule.TemplateName;
+                var templateFileName = projectionRule.FileName;
                 var languageExtension = _inferenceService.InferFileExtension(outputText);
                 outputPath = Path.ChangeExtension(templateFileName, ".generated.txt");
                 outputPath = Path.ChangeExtension(outputPath, languageExtension);
             }
 
-            return new FileSetFile(outputText, outputPath);
+            var f = new FileSetFile(outputText, outputPath);
+            outputSet.AddFile(f);
+
+            return projectionContext;
         }
 
         public string TransformString(ProjectionContext projectionContext, string inputText)
@@ -79,6 +93,26 @@ namespace ShapeFlow.TemplateEngines.T4
             generator.AddDirectiveProcessor("PropertyProcessor", typeof(TemplateArgumentDirectiveProcessor).FullName,
                 this.GetType().Assembly.FullName);
 
+            PrepareInput(context);
+            generator.ProcessTemplate(templateName, templateFileText, ref outputPath, out var outputText);
+
+            if (generator.Errors.HasErrors)
+            {
+                var builder = new StringBuilder();
+
+                foreach (CompilerError generatorError in generator.Errors)
+                {
+                    builder.AppendLine(generatorError.ErrorText);
+                }
+
+                throw new InvalidOperationException(builder.ToString());
+            }
+
+            return outputText;
+        }
+
+        private static void PrepareInput(ProjectionContext context)
+        {
             var modelContainer = context.Input.Model;
             var inputs = new Dictionary<string, object>();
             var model = modelContainer.GetInstance();
@@ -105,22 +139,6 @@ namespace ShapeFlow.TemplateEngines.T4
             {
                 CallContext.SetData(i.Key, i.Value);
             }
-            
-            generator.ProcessTemplate(templateName, templateFileText, ref outputPath, out var outputText);
-
-            if (generator.Errors.HasErrors)
-            {
-                var builder = new StringBuilder();
-
-                foreach (CompilerError generatorError in generator.Errors)
-                {
-                    builder.AppendLine(generatorError.ErrorText);
-                }
-
-                throw new InvalidOperationException(builder.ToString());
-            }
-
-            return outputText;
         }
     }
 }

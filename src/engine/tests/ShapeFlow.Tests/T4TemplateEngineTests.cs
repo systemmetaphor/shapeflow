@@ -25,9 +25,9 @@ namespace ShapeFlow.Tests
                 var templateProvider = currentContainer.Resolve<TextTemplateProvider>();
                 var loader = currentContainer.Resolve<ShapeManager>();
 
-                var engine = new T4TemplateEngine(templateProvider, inference);
+                var engine = new T4ProjectionRuleEngine(templateProvider, inference);
 
-                var templateText = File.ReadAllText("Templates\\SimpleT4.tt");
+                var templateText = File.ReadAllText("Rules\\DomainObjects\\Aggregates.tt");
                 var solution = Solution.ParseFile("Projects\\DDD.config.json");
                 var shapeContext = loader.GetOrLoad(solution.ShapeDeclarations.First());
 

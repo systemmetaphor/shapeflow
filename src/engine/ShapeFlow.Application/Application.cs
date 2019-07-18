@@ -56,7 +56,7 @@ namespace ShapeFlow
             container.RegisterService<ApplicationContext>();
             container.RegisterService<IOutputLanguageInferenceService, OutputLanguageInferenceService>();
             container.RegisterService<ProjectionEngine>();
-            container.RegisterService<TemplateEngineProvider>();
+            container.RegisterService<RuleLanguageProvider>();
             container.RegisterService<ProjectionRegistry>();
             container.RegisterService<ShapeFlowEngine>();
             container.RegisterService<CommandManagementService>();
@@ -64,8 +64,8 @@ namespace ShapeFlow
 
             container.RegisterMany<ILoader, JsonLoader>();
             container.RegisterMany<ILoader, DbModelLoader>();
-            container.RegisterMany<ITextTemplateEngine, DotLiquidTemplateEngine>();
-            container.RegisterMany<ITextTemplateEngine, T4TemplateEngine>();
+            container.RegisterMany<IProjectionRuleEngine, DotLiquidProjectionRuleEngine>();
+            container.RegisterMany<IProjectionRuleEngine, T4ProjectionRuleEngine>();
         }
 
         public static void RegisterCommands(IContainer container)

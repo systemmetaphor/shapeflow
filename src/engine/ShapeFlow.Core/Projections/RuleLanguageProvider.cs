@@ -5,35 +5,35 @@ using ShapeFlow.Infrastructure;
 
 namespace ShapeFlow.Projections
 {
-    public class TemplateEngineProvider
+    public class RuleLanguageProvider
     {
         private readonly IExtensibilityService _extensibilityService;        
-        private readonly HashSet<ITextTemplateEngine> _engines;
+        private readonly HashSet<IProjectionRuleEngine> _engines;
 
-        public TemplateEngineProvider(IExtensibilityService extensibilityService)
+        public RuleLanguageProvider(IExtensibilityService extensibilityService)
         {
             _extensibilityService = extensibilityService ?? throw new ArgumentNullException(nameof(extensibilityService));            
-            _engines = new HashSet<ITextTemplateEngine>();
+            _engines = new HashSet<IProjectionRuleEngine>();
             Load();
         }
 
-        public IEnumerable<string> TemplateSearchExpressions
+        public IEnumerable<string> RuleSearchExpressions
         {
             get
             {
-                return _engines.Select(e => e.TemplateSearchExpression).Distinct().ToArray();
+                return _engines.Select(e => e.RuleSearchExpression).Distinct().ToArray();
             }
         }
 
-        public ITextTemplateEngine GetEngine(string language)
+        public IProjectionRuleEngine GetEngine(string language)
         {            
-            var engine = _engines.Where(p => language.Equals(p.TemplateLanguage, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
+            var engine = _engines.Where(p => language.Equals(p.RuleLanguage, StringComparison.OrdinalIgnoreCase)).SingleOrDefault();
             return engine;
         }
 
         private void Load()
         {
-            var targetExtensions = _extensibilityService.LoadExtensions<ITextTemplateEngine>();
+            var targetExtensions = _extensibilityService.LoadExtensions<IProjectionRuleEngine>();
 
             foreach (var extension in targetExtensions)
             {

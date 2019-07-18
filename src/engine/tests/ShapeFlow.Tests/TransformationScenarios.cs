@@ -20,9 +20,6 @@ namespace ShapeFlow.Tests
         }
 
         [TestMethod]
-        [DeploymentItem("ShapeDeclarations\\Order.json", "ShapeDeclarations")]
-        [DeploymentItem("Templates\\DomainObjects.liquid", "Templates")]
-        [DeploymentItem("Projects\\DDD.config.json")]
         public async Task SimpleModel2Code()
         {
             // MISSING
@@ -40,13 +37,11 @@ namespace ShapeFlow.Tests
                 await engine.Run(parameters);
             }
 
-            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Generated\\DomainObjects.cs")));
+            Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "DomainObjects\\Aggregates.generated.cs")));
         }
 
         [TestMethod]
         [TestCategory("ExcludeFromBuildServer")]
-        [DeploymentItem("Templates\\TablesToRecords.liquid", "Templates")]
-        [DeploymentItem("Projects\\TablesToRecords.config.json")]
         public async Task Db2Code()
         {
             // MISSING
@@ -66,7 +61,7 @@ namespace ShapeFlow.Tests
 
                 await engine.Run(solution);
 
-                Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Generated\\Records.cs")));
+                Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "Data\\Records.generated.cs")));
             }
         }
     }

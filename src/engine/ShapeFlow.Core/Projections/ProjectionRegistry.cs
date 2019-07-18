@@ -13,17 +13,17 @@ namespace ShapeFlow.Projections
         private readonly HashSet<TargetRegistration> _targets;
         private readonly IExtensibilityService _extensibilityService;
         private readonly PackageManagerFactory _packageManagerFactory;
-        private readonly TemplateEngineProvider _templateEngineProvider;
+        private readonly RuleLanguageProvider _ruleLanguageProvider;
 
         public ProjectionRegistry(
             IExtensibilityService extensibilityService, 
             PackageManagerFactory packageManagerFactory,
-            TemplateEngineProvider templateEngineProvider)
+            RuleLanguageProvider ruleLanguageProvider)
         {
             _packageManagerFactory = packageManagerFactory;
             _targets = new HashSet<TargetRegistration>();
             _extensibilityService = extensibilityService;
-            _templateEngineProvider = templateEngineProvider;
+            _ruleLanguageProvider = ruleLanguageProvider;
 
             // TODO: move this to an initialization method
             Load();
@@ -96,7 +96,7 @@ namespace ShapeFlow.Projections
 
         private ProjectionDeclaration AppendPackageMetadata(ProjectionDeclaration existingDeclaration, PackageInfo packageInfo)
         {
-            var searchExpressions = _templateEngineProvider.TemplateSearchExpressions;
+            var searchExpressions = _ruleLanguageProvider.RuleSearchExpressions;
 
             return  ProjectionDeclaration.LoadOrInferMetadata(existingDeclaration, packageInfo, searchExpressions);
         }

@@ -32,12 +32,14 @@ namespace ShapeFlow.Projections
         {
             EnsureStream();
 
-            if (Stream != null)
+            if (Stream == null)
             {
-                Stream.Seek(0, SeekOrigin.Begin);
-                Stream.CopyTo(other);
-                Stream.Seek(0, SeekOrigin.Begin);
+                return;
             }
+
+            Stream.Seek(0, SeekOrigin.Begin);
+            Stream.CopyTo(other);
+            Stream.Seek(0, SeekOrigin.Begin);
         }
 
         public static TextTemplate Create(ProjectionRuleDeclaration rule, string path)

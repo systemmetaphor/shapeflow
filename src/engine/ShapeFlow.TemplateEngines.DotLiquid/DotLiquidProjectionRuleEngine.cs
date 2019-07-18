@@ -12,7 +12,7 @@ using ShapeFlow.Shapes;
 
 namespace ShapeFlow.TemplateEngines.DotLiquid
 {
-    public class DotLiquidTemplateEngine : ITextTemplateEngine
+    public class DotLiquidProjectionRuleEngine : IProjectionRuleEngine
     {
         private static BindingFlags _bindingFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
 
@@ -22,19 +22,29 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
         private readonly IOutputLanguageInferenceService _inferenceService;
 
 
-        public DotLiquidTemplateEngine(TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
+        public DotLiquidProjectionRuleEngine(TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
         {
             _fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
             _inferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
-            TemplateSearchExpression = ".\\**\\*.liquid";
+            RuleSearchExpression = ".\\**\\*.liquid";
         }
 
-        public string TemplateLanguage => TextTemplateLanguages.DotLiquid;
+        public string RuleLanguage => TextTemplateLanguages.DotLiquid;
 
-        public string TemplateSearchExpression { get; }
+        public string RuleSearchExpression { get; }
 
-        public FileSetFile Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        public ProjectionContext Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
+            if (projectionContext.Output.Model.Format != ShapeFormat.FileSet)
+            {
+                throw new InvalidOperationException($"The language {RuleLanguage} can only output shapes of {nameof(ShapeFormat.FileSet)} format.");
+            }
+
+            if (!(projectionContext.Output.Model.GetInstance() is FileSet outputSet))
+            {
+                throw new InvalidOperationException($"You must set a non null {nameof(FileSet)} shape on the projection output shape.");
+            }
+
             var hash = projectionContext.GetStateEntry<Hash>(HashStateKey);
             if (hash == null)
             {
@@ -43,28 +53,19 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
             }
 
             var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
-            FileSetFile result;
             try
             {
                 var template = Template.Parse(templateFile.Text);
+
                 var output = template.Render(hash);
 
-                string outputPath;
+                var templateFileName = projectionRule.FileName;
+                var languageExtension = _inferenceService.InferFileExtension(output);
+                var outputPath = Path.ChangeExtension(templateFileName, ".generated.txt");
+                outputPath = Path.ChangeExtension(outputPath, languageExtension);
 
-                if (string.IsNullOrWhiteSpace(projectionRule.OutputPathTemplate))
-                {
-                    var templateFileName = projectionRule.TemplateName;
-                    var languageExtension = _inferenceService.InferFileExtension(output);
-                    outputPath = Path.ChangeExtension(templateFileName, ".generated.txt");
-                    outputPath = Path.ChangeExtension(outputPath, languageExtension);
-                }
-                else
-                {
-                    var nameTemplate = Template.Parse(projectionRule.OutputPathTemplate);
-                    outputPath = nameTemplate.Render(hash);
-                }
-
-                result = new FileSetFile(output, outputPath);
+                var result = new FileSetFile(output, outputPath);
+                outputSet.AddFile(result);
             }
             catch (Exception e)
             {
@@ -72,14 +73,16 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
                 throw;
             }
 
-            return result;
+            return projectionContext;
         }
 
-        public string TransformString(ProjectionContext projectionContext,  string outputPathRule)
+        public string TransformString(ProjectionContext projectionContext, string outputPathRule)
         {
             var hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters);
             var template = Template.Parse(outputPathRule);
+
             var output = template.Render(hash);
+
             return output;
         }
 
