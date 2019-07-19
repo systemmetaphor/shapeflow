@@ -4,12 +4,13 @@ using ShapeFlow.Commands;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Loaders;
 using ShapeFlow.Loaders.DbModel;
+using ShapeFlow.Output;
 using ShapeFlow.PackageManagement;
 using ShapeFlow.PackageManagement.NuGet;
 using ShapeFlow.Projections;
+using ShapeFlow.RuleEngines.DotLiquid;
+using ShapeFlow.RuleEngines.T4;
 using ShapeFlow.Shapes;
-using ShapeFlow.TemplateEngines.DotLiquid;
-using ShapeFlow.TemplateEngines.T4;
 
 namespace ShapeFlow
 {

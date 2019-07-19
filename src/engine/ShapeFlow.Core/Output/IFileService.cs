@@ -1,6 +1,6 @@
 ﻿using ShapeFlow.Projections;
 
-namespace ShapeFlow
+namespace ShapeFlow.Output
 {
     public interface IFileService
     {

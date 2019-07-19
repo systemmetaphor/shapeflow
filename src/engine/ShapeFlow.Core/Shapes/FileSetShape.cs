@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ShapeFlow.Shapes;
 
-namespace ShapeFlow.Projections
+namespace ShapeFlow.Shapes
 {
     public class FileSetShape : Shape
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
 
-namespace ShapeFlow.TemplateEngines.T4
+namespace ShapeFlow.RuleEngines.T4
 {
     public static class CallContext
     {

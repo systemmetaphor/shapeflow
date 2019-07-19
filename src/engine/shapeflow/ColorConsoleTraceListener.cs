@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ShapeFlow
+namespace shapeflow
 {
     // adapted from: https://github.com/Wyamio/Wyam/blob/develop/src/clients/Wyam/Tracing/SimpleColorConsoleTraceListener.cs
     internal class ColorConsoleTraceListener : TextWriterTraceListener

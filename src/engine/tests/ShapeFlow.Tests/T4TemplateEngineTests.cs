@@ -7,9 +7,10 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
+using ShapeFlow.Output;
 using ShapeFlow.Projections;
+using ShapeFlow.RuleEngines.T4;
 using ShapeFlow.Shapes;
-using ShapeFlow.TemplateEngines.T4;
 
 namespace ShapeFlow.Tests
 {

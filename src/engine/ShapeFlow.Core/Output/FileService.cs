@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Projections;
 using ShapeFlow.Shapes;
 
-namespace ShapeFlow
+namespace ShapeFlow.Output
 {
     internal class FileService : IFileService
     { 
@@ -46,12 +45,12 @@ namespace ShapeFlow
         
         public void Process(ProjectionContext projection)
         {
-            if (projection.Output.Model.Format != ShapeFormat.FileSet)
+            if (projection.Output.Shape.Format != ShapeFormat.FileSet)
             {
                 return;
             }
 
-            var output = projection.Output.Model.GetInstance() as FileSet;
+            var output = projection.Output.Shape.GetInstance() as FileSet;
             if (output?.OutputFiles == null || !output.OutputFiles.Any())
             {
                 return;

@@ -6,14 +6,14 @@ namespace ShapeFlow
 {
     public class ShapeContext
     {
-        public ShapeContext(ShapeDeclaration declaration, Shape model)
+        public ShapeContext(ShapeDeclaration declaration, Shape shape)
         {
             Declaration = declaration;
-            Model = model;
+            Shape = shape;
         }
 
         public ShapeDeclaration Declaration { get; }
 
-        public Shape Model { get; }
+        public Shape Shape { get; }
     }
 }

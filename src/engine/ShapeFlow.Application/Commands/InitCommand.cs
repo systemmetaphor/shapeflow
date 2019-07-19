@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
+using ShapeFlow.Output;
 
 namespace ShapeFlow.Commands
 {
@@ -41,7 +42,7 @@ namespace ShapeFlow.Commands
             sb.AppendLine(@"  },");
             sb.AppendLine(@"  ""shapes"": [");
             sb.AppendLine(@"    {");
-            sb.AppendLine($@"      ""name"": ""{ name } Model"",");
+            sb.AppendLine($@"      ""name"": ""{ name } Shape"",");
             sb.AppendLine(@"      ""tags"": ""dbEntityModel"",");
             sb.AppendLine(@"      ""loaderName"": ""DbModelLoader"",");
             sb.AppendLine(@"      ""parameters"": {");
@@ -55,17 +56,17 @@ namespace ShapeFlow.Commands
             sb.AppendLine(@"  ],");
             sb.AppendLine(@"  ""pipeline"": [");
             sb.AppendLine(@"    {");
-            sb.AppendLine($@"      ""name"": ""{ name } Model Data Tier"",");
+            sb.AppendLine($@"      ""name"": ""{ name } Shape Data Tier"",");
             sb.AppendLine(@"");
             sb.AppendLine(@"      ""input"": {");
-            sb.AppendLine($@"        ""selector"": ""{ name } Model""");
+            sb.AppendLine($@"        ""selector"": ""{ name } Shape""");
             sb.AppendLine(@"      },");
             sb.AppendLine(@"");
             sb.AppendLine(@"      ""projectionRef"": {");
-            sb.AppendLine($@"        ""name"": ""{ name } Model Data Tier"",");
+            sb.AppendLine($@"        ""name"": ""{ name } Shape Data Tier"",");
             sb.AppendLine(@"        ""generator"": ""TablesToRecords"",");
             sb.AppendLine(@"        ""input"": {");
-            sb.AppendLine($@"          ""selector"": ""{ name } Model""");
+            sb.AppendLine($@"          ""selector"": ""{ name } Shape""");
             sb.AppendLine(@"        }");
             sb.AppendLine(@"      },");
             sb.AppendLine(@"");

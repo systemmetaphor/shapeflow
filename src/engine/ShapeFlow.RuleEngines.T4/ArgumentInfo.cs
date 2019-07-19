@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace ShapeFlow.TemplateEngines.T4
+namespace ShapeFlow.RuleEngines.T4
 {
     internal class ArgumentInfo
     {

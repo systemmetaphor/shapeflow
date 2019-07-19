@@ -26,7 +26,7 @@
         "projection": "Persistence"
       },
       "output": {
-        "type": "file",
+        "type": "fileset",
         "parameters": {
           "output-mode": "overwrite"
         }

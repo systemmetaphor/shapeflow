@@ -1,4 +1,4 @@
-﻿namespace ShapeFlow
+﻿namespace ShapeFlow.Output
 {
     public interface IOutputLanguageInferenceService
     {

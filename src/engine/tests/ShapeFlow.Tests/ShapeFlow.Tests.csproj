@@ -19,7 +19,7 @@
     <ProjectReference Include="..\..\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj" />
     <ProjectReference Include="..\..\ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj" />
     <ProjectReference Include="..\..\ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj" />
-    <ProjectReference Include="..\..\ShapeFlow.TemplateEngines.DotLiquid\ShapeFlow.TemplateEngines.DotLiquid.csproj" />
+    <ProjectReference Include="..\..\ShapeFlow.RuleEngines.DotLiquid\ShapeFlow.RuleEngines.DotLiquid.csproj" />
   </ItemGroup>
 
   <ItemGroup>

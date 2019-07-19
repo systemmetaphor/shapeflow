@@ -1,4 +1,4 @@
-﻿namespace ShapeFlow
+﻿namespace ShapeFlow.Output
 {
     public static class OutputLanguages
     {

@@ -1,4 +1,4 @@
-﻿namespace ShapeFlow.Projections
+﻿namespace ShapeFlow.Shapes
 {
     public class FileSetFile
     {

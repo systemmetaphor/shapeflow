@@ -11,7 +11,7 @@
     <projectUrl>https://shapeflow.io</projectUrl>
     <repository type="git" url="https://github.com/systemmetaphor/shapeflow.git" />
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>ShapeFlow is a model driven development engine that is unique because it can take anything as model. This is a tools package that contains the Wyam CLI.</description>
+    <description>ShapeFlow is a shape driven development engine that is unique because it can take anything as shape. This is a tools package that contains the Wyam CLI.</description>
     <copyright>Copyright 2019</copyright>
     <tags>shapeflow MDD CodeGeneration AI</tags>
     <packageTypes>

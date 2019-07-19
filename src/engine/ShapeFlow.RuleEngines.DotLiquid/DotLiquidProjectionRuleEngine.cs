@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using DotLiquid;
 using DotLiquid.NamingConventions;
+using DotLiquid.Tags;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
+using ShapeFlow.Output;
 using ShapeFlow.Projections;
 using ShapeFlow.Shapes;
 
-namespace ShapeFlow.TemplateEngines.DotLiquid
+namespace ShapeFlow.RuleEngines.DotLiquid
 {
     public class DotLiquidProjectionRuleEngine : IProjectionRuleEngine
     {
-        private static BindingFlags _bindingFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
+        private static readonly BindingFlags BindingFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
 
         private const string HashStateKey = "DOTLIQUID_HASH";
 
@@ -33,29 +36,52 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
 
         public string RuleSearchExpression { get; }
 
+        public IEnumerable<ShapeFormat> InputFormats { get; } = new[] {
+            ShapeFormat.Clr,
+            ShapeFormat.Json
+        };
+
+        public IEnumerable<ShapeFormat> OutputFormats { get; } = new[] {
+            ShapeFormat.FileSet
+        };
+
         public ProjectionContext Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
-            if (projectionContext.Output.Model.Format != ShapeFormat.FileSet)
+            if (projectionContext.Output.Shape.Format != ShapeFormat.FileSet)
             {
                 throw new InvalidOperationException($"The language {RuleLanguage} can only output shapes of {nameof(ShapeFormat.FileSet)} format.");
             }
 
-            if (!(projectionContext.Output.Model.GetInstance() is FileSet outputSet))
+            if (!(projectionContext.Output.Shape.GetInstance() is FileSet outputSet))
             {
                 throw new InvalidOperationException($"You must set a non null {nameof(FileSet)} shape on the projection output shape.");
             }
 
-            var hash = projectionContext.GetStateEntry<Hash>(HashStateKey);
-            if (hash == null)
-            {
-                hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters);
-                projectionContext.AddStateEntry(HashStateKey, hash);
-            }
-
             var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
+
             try
             {
                 var template = Template.Parse(templateFile.Text);
+
+                IEnumerable<string> symbols;
+
+                try
+                {
+                    var detector = new SymbolDetector();
+                    template.Render(detector);
+                    symbols = detector.Symbols;
+                }
+                catch (Exception)
+                {
+                    symbols = Enumerable.Empty<string>();
+                }
+
+                var hash = projectionContext.GetStateEntry<Hash>(HashStateKey);
+                if (hash == null)
+                {
+                    hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters, symbols);
+                    projectionContext.AddStateEntry(HashStateKey, hash);
+                }
 
                 var output = template.Render(hash);
 
@@ -78,35 +104,58 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
 
         public string TransformString(ProjectionContext projectionContext, string outputPathRule)
         {
-            var hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters);
+            
             var template = Template.Parse(outputPathRule);
 
+            IEnumerable<string> symbols;
+
+            try
+            {
+                var detector = new SymbolDetector();
+                template.Render(detector);
+                symbols = detector.Symbols;
+            }
+            catch (Exception)
+            {
+                symbols = Enumerable.Empty<string>();
+            }
+
+            foreach (var symbol in symbols)
+            {
+                AppTrace.Information(symbol);
+            }
+
+            var hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters, symbols);
             var output = template.Render(hash);
 
             return output;
         }
 
-        private static Hash PrepareHash(ShapeContext projectionInput, IDictionary<string, string> parameters)
+        private static Hash PrepareHash(ShapeContext inputContext, IDictionary<string, string> parameters, IEnumerable<string> detectedSymbols)
         {
             Hash hash = null;
-            if (projectionInput == null)
+            if (inputContext == null)
             {
                 hash = new Hash();
                 return hash;
             }
 
-            var modelContainer = projectionInput.Model;
+            var shape = inputContext.Shape;
+            var model = shape.GetInstance();
 
-            if (modelContainer.Format == ShapeFormat.Clr)
+            if (model == null)
+            {
+                return new Hash();
+            }
+
+            if (shape.Format == ShapeFormat.Clr)
             {
                 // on CLR models we need to configure the engine to allow the public properties
                 // of the model objects
-                PrepareDotLiquidEngine(modelContainer.GetType());
+                PrepareDotLiquidEngine(model.GetType());
             }
 
             Template.NamingConvention = new CSharpNamingConvention();
-
-            var model = modelContainer.GetInstance();
 
             if (model is JObject modelJObject)
             {
@@ -115,12 +164,19 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
 
             if (model is IDictionary<string, object> modelDictionary)
             {
-                hash = Hash.FromDictionary(modelDictionary);
+                if (modelDictionary.Keys.Intersect(detectedSymbols).Any())
+                {
+                    hash = Hash.FromDictionary(modelDictionary);
+                }
+                else
+                {
+                    hash = new Hash {{ "model", model }};
+                }
             }
 
             if (hash == null)
             {
-                hash = Hash.FromAnonymousObject(modelContainer);
+                hash = Hash.FromAnonymousObject(model);
             }
 
             foreach (var p in parameters)
@@ -136,7 +192,7 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
 
         private static void PrepareDotLiquidEngine(Type rootType)
         {
-            var propertiesToConsider = rootType.GetProperties(_bindingFlags);
+            var propertiesToConsider = rootType.GetProperties(BindingFlags);
 
             var simpleProperties = new List<string>();
 
@@ -156,6 +212,25 @@ namespace ShapeFlow.TemplateEngines.DotLiquid
             }
 
             Template.RegisterSafeType(rootType, simpleProperties.ToArray());
+        }
+    }
+
+    public class SymbolDetector : Hash
+    {
+        private readonly List<string> _symbols;
+
+        public SymbolDetector()
+        {
+            _symbols = new List<string>();
+        }
+
+        public IEnumerable<string> Symbols => _symbols.AsReadOnly();
+
+        protected override object GetValue(string key)
+        {
+            _symbols.Add(key);
+
+            return base.GetValue(key);
         }
     }
 }

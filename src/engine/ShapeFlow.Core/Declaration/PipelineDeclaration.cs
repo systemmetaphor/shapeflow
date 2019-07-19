@@ -5,19 +5,16 @@ namespace ShapeFlow.Declaration
 {
     public class PipelineDeclaration
     {
-        public PipelineDeclaration(string name, string selector, InputDeclaration input, ProjectionRefDeclaration projectionRef, OutputDeclaration output)
+        public PipelineDeclaration(string name, InputDeclaration input, ProjectionRefDeclaration projectionRef, OutputDeclaration output)
         {
             Name = name;
             ProjectionRef = projectionRef;
-            Selector = selector;
             Output = output;
             Input = input;
         }
 
         public string Name { get; }
-
-        public string Selector { get; }
-
+        
         public ProjectionRefDeclaration ProjectionRef { get; }
 
         public OutputDeclaration Output { get; }
@@ -29,7 +26,7 @@ namespace ShapeFlow.Declaration
         public static PipelineDeclaration Parse(JObject pipelineObject)
         {
             var pipelineName = pipelineObject.GetStringPropertyValue("name");
-            var selectorText = pipelineObject.GetStringPropertyValue("selector");
+            
             var transformationObject = pipelineObject.GetValue("projectionRef") as JObject;
             var inputObject = pipelineObject.GetValue("input") as JObject;
             var outputObject = pipelineObject.GetValue("output") as JObject;
@@ -57,7 +54,6 @@ namespace ShapeFlow.Declaration
                        
             var pipeline = new PipelineDeclaration(
                 pipelineName,
-                selectorText,
                 input,
                 transformation,
                 output);

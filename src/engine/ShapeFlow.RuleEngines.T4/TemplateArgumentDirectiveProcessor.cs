@@ -7,7 +7,7 @@ using System.Globalization;
 using System.IO;
 using Microsoft.VisualStudio.TextTemplating;
 
-namespace ShapeFlow.TemplateEngines.T4
+namespace ShapeFlow.RuleEngines.T4
 {
     internal class TemplateArgumentDirectiveProcessor : DirectiveProcessor
     {

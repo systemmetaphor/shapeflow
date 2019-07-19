@@ -1,6 +1,6 @@
 ﻿using CodeClassification;
 
-namespace ShapeFlow
+namespace ShapeFlow.Output
 {
     internal class OutputLanguageInferenceService : IOutputLanguageInferenceService
     {

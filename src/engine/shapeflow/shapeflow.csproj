@@ -15,7 +15,7 @@
     <ProjectReference Include="..\ShapeFlow.Application\ShapeFlow.Application.csproj" />
     <ProjectReference Include="..\ShapeFlow.Core\ShapeFlow.Core.csproj" />
     <ProjectReference Include="..\ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj" />
-    <ProjectReference Include="..\ShapeFlow.TemplateEngines.DotLiquid\ShapeFlow.TemplateEngines.DotLiquid.csproj" />
+    <ProjectReference Include="..\ShapeFlow.RuleEngines.DotLiquid\ShapeFlow.RuleEngines.DotLiquid.csproj" />
   </ItemGroup>
 
 </Project>
