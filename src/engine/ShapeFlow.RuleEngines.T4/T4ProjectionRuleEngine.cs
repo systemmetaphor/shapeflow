@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TextTemplating;
 using Mono.TextTemplating;
 using Newtonsoft.Json.Linq;
@@ -27,7 +28,7 @@ namespace ShapeFlow.RuleEngines.T4
             _fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
             _inferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
 
-            RuleLanguage = TextTemplateLanguages.T4;
+            RuleLanguage = RuleLanguages.T4;
             RuleSearchExpression = ".\\**\\*.tt";
         }
 
@@ -46,7 +47,7 @@ namespace ShapeFlow.RuleEngines.T4
             ShapeFormat.FileSet
         };
 
-        public ProjectionContext Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        public Task<ProjectionContext> Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
             if (projectionContext.Output.Shape.Format != ShapeFormat.FileSet)
             {
@@ -76,13 +77,13 @@ namespace ShapeFlow.RuleEngines.T4
             var f = new FileSetFile(outputText, outputPath);
             outputSet.AddFile(f);
 
-            return projectionContext;
+            return Task.FromResult(projectionContext);
         }
 
-        public string TransformString(ProjectionContext projectionContext, string inputText)
+        public Task<string> TransformString(ProjectionContext projectionContext, string inputText)
         {
             string outputPath = null;
-            return TransformCore(projectionContext, string.Empty, inputText, ref outputPath);
+            return Task.FromResult(TransformCore(projectionContext, string.Empty, inputText, ref outputPath));
         }
 
         private string TransformCore(ProjectionContext context, string templateName, string templateFileText, ref string outputPath)
@@ -115,7 +116,7 @@ namespace ShapeFlow.RuleEngines.T4
 
             foreach (var directive in pt.Directives)
             {
-                if (!directive.Name.Equals("PropertyProcessor"))
+                if (!directive.Name.Equals("property"))
                 {
                     continue;
                 }

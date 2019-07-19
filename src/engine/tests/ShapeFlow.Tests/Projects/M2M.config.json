@@ -1,0 +1,41 @@
+﻿{
+  "name": "DDD Code Generation",  
+  "projections": {
+    "M2MGenerator": {
+      "version": "1.0.0",
+      "rulesBasePath": "Rules",
+      "rules": [
+        {
+          "fileName": "M2M\\Simple.scs"
+        }
+      ]
+    }
+  },
+  "shapes": [
+    {
+      "name": "Sales Model",
+      "tags": "domainEntityModel",
+      "loaderName": "JsonLoader",
+      "parameters": {
+        "model-path": "Models\\Order.json"
+      }
+    }
+  ],
+  "pipeline": [
+    {
+      "name": "Sales Model Entities",
+      "input": {
+        "selector": "Sales Model"
+      },
+      "projectionRef": {
+        "projection": "M2MGenerator"
+      },
+      "output": {
+        "type": "fileset",
+        "parameters": {
+          "output-mode": "overwrite"
+        }
+      }
+    }
+  ]
+}

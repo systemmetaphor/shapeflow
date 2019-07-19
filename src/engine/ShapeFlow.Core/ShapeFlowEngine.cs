@@ -35,7 +35,8 @@ namespace ShapeFlow
             solution = await _projectionRegistry.Process(solution);
             try
             {
-                GetOrAssemblePipeline(solution).PublishAll();
+                var pipeline = GetOrAssemblePipeline(solution);
+                await pipeline.PublishAll();
             }
             catch (Exception e)
             {
@@ -46,12 +47,7 @@ namespace ShapeFlow
             ClosePipeline(solution);
         }
 
-        private void ClosePipeline(Solution solution)
-        {
-            _solutionPipelines.Remove(solution);
-        }
-
-        private SolutionPipeline GetOrAssemblePipeline(Solution solution)
+        public SolutionPipeline GetOrAssemblePipeline(Solution solution)
         {
             if (_solutionPipelines.TryGetValue(solution, out var solutionPipeline))
             {
@@ -73,6 +69,11 @@ namespace ShapeFlow
             _solutionPipelines.Add(solution, solutionPipeline);
 
             return solutionPipeline;
+        }
+
+        private void ClosePipeline(Solution solution)
+        {
+            _solutionPipelines.Remove(solution);
         }
     }
 }

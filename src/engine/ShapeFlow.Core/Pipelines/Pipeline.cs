@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.Projections;
 using ShapeFlow.Shapes;
 
 namespace ShapeFlow.Pipelines
@@ -11,49 +10,48 @@ namespace ShapeFlow.Pipelines
     public class SolutionPipeline : IDisposable
     {
         private readonly IContainer _container;
-        private readonly Subject<ShapeContext> _shapeStream;
-        private readonly Dictionary<PipelineHandler, IDisposable> _handlers;
+        private readonly List<PipelineHandler> _handlers;
 
         public SolutionPipeline(Solution solution, IContainer container)
         {
             Solution = solution;
             _container = container;
-            _shapeStream = new Subject<ShapeContext>();
-            _handlers = new Dictionary<PipelineHandler, IDisposable>();
+            _handlers = new List<PipelineHandler>();
         }
 
         public Solution Solution { get; }
 
-        protected ISubject<ShapeContext> ShapeStream => _shapeStream;
-
         public void AddHandler(PipelineHandler what)
         {
-            var subscription = _shapeStream.Subscribe(what);
-            _handlers.Add(what, subscription);
             what.Parent = this;
+            _handlers.Add(what);
         }
 
-        public void Publish(ShapeContext context)
+        public async Task Publish(ShapeContext context)
         {
-            _shapeStream.OnNext(context);
+            foreach (var handler in _handlers)
+            {
+                await handler.OnNext(context);
+            }
         }
 
-        public void PublishAll()
+        public async Task PublishAll()
         {
             var shapeManager = GetService<ShapeManager>();
 
             foreach (var shapeDeclaration in Solution.ShapeDeclarations)
             {
-                Publish(shapeManager.GetOrLoad(shapeDeclaration));
+                var shape = shapeManager.GetOrLoad(shapeDeclaration);
+                await Publish(shape);
             }
         }
 
         public void Dispose()
         {
-            _shapeStream?.Dispose();
+            _handlers.Clear();
         }
 
-        internal T GetService<T>() where T:class
+        internal T GetService<T>() where T : class
         {
             return _container.Resolve<T>();
         }

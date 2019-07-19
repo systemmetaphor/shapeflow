@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using DotLiquid;
 using DotLiquid.NamingConventions;
 using DotLiquid.Tags;
@@ -32,7 +33,7 @@ namespace ShapeFlow.RuleEngines.DotLiquid
             RuleSearchExpression = ".\\**\\*.liquid";
         }
 
-        public string RuleLanguage => TextTemplateLanguages.DotLiquid;
+        public string RuleLanguage => RuleLanguages.DotLiquid;
 
         public string RuleSearchExpression { get; }
 
@@ -45,7 +46,7 @@ namespace ShapeFlow.RuleEngines.DotLiquid
             ShapeFormat.FileSet
         };
 
-        public ProjectionContext Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        public Task<ProjectionContext> Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
         {
             if (projectionContext.Output.Shape.Format != ShapeFormat.FileSet)
             {
@@ -57,10 +58,9 @@ namespace ShapeFlow.RuleEngines.DotLiquid
                 throw new InvalidOperationException($"You must set a non null {nameof(FileSet)} shape on the projection output shape.");
             }
 
-            var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
-
             try
             {
+                var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
                 var template = Template.Parse(templateFile.Text);
 
                 IEnumerable<string> symbols;
@@ -99,10 +99,10 @@ namespace ShapeFlow.RuleEngines.DotLiquid
                 throw;
             }
 
-            return projectionContext;
+            return Task.FromResult(projectionContext);
         }
 
-        public string TransformString(ProjectionContext projectionContext, string outputPathRule)
+        public Task<string> TransformString(ProjectionContext projectionContext, string outputPathRule)
         {
             
             var template = Template.Parse(outputPathRule);
@@ -120,15 +120,10 @@ namespace ShapeFlow.RuleEngines.DotLiquid
                 symbols = Enumerable.Empty<string>();
             }
 
-            foreach (var symbol in symbols)
-            {
-                AppTrace.Information(symbol);
-            }
-
             var hash = PrepareHash(projectionContext.Input, projectionContext.Solution.Parameters, symbols);
             var output = template.Render(hash);
 
-            return output;
+            return Task.FromResult(output);
         }
 
         private static Hash PrepareHash(ShapeContext inputContext, IDictionary<string, string> parameters, IEnumerable<string> detectedSymbols)

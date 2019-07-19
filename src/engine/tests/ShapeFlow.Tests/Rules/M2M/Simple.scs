@@ -1,0 +1,9 @@
+﻿if(Context == null)
+{
+    throw new Exception();
+}
+
+System.Console.WriteLine("Hello world");
+
+
+return Context;

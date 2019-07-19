@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Output;
 using ShapeFlow.Shapes;
@@ -25,7 +26,7 @@ namespace ShapeFlow.Projections
 
         protected RuleLanguageProvider RuleLanguageProvider { get; }
 
-        public ProjectionContext Transform(ProjectionContext projectionContext)
+        public async Task<ProjectionContext> Transform(ProjectionContext projectionContext)
         {
             var pipelineDecl = projectionContext.PipelineDeclaration;
             var projectionDecl = pipelineDecl.Projection;
@@ -54,28 +55,26 @@ namespace ShapeFlow.Projections
             switch (format)
             {
                 case ShapeFormat.FileSet:
-                    var transformationOutput = new FileSetShape(projectionContext.PipelineDeclaration.Name);
+                    var fileSetOutput = new FileSetShape(projectionContext.PipelineDeclaration.Name);
                     var outputShapeDecl = new ShapeDeclaration(
                         projectionContext.PipelineDeclaration.Name,
                         typeof(ProjectionEngine).FullName,
                         Enumerable.Empty<string>(),
                         new Dictionary<string, string>());
 
-                    projectionContext.Output = new ShapeContext(outputShapeDecl, transformationOutput);
+                    projectionContext.Output = new ShapeContext(outputShapeDecl, fileSetOutput);
 
                     break;
                     
                 default:
-                    throw new InvalidOperationException("Unsupported format");
+                    break;
             }
-            
-
             
             var projectionRules = projectionDecl.Rules;
             foreach (var projectionRule in projectionRules)
             {
                 var templateEngine = RuleLanguageProvider.GetEngine(projectionRule.Language);
-                projectionContext = templateEngine.Transform(projectionContext, projectionRule);
+                projectionContext = await templateEngine.Transform(projectionContext, projectionRule);
             }
 
             // end gen impl

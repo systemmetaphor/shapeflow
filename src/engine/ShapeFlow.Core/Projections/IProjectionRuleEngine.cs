@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Shapes;
 
@@ -14,8 +15,8 @@ namespace ShapeFlow.Projections
 
         IEnumerable<ShapeFormat> OutputFormats { get; }
 
-        ProjectionContext Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule);
+        Task<ProjectionContext> Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule);
 
-        string TransformString(ProjectionContext projectionContext, string inputText);
+        Task<string> TransformString(ProjectionContext projectionContext, string inputText);
     }
 }

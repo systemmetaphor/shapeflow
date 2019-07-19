@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Projections;
 
 namespace ShapeFlow.Pipelines
 {
-    public abstract class PipelineHandler : IObserver<ShapeContext>
+    public abstract class PipelineHandler
     {
         protected PipelineHandler(PipelineDeclaration pipelineDeclaration)
         {
@@ -28,16 +29,16 @@ namespace ShapeFlow.Pipelines
         {            
         }
 
-        public void OnNext(ShapeContext shapeContext)
+        public async Task OnNext(ShapeContext shapeContext)
         {
-            if(ShouldProcess(shapeContext))
+            if(await ShouldProcess(shapeContext))
             {
-                Process(shapeContext);
+                await Process(shapeContext);
             }
         }
 
-        protected abstract void Process(ShapeContext context);
+        protected abstract Task Process(ShapeContext context);
 
-        protected abstract bool ShouldProcess(ShapeContext context);
+        protected abstract Task<bool> ShouldProcess(ShapeContext context);
     }
 }

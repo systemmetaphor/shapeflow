@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Output;
 using ShapeFlow.Projections;
@@ -17,20 +18,20 @@ namespace ShapeFlow.Pipelines
         
         public string Selector => _pipelineDeclaration.Input.Selector;
 
-        protected override void Process(ShapeContext context)
+        protected override async Task Process(ShapeContext context)
         {
             var projectionEngine = Parent.GetService<ProjectionEngine>();
             var fileService = Parent.GetService<IFileService>();
             
             var projectionContext = new ProjectionContext(Parent.Solution, PipelineDeclaration, context);
-            projectionContext = projectionEngine.Transform(projectionContext);
+            projectionContext = await projectionEngine.Transform(projectionContext);
             fileService.Process(projectionContext);
         }
 
-        protected override bool ShouldProcess(ShapeContext context)
+        protected override Task<bool> ShouldProcess(ShapeContext context)
         {
             // naif implementation of filter
-            return Selector.Equals(context.Shape.Name, StringComparison.OrdinalIgnoreCase);
+            return Task.FromResult(Selector.Equals(context.Shape.Name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

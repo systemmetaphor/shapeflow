@@ -8,7 +8,7 @@ namespace ShapeFlow.Declaration
     public class ProjectionRuleDeclaration
     {
         public ProjectionRuleDeclaration(string fileName)
-            : this(fileName, TextTemplateLanguages.DotLiquid)
+            : this(fileName, RuleLanguages.DotLiquid)
 
         {
         }
