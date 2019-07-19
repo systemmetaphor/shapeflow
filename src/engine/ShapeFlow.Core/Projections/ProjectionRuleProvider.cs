@@ -6,12 +6,12 @@ using ShapeFlow.Declaration;
 
 namespace ShapeFlow.Projections
 {
-    public class TextTemplateProvider
+    public class ProjectionRuleProvider
     {
-        public TextTemplate GetFile(ProjectionContext context, ProjectionRuleDeclaration file)
+        public ProjectionRule GetFile(ProjectionContext context, ProjectionRuleDeclaration file)
         {
-            /* file.IsEmbedded ? TextTemplate.Create(file, GetResourceStream(file.FileName)) : */
-            return TextTemplate.Create(file, ResolveRulePath(context, file));
+            /* file.IsEmbedded ? ProjectionRule.Create(file, GetResourceStream(file.FileName)) : */
+            return ProjectionRule.Create(file, ResolveRulePath(context, file));
         }
 
         protected string ResolveRulePath(ProjectionContext context, ProjectionRuleDeclaration rule)

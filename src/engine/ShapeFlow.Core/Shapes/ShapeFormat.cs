@@ -33,6 +33,11 @@
         /// <summary>
         /// Expect to find a collection of files with path and text.
         /// </summary>
-        FileSet
+        FileSet,
+
+        /// <summary>
+        /// Expect to find  a string.
+        /// </summary>
+        Text
     }
 }

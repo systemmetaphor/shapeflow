@@ -24,21 +24,23 @@ namespace ShapeFlow.Tests
             using (var currentContainer = ApplicationContainerFactory.Create(Application.Register))
             {
                 var inference = currentContainer.Resolve<IOutputLanguageInferenceService>();
-                var templateProvider = currentContainer.Resolve<TextTemplateProvider>();
+                var templateProvider = currentContainer.Resolve<ProjectionRuleProvider>();
                 var loader = currentContainer.Resolve<ShapeManager>();
 
-                var engine = new T4ProjectionRuleEngine(templateProvider, inference);
+                var engine = new T4ProjectionRuleEngine();
 
                 var templateText = File.ReadAllText("Rules\\DomainObjects\\Aggregates.tt");
                 var solution = Solution.ParseFile("Projects\\DDD.config.json");
                 var shapeContext = loader.GetOrLoad(solution.ShapeDeclarations.First());
 
                 var ctx = new ProjectionContext(solution, solution.Pipelines.First(), shapeContext);
-                var result = await engine.TransformString(ctx, templateText);
+                var result = await engine.Transform(shapeContext.Shape, ProjectionRule.Create(templateText, RuleLanguages.T4), new Dictionary<string, string>());
 
                 Assert.IsNotNull(result);
 
-                Assert.IsTrue(result.Contains("class Order"));
+                var resultText = (string)result.GetInstance();
+
+                Assert.IsTrue(resultText.Contains("class Order"));
             }
         }
     }

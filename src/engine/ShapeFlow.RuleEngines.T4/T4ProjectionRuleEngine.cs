@@ -2,7 +2,6 @@
 using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -10,24 +9,16 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TextTemplating;
 using Mono.TextTemplating;
 using Newtonsoft.Json.Linq;
-using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.Output;
 using ShapeFlow.Projections;
 using ShapeFlow.Shapes;
 
 namespace ShapeFlow.RuleEngines.T4
 {
     public class T4ProjectionRuleEngine : IProjectionRuleEngine
-    {
-        private readonly TextTemplateProvider _fileProvider;
-        private readonly IOutputLanguageInferenceService _inferenceService;
-
-        public T4ProjectionRuleEngine(TextTemplateProvider fileProvider, IOutputLanguageInferenceService inferenceService)
+    {   
+        public T4ProjectionRuleEngine()
         {
-            _fileProvider = fileProvider ?? throw new ArgumentNullException(nameof(fileProvider));
-            _inferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
-
             RuleLanguage = RuleLanguages.T4;
             RuleSearchExpression = ".\\**\\*.tt";
         }
@@ -47,46 +38,16 @@ namespace ShapeFlow.RuleEngines.T4
             ShapeFormat.FileSet
         };
 
-        public Task<ProjectionContext> Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
-        {
-            if (projectionContext.Output.Shape.Format != ShapeFormat.FileSet)
-            {
-                throw new InvalidOperationException($"The language {RuleLanguage} can only output shapes of {nameof(ShapeFormat.FileSet)} format.");
-            }
+        public Task<Shape> Transform(Shape inputShape, ProjectionRule projectionRule,
+            IDictionary<string, string> parameters)
+        {   
+            var outputText = TransformCore(inputShape.GetInstance(), parameters, projectionRule.Text);
 
-            var outputSet = projectionContext.Output.Shape.GetInstance() as FileSet;
-            if (outputSet == null)
-            {
-                throw new InvalidOperationException($"You must set a non null {nameof(FileSet)} shape on the projection output shape.");
-            }
-
-            var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
-            var templateFileText = templateFile.Text;
-
-            string outputPath = null;
-            var outputText = TransformCore(projectionContext, projectionRule.FileName, templateFileText, ref outputPath);
-
-            if (string.IsNullOrWhiteSpace(outputPath) && !string.IsNullOrWhiteSpace(outputText))
-            {
-                var templateFileName = projectionRule.FileName;
-                var languageExtension = _inferenceService.InferFileExtension(outputText);
-                outputPath = Path.ChangeExtension(templateFileName, ".generated.txt");
-                outputPath = Path.ChangeExtension(outputPath, languageExtension);
-            }
-
-            var f = new FileSetFile(outputText, outputPath);
-            outputSet.AddFile(f);
-
-            return Task.FromResult(projectionContext);
+            Shape resultingShape = new StringShape(outputText);
+            return Task.FromResult(resultingShape);
         }
 
-        public Task<string> TransformString(ProjectionContext projectionContext, string inputText)
-        {
-            string outputPath = null;
-            return Task.FromResult(TransformCore(projectionContext, string.Empty, inputText, ref outputPath));
-        }
-
-        private string TransformCore(ProjectionContext context, string templateName, string templateFileText, ref string outputPath)
+        private string TransformCore(object model, IDictionary<string, string> parameters, string templateFileText)
         {
             var generator = new ToolTemplateGenerator();
 
@@ -111,9 +72,8 @@ namespace ShapeFlow.RuleEngines.T4
                 generator.Refs.Add(assembly.Location);
             }
 
-
             generator.AddDirectiveProcessor("PropertyProcessor", typeof(TemplateArgumentDirectiveProcessor).FullName,
-                this.GetType().Assembly.FullName);
+                GetType().Assembly.FullName);
 
             var pt = ParsedTemplate.FromText(templateFileText, generator);
 
@@ -132,9 +92,12 @@ namespace ShapeFlow.RuleEngines.T4
                 }
             }
 
-            PrepareInput(context, symbols);
+            
 
-            var outputText = generator.ProcessTemplate(pt, templateName, templateFileText, ref outputPath);
+            PrepareInput(model, parameters, symbols);
+
+            string outputPath = null;
+            var outputText = generator.ProcessTemplate(pt, string.Empty, templateFileText, ref outputPath);
 
             if (generator.Errors.HasErrors)
             {
@@ -151,11 +114,13 @@ namespace ShapeFlow.RuleEngines.T4
             return outputText;
         }
 
-        private static void PrepareInput(ProjectionContext context, IEnumerable<string> detectedSymbols)
+        private static void PrepareInput(object model, IDictionary<string, string> parameters, IEnumerable<string> detectedSymbols)
         {
-            var modelContainer = context.Input.Shape;
+            
             var inputs = new Dictionary<string, object>();
-            var model = modelContainer.GetInstance();
+
+            
+
             var unwrapModel = false;
 
             if (model is JObject modelJObject)
@@ -184,7 +149,7 @@ namespace ShapeFlow.RuleEngines.T4
                 inputs.Add("model", model);
             }
 
-            foreach (var p in context.Solution.Parameters)
+            foreach (var p in parameters)
             {
                 inputs.Add(p.Key, p.Value);
             }
@@ -221,7 +186,7 @@ namespace ShapeFlow.RuleEngines.T4
                 className = className.Substring(s + 1);
             }
 
-            return Engine.PreprocessTemplate(pt, inputContent, this, className, classNamespace, out string language, out string[] references, settings);
+            return Engine.PreprocessTemplate(pt, inputContent, this, className, classNamespace, out var language, out var references, settings);
         }
 
         public string ProcessTemplate(

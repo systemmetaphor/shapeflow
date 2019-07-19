@@ -1,9 +1,6 @@
-﻿if(Context == null)
+﻿if(Model == null)
 {
-    throw new Exception();
+    throw new Exception("The model is null");
 }
 
-System.Console.WriteLine("Hello world");
-
-
-return Context;
+return new ObjectShape(Model);

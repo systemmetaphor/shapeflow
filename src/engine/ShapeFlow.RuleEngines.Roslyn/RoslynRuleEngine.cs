@@ -12,9 +12,9 @@ namespace ShapeFlow.RuleEngines.Roslyn
 {
     public class RoslynRuleEngine : IProjectionRuleEngine
     {
-        private readonly TextTemplateProvider _fileProvider;
+        private readonly ProjectionRuleProvider _fileProvider;
 
-        public RoslynRuleEngine(TextTemplateProvider fileProvider)
+        public RoslynRuleEngine(ProjectionRuleProvider fileProvider)
         {
             _fileProvider = fileProvider;
         }
@@ -39,44 +39,23 @@ namespace ShapeFlow.RuleEngines.Roslyn
             ShapeFormat.Yaml
         };
 
-        public async Task<ProjectionContext> Transform(ProjectionContext projectionContext, ProjectionRuleDeclaration projectionRule)
+        public async Task<Shape> Transform(Shape inputShape, ProjectionRule projectionRule,
+            IDictionary<string, string> parameters)
         {
-            var globals = new RoslynShapeFlowGlobals(projectionContext);
-            var templateFile = _fileProvider.GetFile(projectionContext, projectionRule);
-            var templateFileText = templateFile.Text;
+            var globals = new RoslynShapeFlowGlobals(inputShape);
 
-            var script = CSharpScript.Create<ProjectionContext>(
-                templateFileText, 
+            var scriptOptions = ScriptOptions.Default;
+            scriptOptions = scriptOptions
+                .WithImports("System", "System.Collections", "System.Collections.Generic", "ShapeFlow", "ShapeFlow.Shapes")
+                .WithReferences(typeof(Shape).Assembly);
+
+            var script = CSharpScript.Create<Shape>(
+                projectionRule.Text, 
                 globalsType: typeof(RoslynShapeFlowGlobals),
-                options:ScriptOptions.Default.WithImports("System", "System.Collections", "System.Collections.Generic"));
+                options:scriptOptions);
             var runner = script.CreateDelegate();
             var result = await runner(globals);
             return result;
         }
-
-        public Task<string> TransformString(ProjectionContext projectionContext, string inputText)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
-    public class RoslynShapeFlowGlobals
-    {
-        public RoslynShapeFlowGlobals(ProjectionContext ctx)
-        {
-            Context = ctx;
-        }
-
-        public  ProjectionContext Context { get; }
-
-        public InputDeclaration InputDeclaration => Context.PipelineDeclaration.Input;
-
-        public OutputDeclaration OutputDeclaration => Context.PipelineDeclaration.Output;
-
-        public ShapeContext InputContext => Context.Input;
-
-        public ShapeContext OuputContext => Context.Output;
-
-        public object Input => InputContext.Shape.GetInstance();
     }
 }
