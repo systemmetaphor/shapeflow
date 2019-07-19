@@ -98,6 +98,11 @@ namespace ShapeFlow.RuleEngines.T4
                     continue;
                 }
 
+                if (string.IsNullOrWhiteSpace(assembly.Location))
+                {
+                    continue;
+                }
+
                 if (generator.Refs.Contains(assembly.Location))
                 {
                     continue;

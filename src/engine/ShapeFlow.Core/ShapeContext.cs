@@ -14,6 +14,13 @@ namespace ShapeFlow
 
         public ShapeDeclaration Declaration { get; }
 
-        public Shape Shape { get; }
+        public Shape Shape { get; private set; }
+
+        public bool IsLoaded => Shape != null;
+
+        internal void SetShape(Shape s)
+        {
+            Shape = s;
+        }
     }
 }
