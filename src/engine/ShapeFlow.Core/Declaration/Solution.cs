@@ -11,8 +11,8 @@ namespace ShapeFlow.Declaration
     {
         private readonly Dictionary<string, string> _parameters;
 
-        public Solution(string name, IEnumerable<ProjectionDeclaration> generators, IEnumerable<ShapeDeclaration> shapeDeclarations, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
-            : base(name, generators, shapeDeclarations, pipelines)
+        public Solution(string name, IEnumerable<ProjectionDeclaration> generators, IEnumerable<ShapeDeclaration> shapes, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
+            : base(name, generators, shapes, pipelines)
         {
             _parameters = new Dictionary<string, string>();
 

@@ -22,16 +22,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Models\customers.template.xlsx">
+    <None Update="Shapes\customers.template.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Models\employees.template.xlsx">
+    <None Update="Shapes\employees.template.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Models\Order.json">
+    <None Update="Shapes\Order.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Models\partners.template.xlsx">
+    <None Update="Shapes\partners.template.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Projects\M2M.config.json">

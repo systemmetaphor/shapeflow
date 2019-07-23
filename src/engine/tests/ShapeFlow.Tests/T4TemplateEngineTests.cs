@@ -23,15 +23,13 @@ namespace ShapeFlow.Tests
         {
             using (var currentContainer = ApplicationContainerFactory.Create(Application.Register))
             {
-                var inference = currentContainer.Resolve<IOutputLanguageInferenceService>();
-                var templateProvider = currentContainer.Resolve<ProjectionRuleProvider>();
                 var loader = currentContainer.Resolve<ShapeManager>();
 
                 var engine = new T4ProjectionRuleEngine();
 
                 var templateText = File.ReadAllText("Rules\\DomainObjects\\Aggregates.tt");
                 var solution = Solution.ParseFile("Projects\\DDD.config.json");
-                var shapeContext = loader.GetOrLoad(solution.ShapeDeclarations.First());
+                var shapeContext = await loader.GetOrLoad(solution.Shapes.First());
 
                 var ctx = new ProjectionContext(solution, solution.Pipelines.First(), shapeContext);
                 var result = await engine.Transform(shapeContext.Shape, ProjectionRule.Create(templateText, RuleLanguages.T4), new Dictionary<string, string>());

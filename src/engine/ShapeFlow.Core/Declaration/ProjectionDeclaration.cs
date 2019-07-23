@@ -95,7 +95,16 @@ namespace ShapeFlow.Declaration
         /// </summary>
         public bool IsInline => string.IsNullOrWhiteSpace(PackageId);
 
+        /// <summary>
+        /// Gets the base path for all rules.
+        /// </summary>
         public string RulesBasePath
+        {
+            get;
+            private set;
+        }
+
+        public string ProjectionExpression
         {
             get;
             private set;
@@ -183,23 +192,17 @@ namespace ShapeFlow.Declaration
         /// <summary>
         /// Reads the projection metadata from the given json object.
         /// </summary>
-        /// <param name="transformationObject">The json object.</param>
-        /// <param name="transformationName">The name of the projectionRef.</param>
+        /// <param name="declaration">The json object.</param>
+        /// <param name="name">The name of the projectionRef.</param>
         /// <returns>The projection metadata.</returns>
-        public static ProjectionDeclaration Parse(JObject transformationObject, string transformationName = null)
+        public static ProjectionDeclaration Parse(JObject declaration, string name = null)
         {
-            transformationName = transformationName ?? transformationObject.GetStringPropertyValue("name");
-            var version = transformationObject.GetStringPropertyValue("version");
-            var parametersArray = transformationObject.GetValue("parameters") as JArray ?? new JArray();
-            var parameters = new List<ParameterDeclaration>();
-            foreach (var jToken in parametersArray)
-            {
-                var parametersObject = (JObject)jToken;
-                var parameterDeclaration = ParameterDeclaration.Parse(parametersObject);
-                parameters.Add(parameterDeclaration);
-            }
+            name = name ?? declaration.GetStringPropertyValue("name");
+            var version = declaration.GetStringPropertyValue("version");
+            var projectionExpression = declaration.GetStringPropertyValue("projectionExpression", "map(i,f,o)");
+            var parameters = declaration.ParseParameters("parameters");
 
-            var rulesArray = transformationObject.GetValue("rules") as JArray ?? new JArray();
+            var rulesArray = declaration.GetValue("rules") as JArray ?? new JArray();
             var rules = new List<ProjectionRuleDeclaration>();
             foreach (var jToken in rulesArray)
             {
@@ -208,29 +211,30 @@ namespace ShapeFlow.Declaration
                 rules.Add(ruleDeclaration);
             }
 
-            var location = transformationObject.GetStringPropertyValue("location");
-            var rulesBasePath = transformationObject.GetStringPropertyValue("rulesBasePath");
+            var location = declaration.GetStringPropertyValue("location");
+            var rulesBasePath = declaration.GetStringPropertyValue("rulesBasePath");
 
-            var transformation = new ProjectionDeclaration
+            var projection = new ProjectionDeclaration
             {
-                Name = transformationName,
+                Name = name,
                 Parameters = parameters,
                 Rules = rules,
                 Location = location,
                 Version = version,
-                RulesBasePath =  rulesBasePath
+                RulesBasePath =  rulesBasePath,
+                ProjectionExpression = projectionExpression
             };
 
             string packageName = null;
 
-            if (transformationObject.ContainsKey("packageId"))
+            if (declaration.ContainsKey("packageId"))
             {
-                packageName = transformationObject.GetStringPropertyValue("packageId");
+                packageName = declaration.GetStringPropertyValue("packageId");
             }
 
-            transformation.PackageId = packageName;
+            projection.PackageId = packageName;
 
-            return transformation;
+            return projection;
         }
     }
 }

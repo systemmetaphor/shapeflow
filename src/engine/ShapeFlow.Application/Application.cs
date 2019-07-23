@@ -4,6 +4,7 @@ using ShapeFlow.Commands;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Loaders;
 using ShapeFlow.Loaders.DbModel;
+using ShapeFlow.Loaders.Excel;
 using ShapeFlow.Output;
 using ShapeFlow.PackageManagement;
 using ShapeFlow.PackageManagement.NuGet;
@@ -64,7 +65,11 @@ namespace ShapeFlow
             container.RegisterService<PackageManagerFactory, NugetPackageManagerFactory>();
 
             container.RegisterMany<ILoader, JsonLoader>();
+            container.RegisterMany<ILoader, XmlLoader>();
+            container.RegisterMany<ILoader, FileSetLoader>();
             container.RegisterMany<ILoader, DbModelLoader>();
+            container.RegisterMany<ILoader, ExcelLoader>();
+
             container.RegisterMany<IProjectionRuleEngine, DotLiquidProjectionRuleEngine>();
             container.RegisterMany<IProjectionRuleEngine, T4ProjectionRuleEngine>();
         }

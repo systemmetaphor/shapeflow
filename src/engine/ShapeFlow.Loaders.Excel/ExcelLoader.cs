@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Shapes;
@@ -17,21 +18,11 @@ namespace ShapeFlow.Loaders.Excel
         private const string NamespaceParameter = "namespace";
         private const string SchemaParameter = "schema";
 
-        public ExcelLoader()
-        {
-        }
-
-        public string Name
-        {
-            get
-            {
-                return "Excel";
-            }
-        }
+        public string Name => "Excel";
 
         public ShapeFormat Format => ShapeFormat.Clr;
 
-        public ShapeContext Load(ShapeDeclaration context)
+        public Task<ShapeContext> Load(ShapeDeclaration context)
         {
             var fileName = context.GetParameter(FileNameParameter);
             fileName = fileName.Replace("{{__dirname}}", Environment.CurrentDirectory);
@@ -46,7 +37,7 @@ namespace ShapeFlow.Loaders.Excel
 
             var columnsModel = new XlsImportGenerators().GetColumnInfo(fileName, linesToSkip);
 
-            return new ShapeContext(context, new XlsTemplateModel(
+            return Task.FromResult(new ShapeContext(context, new XlsTemplateModel(
                 new XlsTemplateModelRoot
                 {
                     LineObjectName = lineObjectName,
@@ -56,7 +47,22 @@ namespace ShapeFlow.Loaders.Excel
                     MatchColumnNameOnFile = context.GetParameter(MatchColumnParameter),
                     MatchColumnName = matchColumn,
                     SchemaName = schemaName
-                }, ShapeFormat.Clr, context.ModelName, context.Tags));
+                }, ShapeFormat.Clr, context.ModelName, context.Tags)));
+        }
+
+        public Task Save(ShapeContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ShapeContext Create(ShapeDeclaration decl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ShapeContext CreateSet(ShapeDeclaration decl)
+        {
+            throw new NotImplementedException();
         }
 
         public bool ValidateArguments(ShapeDeclaration context)

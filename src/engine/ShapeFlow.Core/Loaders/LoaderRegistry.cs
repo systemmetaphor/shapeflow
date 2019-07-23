@@ -9,12 +9,12 @@ namespace ShapeFlow.Loaders
 {
     public class LoaderRegistry
     {
-        private readonly HashSet<ILoader> _targets;
+        private readonly HashSet<ILoader> _loaders;
         private readonly IExtensibilityService _extensibilityService;
 
         public LoaderRegistry(IExtensibilityService extensibilityService)
         {
-            _targets = new HashSet<ILoader>();
+            _loaders = new HashSet<ILoader>();
             _extensibilityService = extensibilityService;
 
             // TODO: move this to an initialization method
@@ -25,7 +25,7 @@ namespace ShapeFlow.Loaders
         {
             generator = null;
 
-            var tentative = _targets.FirstOrDefault(t => t.Name != null && t.Name == name);
+            var tentative = _loaders.FirstOrDefault(t => t.Name != null && t.Name == name);
             if (tentative != null)
             {
                 generator = tentative;
@@ -37,11 +37,11 @@ namespace ShapeFlow.Loaders
         
         private void Load()
         {
-            var targetExtensions = _extensibilityService.LoadExtensions<ILoader>();
+            var loaderExtensions = _extensibilityService.LoadExtensions<ILoader>();
 
-            foreach (var extension in targetExtensions)
+            foreach (var extension in loaderExtensions)
             {
-                _targets.Add(extension);
+                _loaders.Add(extension);
             }
         }
     }

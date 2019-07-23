@@ -4,16 +4,16 @@ namespace ShapeFlow.Shapes
 {
     public class FileSet
     {
-        private List<FileSetFile> _outputFiles;
+        private List<FileShape> _outputFiles;
 
         public FileSet()
         {
-            _outputFiles = new List<FileSetFile>();
+            _outputFiles = new List<FileShape>();
         }
 
-        public IEnumerable<FileSetFile> OutputFiles => _outputFiles.AsReadOnly();
+        public IEnumerable<FileShape> OutputFiles => _outputFiles.AsReadOnly();
 
-        public void AddFile(FileSetFile result)
+        public void Add(FileShape result)
         {
             _outputFiles.Add(result);
         }

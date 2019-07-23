@@ -6,14 +6,14 @@ namespace ShapeFlow.Declaration
 {
     public class OutputDeclaration
     {
-        public OutputDeclaration(string outputType, Dictionary<string, string> outputerParameters)
+        public OutputDeclaration(string outputType, Dictionary<string, string> outputParameters)
         {
             OutputType = outputType;
-            OutputerParameters = outputerParameters;
+            OutputParameters = outputParameters;
         }
 
         public string OutputType { get; }
-        public Dictionary<string, string> OutputerParameters { get; }
+        public Dictionary<string, string> OutputParameters { get; }
 
         public static OutputDeclaration Parse(JObject outputObject)
         {

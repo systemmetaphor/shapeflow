@@ -25,6 +25,8 @@ namespace ShapeFlow.Pipelines
             
             var projectionContext = new ProjectionContext(Parent.Solution, PipelineDeclaration, context);
             projectionContext = await projectionEngine.Transform(projectionContext);
+
+
             fileService.Process(projectionContext);
         }
 

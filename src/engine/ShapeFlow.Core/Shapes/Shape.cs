@@ -27,5 +27,10 @@ namespace ShapeFlow.Shapes
         public IEnumerable<string> Tags { get; }
 
         public abstract object GetInstance();
+
+        public virtual void Add(Shape element)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

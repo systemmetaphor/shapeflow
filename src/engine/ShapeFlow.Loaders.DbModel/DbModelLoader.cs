@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
@@ -46,7 +47,7 @@ WHERE
         {            
         }
 
-        public ShapeContext Load(ShapeDeclaration declaration)
+        public async Task<ShapeContext> Load(ShapeDeclaration declaration)
         {
             var result = new DatabaseModelRoot();
             
@@ -82,7 +83,7 @@ WHERE
 
             using (var connection = new SqlConnection(SqlHelper.GetConnectionString(databaseInfo)))
             {
-                var lines = connection.Query<DbObjectLine>(TableMetadataQuery, new { TableName = tableName });
+                var lines = await connection.QueryAsync<DbObjectLine>(TableMetadataQuery, new { TableName = tableName });
                 var grouped = lines.GroupBy(l => l.ObjectName);
                 foreach(var g in grouped)
                 {
@@ -112,6 +113,21 @@ WHERE
             AppTrace.Verbose($"Loaded { result.Entities.Count() } models.");
 
             return new ShapeContext(declaration, new DatabaseModelShape(result, ShapeFormat.Clr,declaration.ModelName, declaration.Tags));
+        }
+
+        public Task Save(ShapeContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ShapeContext Create(ShapeDeclaration decl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ShapeContext CreateSet(ShapeDeclaration decl)
+        {
+            throw new NotImplementedException();
         }
 
         public bool ValidateArguments(ShapeDeclaration context)

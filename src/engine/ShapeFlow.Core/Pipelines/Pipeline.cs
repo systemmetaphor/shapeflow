@@ -39,9 +39,9 @@ namespace ShapeFlow.Pipelines
         {
             var shapeManager = GetService<ShapeManager>();
 
-            foreach (var shapeDeclaration in Solution.ShapeDeclarations)
+            foreach (var shapeDeclaration in Solution.Shapes)
             {
-                var shape = shapeManager.GetOrLoad(shapeDeclaration);
+                var shape = await shapeManager.GetOrLoad(shapeDeclaration);
                 await Publish(shape);
             }
         }

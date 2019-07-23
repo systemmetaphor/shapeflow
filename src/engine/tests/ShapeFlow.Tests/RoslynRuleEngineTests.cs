@@ -33,7 +33,7 @@ namespace ShapeFlow.Tests
 
                 var templateText = File.ReadAllText("Rules\\M2M\\Simple.scs");
                 var solution = Solution.ParseFile("Projects\\M2M.config.json");
-                var shapeContext = loader.GetOrLoad(solution.ShapeDeclarations.First());
+                var shapeContext = await loader.GetOrLoad(solution.Shapes.First());
 
                 solution = await projectionRegistry.Process(solution);
                 var pipeline = shapeflow.GetOrAssemblePipeline(solution);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Loaders;
@@ -29,7 +30,7 @@ namespace ShapeFlow.Shapes
             return false;
         }
 
-        public ShapeContext GetOrLoad(ShapeDeclaration declaration) 
+        public async Task<ShapeContext> GetOrLoad(ShapeDeclaration declaration) 
         {
             var modelRoot = Get(declaration.ModelName);
             if(modelRoot != null)
@@ -40,9 +41,7 @@ namespace ShapeFlow.Shapes
             if (_loaderRegistry.TryGet(declaration.LoaderName, out var loader))
             {
                 // load the domain model                                              
-                modelRoot = loader?.Load(declaration) ??
-                    throw new InvalidOperationException($"It was not possible to load a model provider for '{ declaration.LoaderName }'. Check the projectionRef configuration to see if there is one and just one provider for '{ declaration.LoaderName }'.");
-
+                modelRoot = await loader.Load(declaration);
                 _shapes.Add(declaration.ModelName, modelRoot);
             }
 
@@ -57,16 +56,6 @@ namespace ShapeFlow.Shapes
             }
 
             return null;
-        }
-
-        public Solution Process(Solution solution)
-        {
-            foreach (var modelDecl in solution.ShapeDeclarations)
-            {
-                GetOrLoad(modelDecl);
-            }
-
-            return solution;
         }
     }
 }

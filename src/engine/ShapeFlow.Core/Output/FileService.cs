@@ -58,14 +58,14 @@ namespace ShapeFlow.Output
 
             foreach (var outputFile in output.OutputFiles)
             {
-                var fullPath = outputFile.OutputPath;
+                var fullPath = outputFile.Path;
 
                 if (!Path.IsPathRooted(fullPath))
                 {
                     var root = projection.Solution.GetParameter("project-root");
                     if (!string.IsNullOrEmpty(root))
                     {
-                        fullPath = Path.Combine(root, outputFile.OutputPath);
+                        fullPath = Path.Combine(root, outputFile.Path);
                     }
                 }
 

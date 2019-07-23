@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
 using ShapeFlow;
 using ShapeFlow.Declaration;
@@ -23,7 +24,7 @@ namespace ShapeFlow.Loaders.Yaml
 
         public ShapeFormat Format => throw new NotImplementedException();
 
-        public ShapeContext Load(ShapeDeclaration context)
+        public Task<ShapeContext> Load(ShapeDeclaration context)
         {
             var modelFilePath = context.GetParameter(ModelPathParameter);
 
@@ -36,8 +37,23 @@ namespace ShapeFlow.Loaders.Yaml
 
                 var modelContext = new ShapeContext(context, new YamlShape(model, ShapeFormat.Yaml, context.ModelName, context.Tags));
 
-                return modelContext;
+                return Task.FromResult(modelContext);
             }
+        }
+
+        public Task Save(ShapeContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ShapeContext Create(ShapeDeclaration decl)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ShapeContext CreateSet(ShapeDeclaration decl)
+        {
+            throw new NotImplementedException();
         }
 
         public bool ValidateArguments(ShapeDeclaration context)

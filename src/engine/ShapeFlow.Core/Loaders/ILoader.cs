@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Shapes;
 
@@ -10,7 +11,13 @@ namespace ShapeFlow.Loaders
 
         ShapeFormat Format { get; }
 
-        ShapeContext Load(ShapeDeclaration context);
+        Task<ShapeContext> Load(ShapeDeclaration context);
+
+        Task Save(ShapeContext context);
+
+        ShapeContext Create(ShapeDeclaration decl);
+
+        ShapeContext CreateSet(ShapeDeclaration decl);
 
         bool ValidateArguments(ShapeDeclaration context);
     }

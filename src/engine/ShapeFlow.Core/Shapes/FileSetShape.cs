@@ -20,5 +20,10 @@ namespace ShapeFlow.Shapes
         {
             return FileSet;
         }
+
+        public void Add(FileShape shape)
+        {
+            FileSet.Add(shape);
+        }
     }
 }

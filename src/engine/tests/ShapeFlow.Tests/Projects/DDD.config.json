@@ -8,7 +8,13 @@
         {
           "fileName": "DomainObjects\\Aggregates.liquid"
         }
-      ]
+      ],
+      "input": {
+        "format": "json"
+      },
+      "output": {
+        "format":  "fileset" 
+      } 
     }
   },
   "shapes": [
