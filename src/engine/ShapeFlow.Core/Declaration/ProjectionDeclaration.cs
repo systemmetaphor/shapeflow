@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DotNetFileUtils;
@@ -110,6 +111,18 @@ namespace ShapeFlow.Declaration
             private set;
         }
 
+        public OutputDeclaration Output
+        {
+            get;
+            private set;
+        }
+
+        public InputDeclaration Input
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Loads the package metadata from the configuration file (shapeflow.package.json)
         /// or infers it based on the contents of the nuget package Content folder.
@@ -175,7 +188,7 @@ namespace ShapeFlow.Declaration
 
             if (string.IsNullOrWhiteSpace(directory))
             {
-                directory = System.Environment.CurrentDirectory;
+                directory = Environment.CurrentDirectory;
             }
 
             var text = File.ReadAllText(path);
@@ -214,6 +227,22 @@ namespace ShapeFlow.Declaration
             var location = declaration.GetStringPropertyValue("location");
             var rulesBasePath = declaration.GetStringPropertyValue("rulesBasePath");
 
+            var inputObject = declaration.GetValue("input") as JObject;
+            var outputObject = declaration.GetValue("output") as JObject;
+            if (outputObject == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var output = OutputDeclaration.Parse(outputObject);
+
+            if (inputObject == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var input = InputDeclaration.Parse(inputObject);
+
             var projection = new ProjectionDeclaration
             {
                 Name = name,
@@ -221,8 +250,10 @@ namespace ShapeFlow.Declaration
                 Rules = rules,
                 Location = location,
                 Version = version,
-                RulesBasePath =  rulesBasePath,
-                ProjectionExpression = projectionExpression
+                RulesBasePath = rulesBasePath,
+                ProjectionExpression = projectionExpression,
+                Input = input,
+                Output = output
             };
 
             string packageName = null;

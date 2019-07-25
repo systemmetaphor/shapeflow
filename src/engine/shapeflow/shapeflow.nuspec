@@ -14,9 +14,9 @@
     <description>ShapeFlow is a shape driven development engine that is unique because it can take anything as shape. This is a tools package that contains the Wyam CLI.</description>
     <copyright>Copyright 2019</copyright>
     <tags>shapeflow MDD CodeGeneration AI</tags>
-    <packageTypes>
-      <packageType name="DotnetTool" />
-    </packageTypes>
+    <packageFormats>
+      <packageFormat name="DotnetTool" />
+    </packageFormats>
   </metadata>
   <files>
     <file src="bin\$configuration$\netcoreapp2.1\publish\*" target="tools\netcoreapp2.1" />

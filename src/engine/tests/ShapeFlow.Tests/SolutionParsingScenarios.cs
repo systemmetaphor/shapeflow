@@ -22,9 +22,9 @@ namespace ShapeFlow.Tests
 
             Assert.IsNotNull(solution.Name);
                         
-            Assert.IsTrue(solution.Projections.Count() > 0);
-            Assert.IsTrue(solution.Shapes.Count() > 0);
-            Assert.IsTrue(solution.Pipelines.Count() > 0);            
+            Assert.IsTrue(solution.Projections.Any());
+            Assert.IsTrue(solution.Shapes.Any());
+            Assert.IsTrue(solution.Pipelines.Any());            
         }
     }
 }

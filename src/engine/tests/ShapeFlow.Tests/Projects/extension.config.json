@@ -3,7 +3,14 @@
   "projections": {
     "Persistence": {
       "packageId": "ShapeFlow.Projections.Persistence",
-      "version": "1.0.0"
+      "version": "1.0.0",
+      "input": {
+        "format": "json"
+      },
+      "output": {
+        "format": "fileset",
+        "loaderName": "fileSetLoader"
+      }
     }
   },
   "shapes": [
@@ -12,25 +19,17 @@
       "tags": "domainEntityModel",
       "loaderName": "JsonLoader",
       "parameters": {
-        "model-path": "Models\\Order.json"
+        "model-path": "Shapes\\Order.json"
       }
     }
   ],
-  "pipeline": [
-    {
-      "name": "Sales Model Entities",
-      "input": {
-        "selector": "Sales Model"
-      },
-      "projectionRef": {
-        "projection": "Persistence"
-      },
-      "output": {
-        "type": "fileset",
-        "parameters": {
-          "output-mode": "overwrite"
-        }
+  "pipeline": {
+    "stages": [
+      {
+        "name": "Sales Model Entities",
+        "selector": "Sales Model",
+        "projectionRef": "Persistence"
       }
-    }
-  ]
+    ]
+  }
 }

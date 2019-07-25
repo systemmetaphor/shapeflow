@@ -8,19 +8,19 @@ namespace ShapeFlow.Projections
         private readonly Dictionary<string, string> _parameters;
         private readonly Dictionary<string, object> _stateEntries;
 
-        public ProjectionContext(Solution solution, PipelineDeclaration pipelineDeclaration, ShapeContext shape)
+        public ProjectionContext(Solution solution, PipelineStageDeclaration pipelineStageDeclaration, ShapeContext shape)
         {
             _parameters = new Dictionary<string, string>();
             _stateEntries = new Dictionary<string, object>();
 
             Solution = solution;
-            PipelineDeclaration = pipelineDeclaration;
+            PipelineStageDeclaration = pipelineStageDeclaration;
             Input = shape;
         }
 
         public Solution Solution { get; }
 
-        public PipelineDeclaration PipelineDeclaration { get; }
+        public PipelineStageDeclaration PipelineStageDeclaration { get; }
         
         public ShapeContext Input { get; } 
 

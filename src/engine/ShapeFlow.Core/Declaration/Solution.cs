@@ -11,7 +11,7 @@ namespace ShapeFlow.Declaration
     {
         private readonly Dictionary<string, string> _parameters;
 
-        public Solution(string name, IEnumerable<ProjectionDeclaration> generators, IEnumerable<ShapeDeclaration> shapes, IEnumerable<PipelineDeclaration> pipelines, string rootFolder)
+        public Solution(string name, IEnumerable<ProjectionDeclaration> generators, IEnumerable<ShapeDeclaration> shapes, IEnumerable<PipelineStageDeclaration> pipelines, string rootFolder)
             : base(name, generators, shapes, pipelines)
         {
             _parameters = new Dictionary<string, string>();
@@ -87,7 +87,7 @@ namespace ShapeFlow.Declaration
                         
             var generators = new List<ProjectionDeclaration>();
             var models = new List<ShapeDeclaration>();
-            var pipelines = new List<PipelineDeclaration>();
+            var pipelines = new List<PipelineStageDeclaration>();
 
             var result = new Solution(name, generators, models, pipelines, rootFolder);                       
 
@@ -119,7 +119,13 @@ namespace ShapeFlow.Declaration
                 models.Add(modelDeclaration);
             }
 
-            var pipelineArray = root.GetValue("pipeline") as JArray;
+            var pipelineDeclObject = root.GetValue("pipeline") as JObject;
+            if (pipelineDeclObject == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var pipelineArray = pipelineDeclObject.GetValue("stages") as JArray;
             foreach (var jToken in pipelineArray ?? new JArray())
             {
                 if (!(jToken is JObject pipelineObject))
@@ -127,7 +133,7 @@ namespace ShapeFlow.Declaration
                     continue;
                 }
 
-                var pipeline = PipelineDeclaration.Parse(pipelineObject);
+                var pipeline = PipelineStageDeclaration.Parse(pipelineObject);
                 if(pipeline == null)
                 {
                     continue;

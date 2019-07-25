@@ -8,22 +8,22 @@ namespace ShapeFlow.Pipelines
 {
     public class ProjectionPipelineHandler : PipelineHandler
     {
-        private readonly PipelineDeclaration _pipelineDeclaration;
+        private readonly PipelineStageDeclaration _pipelineStageDeclaration;
 
-        public ProjectionPipelineHandler(PipelineDeclaration pipelineDeclaration) : base(pipelineDeclaration)
+        public ProjectionPipelineHandler(PipelineStageDeclaration pipelineStageDeclaration) : base(pipelineStageDeclaration)
         {
-            _pipelineDeclaration = pipelineDeclaration;
+            _pipelineStageDeclaration = pipelineStageDeclaration;
         }
 
         
-        public string Selector => _pipelineDeclaration.Input.Selector;
+        public string Selector => _pipelineStageDeclaration.Selector;
 
         protected override async Task Process(ShapeContext context)
         {
             var projectionEngine = Parent.GetService<ProjectionEngine>();
             var fileService = Parent.GetService<IFileService>();
             
-            var projectionContext = new ProjectionContext(Parent.Solution, PipelineDeclaration, context);
+            var projectionContext = new ProjectionContext(Parent.Solution, PipelineStageDeclaration, context);
             projectionContext = await projectionEngine.Transform(projectionContext);
 
 
@@ -33,7 +33,7 @@ namespace ShapeFlow.Pipelines
         protected override Task<bool> ShouldProcess(ShapeContext context)
         {
             // naif implementation of filter
-            return Task.FromResult(Selector.Equals(context.Shape.Name, StringComparison.OrdinalIgnoreCase));
+             return Task.FromResult(Selector.Equals(context.Shape.Name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

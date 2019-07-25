@@ -8,7 +8,14 @@
         {
           "fileName": "DomainObjects\\Aggregates.liquid"
         }
-      ]
+      ],
+      "input": {
+        "format": "json"
+      },
+      "output": {
+        "format": "fileset",
+        "loaderName": "fileSetLoader"
+      }
     }
   },
   "shapes": [
@@ -40,21 +47,13 @@
       }
     }
   ],
-  "pipeline": [
-    {
-      "name": "Excel Importers",
-      "input": {
-        "selector": "?(tag=importers)"
-      },
-      "projectionRef": {
-        "projection": "excelimport"
-      },
-      "output": {
-        "type": "fileset",
-        "parameters": {
-          "output-mode": "overwrite"
-        }
+  "pipeline": {
+    "stages": [
+      {
+        "name": "Excel Importers",
+        "selector": "?(tag=importers)",
+        "projectionRef": "excelimport"
       }
-    }
-  ]
+    ]
+  }
 }

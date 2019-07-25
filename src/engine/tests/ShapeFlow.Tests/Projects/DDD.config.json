@@ -13,7 +13,8 @@
         "format": "json"
       },
       "output": {
-        "format":  "fileset" 
+        "format": "fileset",
+        "loaderName": "fileSetLoader"
       } 
     }
   },
@@ -23,25 +24,17 @@
       "tags": "domainEntityModel",
       "loaderName": "JsonLoader",
       "parameters": {
-        "model-path": "Models\\Order.json"
+        "model-path": "Shapes\\Order.json"
       }
     }
   ],
-  "pipeline": [
-    {
-      "name": "Sales Model Entities",
-      "input": {
-        "selector": "Sales Model"
-      },
-      "projectionRef": {
-        "projection": "DDDGenerator"
-      },
-      "output": {
-        "type": "fileset",
-        "parameters": {
-          "output-mode": "overwrite"
-        }
+  "pipeline": {
+    "stages": [
+      {
+        "name": "Sales Model Entities",
+        "selector": "Sales Model",
+        "projectionRef": "DDDGenerator"
       }
-    }
-  ]
+    ]
+  }
 }

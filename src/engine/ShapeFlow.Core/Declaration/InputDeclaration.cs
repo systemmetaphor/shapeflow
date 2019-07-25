@@ -5,17 +5,23 @@ namespace ShapeFlow.Declaration
 {
     public class InputDeclaration
     {
-        public InputDeclaration(string selector)
+        private InputDeclaration()
         {
-            Selector = selector;
         }
 
-        public string Selector { get; }
+        public string Format { get; private set; }
+
+        public string MetaModel { get; private set; }
 
         public static InputDeclaration Parse(JObject inputObject)
         {
-            var selector = inputObject.GetStringPropertyValue("selector");
-            return new InputDeclaration(selector);
+            var type = inputObject.GetStringPropertyValue("format");
+            var metaModel = inputObject.GetStringPropertyValue("type");
+            return new InputDeclaration
+            {
+                Format = type,
+                MetaModel = metaModel 
+            };
         }
     }
 

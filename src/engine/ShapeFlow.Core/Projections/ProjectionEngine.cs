@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +18,8 @@ namespace ShapeFlow.Projections
             RuleLanguageProvider ruleLanguageProvider,
             IOutputLanguageInferenceService inferenceService,
             ProjectionRuleProvider ruleProvider, 
-            LoaderRegistry loaders)
+            LoaderRegistry loaders,
+            ProjectionRegistry projectionRegistry)
         {            
             InputManager = inputManager ?? throw new ArgumentNullException(nameof(inputManager));
             FileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
@@ -27,6 +27,7 @@ namespace ShapeFlow.Projections
             InferenceService = inferenceService ?? throw new ArgumentNullException(nameof(inferenceService));
             RuleProvider = ruleProvider ?? throw new ArgumentNullException(nameof(ruleProvider));
             Loaders = loaders ?? throw new ArgumentNullException(nameof(loaders));
+            ProjectionRegistry = projectionRegistry ?? throw new ArgumentNullException(nameof(projectionRegistry));
         }
         
         protected ShapeManager InputManager { get; }
@@ -41,13 +42,19 @@ namespace ShapeFlow.Projections
 
         protected LoaderRegistry Loaders { get; }
 
+        protected ProjectionRegistry ProjectionRegistry { get; }
+
         public async Task<ProjectionContext> Transform(ProjectionContext projectionContext)
         {
-            var pipelineDecl = projectionContext.PipelineDeclaration;
+            var pipelineDecl = projectionContext.PipelineStageDeclaration;
 
             // the projection indicates the input and output formats
-            var projectionDecl = pipelineDecl.Projection;
 
+            if (!ProjectionRegistry.TryGet(pipelineDecl.ProjectionRef, out var projectionDecl))
+            {
+                throw new InvalidOperationException();
+            }
+            
             // input validation, do some simple sanity checks
 
             if (projectionContext.Input?.Shape == null)
@@ -57,14 +64,14 @@ namespace ShapeFlow.Projections
 
             // verify if the shape matches the selector
 
-            if (!projectionContext.PipelineDeclaration.Input.Selector.Equals(projectionContext.Input.Shape.Name))
+            if (!projectionContext.PipelineStageDeclaration.Selector.Equals(projectionContext.Input.Shape.Name))
             {
                 throw new InvalidOperationException("An internal error occured, the received input violates the pipeline selector.");
             }
 
             // based on the projection declaration determine the output shape
 
-            if (!Enum.TryParse(pipelineDecl.Output.OutputType, true, out ShapeFormat outputFormat))
+            if (!Enum.TryParse(projectionDecl.Output.Format, true, out ShapeFormat outputFormat))
             {
                 throw new InvalidOperationException("Invalid output format");
             }
@@ -74,17 +81,18 @@ namespace ShapeFlow.Projections
             if (projectionContext.Output == null)
             {
                 var outputShapeDecl = new ShapeDeclaration(
-                    projectionContext.PipelineDeclaration.Name,
-                    pipelineDecl.Output.OutputType,
+                    projectionContext.PipelineStageDeclaration.Name,
+                    projectionDecl.Output.Format,
                     Enumerable.Empty<string>(),
                     new Dictionary<string, string>());
 
-                Loaders.TryGet(pipelineDecl.Output.OutputType, out ILoader loader);
+                Loaders.TryGet(projectionDecl.Output.LoaderName, out ILoader loader);
 
                 projectionContext.Output = loader.Create(outputShapeDecl);
             }
 
             // run the projections rules
+
             var projectionRules = projectionDecl.Rules;
             foreach (var projectionRuleDecl in projectionRules)
             {
@@ -127,7 +135,12 @@ namespace ShapeFlow.Projections
                         var outputPath = Path.ChangeExtension(templateFileName, ".generated.txt");
                         outputPath = Path.ChangeExtension(outputPath, languageExtension);
                         var fileShape = new FileShape(output, outputPath);
+
+                        // this assignment is redundant at the time of writing but is kept
+                        // because the engine might evolve and we want to make sure the shape is set
+                        // to the correct value
                         outputShape = fileShape;
+
                         outputSet.Add(fileShape);
                 }
                 else

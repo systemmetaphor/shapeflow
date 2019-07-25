@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ShapeFlow.Infrastructure;
+using Unity.Injection;
 
 namespace ShapeFlow.Loaders
 {
     public class LoaderRegistry
     {
-        private readonly HashSet<ILoader> _loaders;
+        private readonly Dictionary<string, ILoader> _loaders;
         private readonly IExtensibilityService _extensibilityService;
 
         public LoaderRegistry(IExtensibilityService extensibilityService)
         {
-            _loaders = new HashSet<ILoader>();
+            _loaders = new Dictionary<string, ILoader>(StringComparer.OrdinalIgnoreCase);
             _extensibilityService = extensibilityService;
 
             // TODO: move this to an initialization method
@@ -23,16 +24,7 @@ namespace ShapeFlow.Loaders
 
         public bool TryGet(string name, out ILoader generator)
         {
-            generator = null;
-
-            var tentative = _loaders.FirstOrDefault(t => t.Name != null && t.Name == name);
-            if (tentative != null)
-            {
-                generator = tentative;
-                return true;
-            }
-
-            return false;
+            return _loaders.TryGetValue(name, out generator);
         }               
         
         private void Load()
@@ -41,7 +33,7 @@ namespace ShapeFlow.Loaders
 
             foreach (var extension in loaderExtensions)
             {
-                _loaders.Add(extension);
+                _loaders.Add(extension.Name, extension);
             }
         }
     }

@@ -2,13 +2,21 @@
   "name": "Generate Records based on Tables",
   "projections": {
     "TablesToRecords": {
-      "version": "1.0.0",
-      "rulesBasePath": "Rules",
+      "input": {
+        "format": "clr"
+      },
+      "output": {
+        "format": "fileset",
+        "loaderName": "fileSetLoader"
+      },
       "rules": [
         {
           "fileName": "Data\\Records.liquid"
         }
-      ]
+      ],
+      "rulesBasePath": "Rules",
+      "version": "1.0.0"
+
     }
   },
   "shapes": [
@@ -24,24 +32,13 @@
       }
     }
   ],
-  "pipeline": [
-    {
-      "name": "Sales Model DDD Entities",
-
-      "input": {
-        "selector": "Sales Model"
-      },
-
-      "projectionRef": {
-        "projection": "TablesToRecords"
-      },
-
-      "output": {
-        "type": "fileset",
-        "parameters": {
-          "output-mode": "overwrite"
-        }
+  "pipeline": {
+    "stages": [
+      {
+        "name": "Sales Model DDD Entities",
+        "selector": "Sales Model",
+        "projectionRef": "TablesToRecords"
       }
-    }
-  ]
+    ]
+  }
 }

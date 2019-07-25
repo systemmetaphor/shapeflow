@@ -7,17 +7,17 @@ namespace ShapeFlow.Pipelines
 {
     public abstract class PipelineHandler
     {
-        protected PipelineHandler(PipelineDeclaration pipelineDeclaration)
+        protected PipelineHandler(PipelineStageDeclaration pipelineStageDeclaration)
         {
-            PipelineDeclaration = pipelineDeclaration;
+            PipelineStageDeclaration = pipelineStageDeclaration;
         }
 
-        public PipelineDeclaration PipelineDeclaration
+        public PipelineStageDeclaration PipelineStageDeclaration
         {
             get;
         }
 
-        public string Name => PipelineDeclaration.Name;
+        public string Name => PipelineStageDeclaration.Name;
 
         internal SolutionPipeline Parent { get; set; }
 

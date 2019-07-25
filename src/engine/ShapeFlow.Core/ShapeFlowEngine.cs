@@ -58,10 +58,6 @@ namespace ShapeFlow
 
             foreach (var pipeline in solution.Pipelines)
             {
-                _projectionRegistry.TryGet(pipeline.ProjectionRef.ProjectionName,
-                    out ProjectionDeclaration projectionDecl);
-                pipeline.Projection = projectionDecl;
-
                 var transformationHandler = new ProjectionPipelineHandler(pipeline);
                 solutionPipeline.AddHandler(transformationHandler);
             }
