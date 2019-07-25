@@ -18,9 +18,8 @@
       }
     }
   },
-  "shapes": [
-    {
-      "name": "Customers Import",
+  "shapes": {
+    "CustomersImport": {
       "tags": "importers",
       "loaderName": "ExcelSchema",
       "parameters": {
@@ -28,8 +27,7 @@
         "importer-name": "CustomerFile"
       }
     },
-    {
-      "name": "Partners Import",
+    "PartnersImport": {
       "loaderName": "ExcelSchema",
       "tags": "importers",
       "parameters": {
@@ -37,8 +35,7 @@
         "importer-name": "PartnersFile"
       }
     },
-    {
-      "name": "Employees Import",
+    "EmployeesImport": {
       "loaderName": "ExcelSchema",
       "tags": "importers",
       "parameters": {
@@ -46,14 +43,15 @@
         "importer-name": "EmployeesFile"
       }
     }
-  ],
-  "pipeline": {
-    "stages": [
-      {
-        "name": "Excel Importers",
-        "selector": "?(tag=importers)",
-        "projectionRef": "excelimport"
+  },
+  "pipelines": {
+    "applicationTier": {
+      "stages": {
+        "excelImporters": {
+          "selector": "?(tag=importers)",
+          "projectionRef": "excelimport"
+        }
       }
-    ]
+    }
   }
 }

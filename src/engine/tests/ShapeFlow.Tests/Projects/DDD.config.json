@@ -1,5 +1,5 @@
 ﻿{
-  "name": "DDD Code Generation",  
+  "name": "My Application 1",
   "projections": {
     "DDDGenerator": {
       "version": "1.0.0",
@@ -15,26 +15,26 @@
       "output": {
         "format": "fileset",
         "loaderName": "fileSetLoader"
-      } 
+      }
     }
   },
-  "shapes": [
-    {
-      "name": "Sales Model",
+  "shapes": {
+    "SalesModel": {
       "tags": "domainEntityModel",
       "loaderName": "JsonLoader",
       "parameters": {
         "model-path": "Shapes\\Order.json"
       }
     }
-  ],
-  "pipeline": {
-    "stages": [
-      {
-        "name": "Sales Model Entities",
-        "selector": "Sales Model",
-        "projectionRef": "DDDGenerator"
+  },
+  "pipelines": {
+    "applicationTier": {
+      "stages": {
+        "domainEntities": {
+          "selector": "SalesModel",
+          "projectionRef": "DDDGenerator"
+        }
       }
-    ]
+    }
   }
 }

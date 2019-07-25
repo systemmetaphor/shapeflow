@@ -54,7 +54,7 @@ namespace ShapeFlow.Commands
             sb.AppendLine(@"      }");
             sb.AppendLine(@"    }");
             sb.AppendLine(@"  ],");
-            sb.AppendLine(@"  ""pipeline"": [");
+            sb.AppendLine(@"  ""pipelines"": [");
             sb.AppendLine(@"    {");
             sb.AppendLine($@"      ""name"": ""{ name } Shape Data Tier"",");
             sb.AppendLine(@"");

@@ -36,9 +36,8 @@ namespace ShapeFlow.Declaration
 
         public IEnumerable<KeyValuePair<string, string>> Parameters => _parameters;
 
-        public static ShapeDeclaration Parse(JObject modelObject)
+        public static ShapeDeclaration Parse(JObject modelObject, string modelName)
         {
-            var modelName = modelObject.GetStringPropertyValue("name");
             var loaderName = modelObject.GetStringPropertyValue("loaderName");
             var tagsText = modelObject.GetStringPropertyValue("tags");
             var tags = TagsParser.Parse(tagsText);

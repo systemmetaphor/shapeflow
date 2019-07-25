@@ -5,14 +5,14 @@ namespace ShapeFlow.PackageManagement
 {
     public abstract class PackageManager
     {
-        private readonly Solution _solution;
+        private readonly SolutionDeclaration _solutionDeclaration;
 
-        protected PackageManager(Solution solution)
+        protected PackageManager(SolutionDeclaration solutionDeclaration)
         {
-            _solution = solution;
+            _solutionDeclaration = solutionDeclaration;
         }
 
-        protected string SolutionRootDirectory => _solution.RootDirectory;
+        protected string SolutionRootDirectory => _solutionDeclaration.RootDirectory;
 
         public abstract Task<PackageInfo> GetPackageAsync(string packageName, string packageVersion);
 

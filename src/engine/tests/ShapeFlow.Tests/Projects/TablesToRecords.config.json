@@ -19,9 +19,8 @@
 
     }
   },
-  "shapes": [
-    {
-      "name": "Sales Model",
+  "shapes": {
+    "salesModel": {
       "tags": "dbEntityModel",
       "loaderName": "DbModelLoader",
       "parameters": {
@@ -31,14 +30,15 @@
         "password": "qaz123WSX"
       }
     }
-  ],
-  "pipeline": {
-    "stages": [
-      {
-        "name": "Sales Model DDD Entities",
-        "selector": "Sales Model",
-        "projectionRef": "TablesToRecords"
+  },
+  "pipelines": {
+    "applicationTier": {
+      "stages": {
+        "entities": {
+          "selector": "salesModel",
+          "projectionRef": "TablesToRecords"
+        }
       }
-    ]
+    }
   }
 }

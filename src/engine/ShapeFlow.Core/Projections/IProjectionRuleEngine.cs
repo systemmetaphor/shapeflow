@@ -38,6 +38,6 @@ namespace ShapeFlow.Projections
         /// <param name="projectionRule">The rule to use in the transformation.</param>
         /// <param name="parameters">The parameters to pass to the rule.</param>
         /// <returns>The resulting shape.</returns>
-        Task<Shape> Transform(Shape inputShape, ProjectionRule projectionRule, IDictionary<string, string> parameters);
+        Task<Shape> Transform(Shape inputShape, ProjectionRule projectionRule, IReadOnlyDictionary<string, string> parameters);
     }
 }

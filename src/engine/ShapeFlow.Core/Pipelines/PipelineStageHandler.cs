@@ -5,12 +5,14 @@ using ShapeFlow.Projections;
 
 namespace ShapeFlow.Pipelines
 {
-    public abstract class PipelineHandler
+    public abstract class PipelineStageHandler
     {
-        protected PipelineHandler(PipelineStageDeclaration pipelineStageDeclaration)
+        protected PipelineStageHandler(PipelineStageDeclaration pipelineStageDeclaration)
         {
             PipelineStageDeclaration = pipelineStageDeclaration;
         }
+
+        public PipelineDeclaration PipelineDeclaration => Parent.PipelineDeclaration;
 
         public PipelineStageDeclaration PipelineStageDeclaration
         {
@@ -19,15 +21,7 @@ namespace ShapeFlow.Pipelines
 
         public string Name => PipelineStageDeclaration.Name;
 
-        internal SolutionPipeline Parent { get; set; }
-
-        public void OnCompleted()
-        {            
-        }
-
-        public void OnError(Exception error)
-        {            
-        }
+        internal Pipeline Parent { get; set; }
 
         public async Task OnNext(ShapeContext shapeContext)
         {
@@ -37,7 +31,7 @@ namespace ShapeFlow.Pipelines
             }
         }
 
-        protected abstract Task Process(ShapeContext context);
+        protected abstract Task Process(ShapeContext shapeContext);
 
         protected abstract Task<bool> ShouldProcess(ShapeContext context);
     }

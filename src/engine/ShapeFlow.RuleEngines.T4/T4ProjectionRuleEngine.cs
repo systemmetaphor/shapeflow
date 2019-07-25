@@ -39,7 +39,7 @@ namespace ShapeFlow.RuleEngines.T4
         };
 
         public Task<Shape> Transform(Shape inputShape, ProjectionRule projectionRule,
-            IDictionary<string, string> parameters)
+            IReadOnlyDictionary<string, string> parameters)
         {   
             var outputText = TransformCore(inputShape.GetInstance(), parameters, projectionRule.Text);
 
@@ -47,7 +47,7 @@ namespace ShapeFlow.RuleEngines.T4
             return Task.FromResult(resultingShape);
         }
 
-        private string TransformCore(object model, IDictionary<string, string> parameters, string templateFileText)
+        private string TransformCore(object model, IReadOnlyDictionary<string, string> parameters, string templateFileText)
         {
             var generator = new ToolTemplateGenerator();
 
@@ -114,7 +114,7 @@ namespace ShapeFlow.RuleEngines.T4
             return outputText;
         }
 
-        private static void PrepareInput(object model, IDictionary<string, string> parameters, IEnumerable<string> detectedSymbols)
+        private static void PrepareInput(object model, IReadOnlyDictionary<string, string> parameters, IEnumerable<string> detectedSymbols)
         {
             
             var inputs = new Dictionary<string, object>();

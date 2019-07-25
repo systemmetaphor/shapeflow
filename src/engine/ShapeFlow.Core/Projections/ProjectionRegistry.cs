@@ -64,13 +64,13 @@ namespace ShapeFlow.Projections
             public  PackageInfo PackageInfo { get; set; }
         }
 
-        public async Task<Solution> Process(Solution solution)
+        public async Task<SolutionDeclaration> Process(SolutionDeclaration solutionDeclaration)
         {
             // load packages
-            var packageManager = _packageManagerFactory.Create(solution);
+            var packageManager = _packageManagerFactory.Create(solutionDeclaration);
 
             // handle package declarations
-            foreach (var generator in solution.Projections.Where(g => !g.IsInline))
+            foreach (var generator in solutionDeclaration.Projections.Where(g => !g.IsInline))
             {
                 var packageInfo = await packageManager.ResolvePackage(generator.PackageId, generator.Version);
                 if (string.IsNullOrWhiteSpace(packageInfo.Root))
@@ -86,12 +86,12 @@ namespace ShapeFlow.Projections
             }
 
             // handle inline projection declarations
-            foreach (var generator in solution.Projections.Where(g => g.IsInline))
+            foreach (var generator in solutionDeclaration.Projections.Where(g => g.IsInline))
             {
                 Add(generator, string.Empty);
             }
 
-            return solution;
+            return solutionDeclaration;
         }
 
         private ProjectionDeclaration AppendPackageMetadata(ProjectionDeclaration existingDeclaration, PackageInfo packageInfo)

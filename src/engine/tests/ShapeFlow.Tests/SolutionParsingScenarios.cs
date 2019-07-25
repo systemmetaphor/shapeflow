@@ -18,7 +18,7 @@ namespace ShapeFlow.Tests
         public void CanParseValidFile()
         {
             var solutionObject = JObject.Parse(File.ReadAllText("Projects\\valid.config.json"));
-            var solution = Solution.Parse(solutionObject);
+            var solution = SolutionDeclaration.Parse(solutionObject);
 
             Assert.IsNotNull(solution.Name);
                         

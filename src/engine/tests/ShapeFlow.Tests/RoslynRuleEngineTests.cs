@@ -32,14 +32,14 @@ namespace ShapeFlow.Tests
                 var engine = new RoslynRuleEngine(templateProvider);
 
                 var templateText = File.ReadAllText("Rules\\M2M\\Simple.scs");
-                var solution = Solution.ParseFile("Projects\\M2M.config.json");
+                var solution = SolutionDeclaration.ParseFile("Projects\\M2M.config.json");
                 var shapeContext = await loader.GetOrLoad(solution.Shapes.First());
 
                 solution = await projectionRegistry.Process(solution);
-                var pipeline = shapeflow.GetOrAssemblePipeline(solution);
+                var pipeline = shapeflow.AssemblePipeline(solution);
 
-                var ctx = new ProjectionContext(solution, solution.Pipelines.First(), shapeContext);
-                var result = await engine.Transform(shapeContext.Shape, ProjectionRule.Create(templateText, RuleLanguages.CSharp), ctx.Solution.Parameters);
+                var ctx = new ProjectionContext(solution.Pipelines.First(), solution.Pipelines.First().Stages.First(), shapeContext);
+                var result = await engine.Transform(shapeContext.Shape, ProjectionRule.Create(templateText, RuleLanguages.CSharp), ctx.PipelineDeclaration.ComputeAggregatedParameters());
 
                 Assert.IsNotNull(result);
             }

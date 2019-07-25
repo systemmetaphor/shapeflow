@@ -6,11 +6,11 @@ using ShapeFlow.Projections;
 
 namespace ShapeFlow.Pipelines
 {
-    public class ProjectionPipelineHandler : PipelineHandler
+    public class ProjectionPipelineStageHandler : PipelineStageHandler
     {
         private readonly PipelineStageDeclaration _pipelineStageDeclaration;
 
-        public ProjectionPipelineHandler(PipelineStageDeclaration pipelineStageDeclaration) : base(pipelineStageDeclaration)
+        public ProjectionPipelineStageHandler(PipelineStageDeclaration pipelineStageDeclaration) : base(pipelineStageDeclaration)
         {
             _pipelineStageDeclaration = pipelineStageDeclaration;
         }
@@ -18,12 +18,12 @@ namespace ShapeFlow.Pipelines
         
         public string Selector => _pipelineStageDeclaration.Selector;
 
-        protected override async Task Process(ShapeContext context)
+        protected override async Task Process(ShapeContext shapeContext)
         {
             var projectionEngine = Parent.GetService<ProjectionEngine>();
             var fileService = Parent.GetService<IFileService>();
             
-            var projectionContext = new ProjectionContext(Parent.Solution, PipelineStageDeclaration, context);
+            var projectionContext = new ProjectionContext(PipelineDeclaration, PipelineStageDeclaration, shapeContext);
             projectionContext = await projectionEngine.Transform(projectionContext);
 
 

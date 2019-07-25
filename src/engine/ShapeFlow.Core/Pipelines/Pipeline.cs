@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
-using ShapeFlow.Shapes;
 
 namespace ShapeFlow.Pipelines
 {
-    public class SolutionPipeline : IDisposable
+    public class Pipeline : IDisposable
     {
         private readonly IContainer _container;
-        private readonly List<PipelineHandler> _handlers;
+        private readonly List<PipelineStageHandler> _handlers;
 
-        public SolutionPipeline(Solution solution, IContainer container)
+        public Pipeline(PipelineDeclaration pipelineDeclaration, IContainer container)
         {
-            Solution = solution;
+            PipelineDeclaration = pipelineDeclaration;
             _container = container;
-            _handlers = new List<PipelineHandler>();
+            _handlers = new List<PipelineStageHandler>();
         }
 
-        public Solution Solution { get; }
+        public PipelineDeclaration PipelineDeclaration { get; }
 
-        public void AddHandler(PipelineHandler what)
+        public void AddHandler(PipelineStageHandler what)
         {
             what.Parent = this;
             _handlers.Add(what);
@@ -32,17 +31,6 @@ namespace ShapeFlow.Pipelines
             foreach (var handler in _handlers)
             {
                 await handler.OnNext(context);
-            }
-        }
-
-        public async Task PublishAll()
-        {
-            var shapeManager = GetService<ShapeManager>();
-
-            foreach (var shapeDeclaration in Solution.Shapes)
-            {
-                var shape = await shapeManager.GetOrLoad(shapeDeclaration);
-                await Publish(shape);
             }
         }
 

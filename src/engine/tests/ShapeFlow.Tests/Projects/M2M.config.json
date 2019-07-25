@@ -2,7 +2,7 @@
   "name": "DDD Code Generation",
   "projections": {
     "M2MGenerator": {
-        "input": {
+      "input": {
         "format": "json"
       },
       "output": {
@@ -16,26 +16,26 @@
       ],
       "rulesBasePath": "Rules",
       "version": "1.0.0"
-    
+
     }
   },
-  "shapes": [
-    {
-      "name": "Sales Model",
+  "shapes": {
+    "SalesModel": {
       "tags": "domainEntityModel",
       "loaderName": "JsonLoader",
       "parameters": {
         "model-path": "Shapes\\Order.json"
       }
     }
-  ],
-  "pipeline": {
-    "stages": [
-      {
-        "name": "Sales Model Entities",
-        "selector": "Sales Model",
-        "projectionRef": "M2MGenerator"
+  },
+  "pipelines": {
+    "applicationTier": {
+      "stages": {
+        "entities":  {
+          "selector": "Sales Model",
+          "projectionRef": "M2MGenerator"
+        }
       }
-    ]
+    }
   }
 }

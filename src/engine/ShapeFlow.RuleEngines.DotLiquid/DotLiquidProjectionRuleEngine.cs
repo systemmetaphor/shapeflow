@@ -35,7 +35,7 @@ namespace ShapeFlow.RuleEngines.DotLiquid
         };
 
         public Task<Shape> Transform(Shape inputShape, ProjectionRule projectionRule,
-            IDictionary<string, string> parameters)
+            IReadOnlyDictionary<string, string> parameters)
         {
             string output;
             try
@@ -68,7 +68,7 @@ namespace ShapeFlow.RuleEngines.DotLiquid
             return Task.FromResult(resultingShape);
         }
 
-        private static Hash PrepareHash(Shape inputShape, IDictionary<string, string> parameters, IEnumerable<string> detectedSymbols)
+        private static Hash PrepareHash(Shape inputShape, IReadOnlyDictionary<string, string> parameters, IEnumerable<string> detectedSymbols)
         {
             var model = inputShape.GetInstance();
             Hash hash = null;

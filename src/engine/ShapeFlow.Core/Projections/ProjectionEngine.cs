@@ -121,7 +121,7 @@ namespace ShapeFlow.Projections
                     throw new NotSupportedException();
                 }
                 
-                var outputShape = await templateEngine.Transform(inputShape, projectionRule, projectionContext.Solution.Parameters);
+                var outputShape = await templateEngine.Transform(inputShape, projectionRule, projectionContext.PipelineDeclaration.ComputeAggregatedParameters());
 
                 // we now have an output shape telling us its format and optionally name and tags
                 

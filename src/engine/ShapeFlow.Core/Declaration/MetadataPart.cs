@@ -2,25 +2,14 @@
 
 namespace ShapeFlow.Declaration
 {
-    public class MetadataPart
+    public abstract class MetadataPart
     {
-        public MetadataPart(string name, 
-            IEnumerable<ProjectionDeclaration> generators, 
-            IEnumerable<ShapeDeclaration> shapes, 
-            IEnumerable<PipelineStageDeclaration> pipelines)
-        {
-            Name = name;
-            Projections = generators;
-            Shapes = shapes;
-            Pipelines = pipelines;
-        }
+        public string Name { get; protected set; }
 
-        public string Name { get; }
+        public IEnumerable<ProjectionDeclaration> Projections { get; protected set; }
 
-        public IEnumerable<ProjectionDeclaration> Projections { get; }
+        public IEnumerable<ShapeDeclaration> Shapes { get; protected set; }
 
-        public IEnumerable<ShapeDeclaration> Shapes { get; }
-
-        public IEnumerable<PipelineStageDeclaration> Pipelines { get; }
+        public IEnumerable<PipelineDeclaration> Pipelines { get; protected set; }
     }
 }

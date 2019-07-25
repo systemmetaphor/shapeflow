@@ -4,9 +4,9 @@ namespace ShapeFlow.PackageManagement.NuGet
 {
     public class NugetPackageManagerFactory : PackageManagerFactory
     {
-        public override PackageManager Create(Solution solution)
+        public override PackageManager Create(SolutionDeclaration solutionDeclaration)
         {
-            return new ShapeFlowNugetPackageManager(solution);
+            return new ShapeFlowNugetPackageManager(solutionDeclaration);
         }
     }
 }

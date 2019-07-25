@@ -40,7 +40,7 @@ namespace ShapeFlow.RuleEngines.Roslyn
         };
 
         public async Task<Shape> Transform(Shape inputShape, ProjectionRule projectionRule,
-            IDictionary<string, string> parameters)
+            IReadOnlyDictionary<string, string> parameters)
         {
             var globals = new RoslynShapeFlowGlobals(inputShape);
 

@@ -54,7 +54,7 @@ namespace ShapeFlow.Tests
                     { "project-root", Environment.CurrentDirectory }
                 };
 
-                var solution = Solution.ParseFile("Projects\\TablesToRecords.config.json");
+                var solution = SolutionDeclaration.ParseFile("Projects\\TablesToRecords.config.json");
                 solution.AddParameters(parameters);
 
                 var engine = container.Activate<ShapeFlowEngine>();

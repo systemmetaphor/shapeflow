@@ -12,15 +12,14 @@ namespace ShapeFlow.Declaration
         
         public string ProjectionRef { get; private set; }
         
-        public static PipelineStageDeclaration Parse(JObject pipelineObject)
+        public static PipelineStageDeclaration Parse(JObject pipelineObject, string stageName)
         {
-            var pipelineName = pipelineObject.GetStringPropertyValue("name");
             var selector = pipelineObject.GetStringPropertyValue("selector");
             var projectionRef = pipelineObject.GetStringPropertyValue("projectionRef");
             
             var pipeline = new PipelineStageDeclaration
             {
-                Name = pipelineName,
+                Name = stageName,
                 ProjectionRef = projectionRef,
                 Selector = selector
             };

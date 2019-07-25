@@ -33,7 +33,7 @@ namespace ShapeFlow.PackageManagement.NuGet
         private readonly FolderNuGetProject _nugetProject;
         private readonly SourceRepositoryProvider _sourceRepositoryProvider;
 
-        public ShapeFlowNugetPackageManager(Solution solution) : base(solution)
+        public ShapeFlowNugetPackageManager(SolutionDeclaration solutionDeclaration) : base(solutionDeclaration)
         {
             _defaultSettings = Settings.LoadDefaultSettings(SolutionRootDirectory, null, new MachineWideSettings());
             _localPackagesFolder = Path.Combine(SolutionRootDirectory, ".shapeflow");

@@ -62,7 +62,7 @@ namespace ShapeFlow.Output
 
                 if (!Path.IsPathRooted(fullPath))
                 {
-                    var root = projection.Solution.GetParameter("project-root");
+                    var root = projection.PipelineDeclaration.GetParameter("project-root");
                     if (!string.IsNullOrEmpty(root))
                     {
                         fullPath = Path.Combine(root, outputFile.Path);

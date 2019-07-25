@@ -13,29 +13,28 @@ namespace ShapeFlow
     {
         private readonly ShapeManager _shapeManager;
         private readonly ProjectionRegistry _projectionRegistry;
-        private readonly Dictionary<Solution, SolutionPipeline> _solutionPipelines;
         private readonly IContainer _container;
 
         public ShapeFlowEngine(ShapeManager shapeManager, ProjectionRegistry projectionRegistry, IContainer container)
         {
             _shapeManager = shapeManager;
             _projectionRegistry = projectionRegistry;
-            _solutionPipelines = new Dictionary<Solution, SolutionPipeline>();
+
             _container = container;
         }
 
         public async Task Run(IDictionary<string, string> parameters)
         {
-            var solution = Solution.ParseFile(parameters);
+            var solution = SolutionDeclaration.ParseFile(parameters);
             await Run(solution);
         }
 
-        public async Task Run(Solution solution)
+        public async Task Run(SolutionDeclaration solutionDeclaration)
         {
-            solution = await _projectionRegistry.Process(solution);
+            solutionDeclaration = await _projectionRegistry.Process(solutionDeclaration);
             try
             {
-                var pipeline = GetOrAssemblePipeline(solution);
+                var pipeline = AssemblePipeline(solutionDeclaration);
                 await pipeline.PublishAll();
             }
             catch (Exception e)
@@ -43,33 +42,26 @@ namespace ShapeFlow
                 AppTrace.Error(e.Message);
                 AppTrace.Verbose(e.ToString());
             }
-            
-            ClosePipeline(solution);
         }
 
-        public SolutionPipeline GetOrAssemblePipeline(Solution solution)
+        public Solution AssemblePipeline(SolutionDeclaration solutionDeclaration)
         {
-            if (_solutionPipelines.TryGetValue(solution, out var solutionPipeline))
+            var result = new Solution(solutionDeclaration, _container);
+
+            foreach (var pipelineDeclaration in solutionDeclaration.Pipelines)
             {
-                return solutionPipeline;
+                var pipeline = new Pipeline(pipelineDeclaration, _container);
+
+                foreach (var pipelineStage in pipelineDeclaration.Stages)
+                {
+                    var transformationHandler = new ProjectionPipelineStageHandler(pipelineStage);
+                    pipeline.AddHandler(transformationHandler);
+                }
+
+                result.Add(pipeline);
             }
 
-            solutionPipeline = new SolutionPipeline(solution, _container);
-
-            foreach (var pipeline in solution.Pipelines)
-            {
-                var transformationHandler = new ProjectionPipelineHandler(pipeline);
-                solutionPipeline.AddHandler(transformationHandler);
-            }
-
-            _solutionPipelines.Add(solution, solutionPipeline);
-
-            return solutionPipeline;
-        }
-
-        private void ClosePipeline(Solution solution)
-        {
-            _solutionPipelines.Remove(solution);
+            return result;
         }
     }
 }
