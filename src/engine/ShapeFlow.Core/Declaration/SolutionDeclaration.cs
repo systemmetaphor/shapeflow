@@ -66,6 +66,11 @@ namespace ShapeFlow.Declaration
             return Parse(JObject.Parse(File.ReadAllText(path)), string.IsNullOrWhiteSpace(rootFolder) ? Path.GetDirectoryName(path) : rootFolder);
         }
 
+        public static SolutionDeclaration Parse(string solutionJson, string rootFolder = "")
+        {
+            return Parse(JObject.Parse(solutionJson), rootFolder);
+        }
+
         public static SolutionDeclaration Parse(JObject root, string rootFolder = "")
         {
             var name = root.GetStringPropertyValue("name");

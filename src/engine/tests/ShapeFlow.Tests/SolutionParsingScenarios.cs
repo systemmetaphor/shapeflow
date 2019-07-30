@@ -26,5 +26,13 @@ namespace ShapeFlow.Tests
             Assert.IsTrue(solution.Shapes.Any());
             Assert.IsTrue(solution.Pipelines.Any());            
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(SolutionParsingException))]
+        public void EmptyObjectLiteralThrows()
+        {
+            var jsonText = "{}";
+            SolutionDeclaration.Parse(jsonText);
+        }
     }
 }
