@@ -3,33 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Core", "ShapeFlow.Core\ShapeFlow.Core.csproj", "{B6016BA6-3286-4456-B6B9-68CFB2750222}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Core", "src\engine\ShapeFlow.Core\ShapeFlow.Core.csproj", "{B6016BA6-3286-4456-B6B9-68CFB2750222}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.Yaml", "ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj", "{27B37D4E-4712-4BC2-BCFD-42C504861301}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.Yaml", "src\engine\ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj", "{27B37D4E-4712-4BC2-BCFD-42C504861301}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.RuleEngines.DotLiquid", "ShapeFlow.RuleEngines.DotLiquid\ShapeFlow.RuleEngines.DotLiquid.csproj", "{5D2C6C23-C833-4CA9-AEFD-FAF36A9E8851}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.RuleEngines.DotLiquid", "src\engine\ShapeFlow.RuleEngines.DotLiquid\ShapeFlow.RuleEngines.DotLiquid.csproj", "{5D2C6C23-C833-4CA9-AEFD-FAF36A9E8851}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shapeflow", "shapeflow\shapeflow.csproj", "{59DA583A-D5B2-45A6-AAB1-DF0F389DC7FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shapeflow", "src\engine\shapeflow\shapeflow.csproj", "{59DA583A-D5B2-45A6-AAB1-DF0F389DC7FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Tests", "tests\ShapeFlow.Tests\ShapeFlow.Tests.csproj", "{0B2040C5-888B-4714-ACD4-C0EB11F3D2F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Tests", "tests\engine\ShapeFlow.Tests\ShapeFlow.Tests.csproj", "{0B2040C5-888B-4714-ACD4-C0EB11F3D2F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.DbModel", "ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj", "{90922BD3-E522-4C1E-8DB0-38E4CEDF5F20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.DbModel", "src\engine\ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj", "{90922BD3-E522-4C1E-8DB0-38E4CEDF5F20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Application", "ShapeFlow.Application\ShapeFlow.Application.csproj", "{AEF6D4A5-C798-42F7-A676-7FD081B79264}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Application", "src\engine\ShapeFlow.Application\ShapeFlow.Application.csproj", "{AEF6D4A5-C798-42F7-A676-7FD081B79264}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.Excel", "ShapeFlow.Loaders.Excel\ShapeFlow.Loaders.Excel.csproj", "{0347EC9E-D333-4E01-BFC3-EA13543BBAC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Loaders.Excel", "src\engine\ShapeFlow.Loaders.Excel\ShapeFlow.Loaders.Excel.csproj", "{0347EC9E-D333-4E01-BFC3-EA13543BBAC7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Infrastructure", "ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj", "{845A1B8F-8B84-4162-8D7D-065E44FDB929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Infrastructure", "src\engine\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj", "{845A1B8F-8B84-4162-8D7D-065E44FDB929}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetFileUtils", "DotNetFileUtils\DotNetFileUtils.csproj", "{BD5261EB-EE68-4F5A-AA60-A95376E9289A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetFileUtils", "src\external\DotNetFileUtils\DotNetFileUtils.csproj", "{BD5261EB-EE68-4F5A-AA60-A95376E9289A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.PackageManagement.NuGet", "ShapeFlow.PackageManagement.NuGet\ShapeFlow.PackageManagement.NuGet.csproj", "{477DB16D-B813-415C-BA17-620E01FC8A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.PackageManagement.NuGet", "src\engine\ShapeFlow.PackageManagement.NuGet\ShapeFlow.PackageManagement.NuGet.csproj", "{477DB16D-B813-415C-BA17-620E01FC8A2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.RuleEngines.T4", "ShapeFlow.RuleEngines.T4\ShapeFlow.RuleEngines.T4.csproj", "{1D6A5FE1-653E-468C-A327-D65F6FA08023}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.RuleEngines.T4", "src\engine\ShapeFlow.RuleEngines.T4\ShapeFlow.RuleEngines.T4.csproj", "{1D6A5FE1-653E-468C-A327-D65F6FA08023}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.RuleEngines.Roslyn", "ShapeFlow.RuleEngines.Roslyn\ShapeFlow.RuleEngines.Roslyn.csproj", "{A97F58AF-77CE-4A19-94C2-A10EC82152E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.RuleEngines.Roslyn", "src\engine\ShapeFlow.RuleEngines.Roslyn\ShapeFlow.RuleEngines.Roslyn.csproj", "{A97F58AF-77CE-4A19-94C2-A10EC82152E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.RuleEngines.Edgejs", "ShapeFlow.RuleEngines.Edgejs\ShapeFlow.RuleEngines.Edgejs.csproj", "{FC84569F-B74C-4309-A109-EEB55CDA493B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.RuleEngines.Edgejs", "src\engine\ShapeFlow.RuleEngines.Edgejs\ShapeFlow.RuleEngines.Edgejs.csproj", "{FC84569F-B74C-4309-A109-EEB55CDA493B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

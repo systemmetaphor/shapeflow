@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotNetFileUtils\DotNetFileUtils.csproj" />
+    <ProjectReference Include="..\..\external\DotNetFileUtils\DotNetFileUtils.csproj" />
     <ProjectReference Include="..\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj" />
   </ItemGroup>
 

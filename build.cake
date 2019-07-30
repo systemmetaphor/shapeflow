@@ -82,7 +82,7 @@ Task("Restore-Packages")
     .IsDependentOn("Patch-Assembly-Info")
     .Does(() =>
     {
-        DotNetCoreRestore("./src/engine/shapeflow.sln", new DotNetCoreRestoreSettings
+        DotNetCoreRestore("./engine.sln", new DotNetCoreRestoreSettings
         {
             MSBuildSettings = msBuildSettings
         });
@@ -92,7 +92,7 @@ Task("Build")
     .IsDependentOn("Restore-Packages")
     .Does(() =>
     {
-        DotNetCoreBuild("./src/engine/shapeflow.sln", new DotNetCoreBuildSettings
+        DotNetCoreBuild("./engine.sln", new DotNetCoreBuildSettings
         {
             Configuration = configuration,
             NoRestore = true,
@@ -114,7 +114,7 @@ Task("Publish-Client")
 
 Task("Run-Unit-Tests")
     .IsDependentOn("Build")
-    .DoesForEach(GetFiles("./src/engine/tests/**/*.csproj"), project =>
+    .DoesForEach(GetFiles("./tests/**/*.csproj"), project =>
     {
         DotNetCoreTestSettings testSettings = new DotNetCoreTestSettings()
         {
@@ -161,14 +161,7 @@ Task("Create-Library-Packages")
         
         // Package all nuspecs
         foreach (var project in projects)
-        {
-            // temporary patch to prevent from trying
-            // to pack the test bed projects
-            if(project.FullPath.Contains("tests"))
-            {
-                continue;
-            }
-
+        {            
             DotNetCorePack(
                 MakeAbsolute(project).ToString(),
                 new DotNetCorePackSettings

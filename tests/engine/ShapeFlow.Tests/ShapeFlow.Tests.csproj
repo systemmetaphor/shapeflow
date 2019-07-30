@@ -13,12 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ShapeFlow.Application\ShapeFlow.Application.csproj" />
-    <ProjectReference Include="..\..\ShapeFlow.Core\ShapeFlow.Core.csproj" />
-    <ProjectReference Include="..\..\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj" />
-    <ProjectReference Include="..\..\ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj" />
-    <ProjectReference Include="..\..\ShapeFlow.RuleEngines.DotLiquid\ShapeFlow.RuleEngines.DotLiquid.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\ShapeFlow.Application\ShapeFlow.Application.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\ShapeFlow.Core\ShapeFlow.Core.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\ShapeFlow.Loaders.Yaml\ShapeFlow.Loaders.Yaml.csproj" />
+    <ProjectReference Include="..\..\..\src\engine\ShapeFlow.RuleEngines.DotLiquid\ShapeFlow.RuleEngines.DotLiquid.csproj" />
   </ItemGroup>
 
   <ItemGroup>
