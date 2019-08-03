@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ExcelDataReader;
+using ShapeFlow.ModelToCode;
 
 namespace ShapeFlow.Loaders.Excel
 {
     public class XlsImportGenerators
     {
-        private static readonly Regex nonDigitOrLetterReplacer = new Regex("[^a-zA-Z0-9]");
+        
 
         public IEnumerable<XlsColumnInfo> GetColumnInfo(string fileName, int linesToSkip = 0)
         {
@@ -130,34 +131,7 @@ namespace ShapeFlow.Loaders.Excel
                 originalName = originalName.Substring(1, originalName.Length - 1);
             }
 
-            var validText = nonDigitOrLetterReplacer.Replace(originalName.Trim(), ReplaceInvalidChar);
-            return validText;
-        }
-
-        private static string ReplaceInvalidChar(Match match)
-        {
-            switch (match.Value)
-            {
-                case "ã": return "a";
-                case "é": return "e";
-                case "ê": return "e";
-                case "á": return "a";
-                case "à": return "a";
-                case "ç": return "c";
-                case "ó": return "o";
-
-                case "Ã": return "A";
-                case "É": return "E";
-                case "Ê": return "E";
-                case "Á": return "A";
-                case "À": return "A";
-                case "Ç": return "C";
-                case "Ó": return "O";
-
-                case "%": return "PERCENTAGE";
-            }
-
-            return "_";
+            return originalName.ToSafeName();
         }
     }
 }

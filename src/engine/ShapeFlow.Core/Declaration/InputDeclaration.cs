@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
 
 namespace ShapeFlow.Declaration
@@ -13,6 +14,15 @@ namespace ShapeFlow.Declaration
 
         public string MetaModel { get; private set; }
 
+        public static InputDeclaration Create(string format, string metaModel)
+        {
+            return new InputDeclaration
+            {
+                Format =  format,
+                MetaModel = metaModel
+            };
+        }
+
         public static InputDeclaration Parse(JObject inputObject)
         {
             var type = inputObject.GetStringPropertyValue("format");
@@ -22,6 +32,19 @@ namespace ShapeFlow.Declaration
                 Format = type,
                 MetaModel = metaModel 
             };
+        }
+
+        public static void WriteTo(JsonTextWriter writer, InputDeclaration value)
+        {
+            writer.WriteStartObject();
+
+            writer.WritePropertyName(nameof(Format).ToCamelCase());
+            writer.WriteValue(value.Format);
+
+            writer.WritePropertyName(nameof(MetaModel).ToCamelCase());
+            writer.WriteValue(value.MetaModel);
+
+            writer.WriteEndObject();
         }
     }
 

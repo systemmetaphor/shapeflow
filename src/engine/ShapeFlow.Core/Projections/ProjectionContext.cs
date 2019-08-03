@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ShapeFlow.Collections;
 using ShapeFlow.Declaration;
 
 namespace ShapeFlow.Projections
@@ -38,26 +39,12 @@ namespace ShapeFlow.Projections
 
         public void SetParameter(string name, string value)
         {
-            if (_parameters.ContainsKey(name))
-            {
-                _parameters[name] = value;
-            }
-            else
-            {
-                _parameters.Add(name, value);
-            }
+            _parameters.AddOrUpdate(name, value);
         }
 
         public void AddStateEntry(string key, object value)
         {
-            if (_stateEntries.ContainsKey(key))
-            {
-                _stateEntries[key] = value;
-            }
-            else
-            {
-                _stateEntries.Add(key, value);
-            }
+            _stateEntries.AddOrUpdate(key, value);
         }
                         
         public T GetStateEntry<T>(string key)

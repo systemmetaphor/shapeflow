@@ -37,11 +37,7 @@ namespace ShapeFlow.Commands
                     return 0;
                 }
 
-                var parameters = new Dictionary<string, string>(generateOptions.Parameters)
-                {
-                    { "project-root", Environment.CurrentDirectory },
-                    { "project", generateOptions.ProjectFile }
-                };
+                var parameters = VariableInference.Run(generateOptions.ProjectFile);
                 
                 var engine = _container.Resolve<ShapeFlowEngine>();
                 await engine.Run(parameters);

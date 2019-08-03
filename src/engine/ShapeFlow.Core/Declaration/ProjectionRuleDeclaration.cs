@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.Projections;
@@ -69,6 +71,34 @@ namespace ShapeFlow.Declaration
             };
 
             return ruleDeclaration;
+        }
+
+        public static void WriteTo(JsonTextWriter writer, ProjectionRuleDeclaration rule)
+        {
+            writer.WriteStartObject();
+
+            writer.WritePropertyName(nameof(FileName).ToCamelCase());
+            writer.WriteValue(rule.FileName);
+
+            writer.WritePropertyName(nameof(Language).ToCamelCase());
+            writer.WriteValue(rule.Language);
+
+            writer.WritePropertyName(nameof(ProjectionExpression).ToCamelCase());
+            writer.WriteValue(rule.ProjectionExpression);
+
+            // TODO: Write Parameter Declaration
+
+            writer.WriteEndObject();
+        }
+
+        public static ProjectionRuleDeclaration Create(string templatePath, string templateLanguage)
+        {
+            return new ProjectionRuleDeclaration
+            {
+                FileName = templatePath,
+                Language = templateLanguage,
+                ProjectionExpression = string.Empty
+            };
         }
     }
 }

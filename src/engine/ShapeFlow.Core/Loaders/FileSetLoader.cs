@@ -23,7 +23,7 @@ namespace ShapeFlow.Loaders
 
         public ShapeContext Create(ShapeDeclaration decl)
         {
-            var fileSetOutput = new FileSetShape(decl.ModelName);
+            var fileSetOutput = new FileSetShape(decl.Name);
             var c = new ShapeContext(decl, fileSetOutput);
             return c;
         }

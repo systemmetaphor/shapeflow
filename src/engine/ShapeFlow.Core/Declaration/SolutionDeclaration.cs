@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ShapeFlow.Collections;
 using ShapeFlow.Infrastructure;
 
 namespace ShapeFlow.Declaration
@@ -23,17 +26,24 @@ namespace ShapeFlow.Declaration
 
         public void AddParameters(IDictionary<string, string> parameters)
         {
-            foreach(var parameter in parameters)
+            _parameters.AddOrUpdate(parameters);
+        }
+
+        public static SolutionDeclaration Create(
+            string name, 
+            string rootDirectory, 
+            IEnumerable<ProjectionDeclaration> projections,
+            IEnumerable<ShapeDeclaration> shapes,
+            IEnumerable<PipelineDeclaration> pipelines)
+        {
+            return new SolutionDeclaration
             {
-                if(_parameters.ContainsKey(parameter.Key))
-                {
-                    _parameters[parameter.Key] = parameter.Value;
-                }
-                else
-                {
-                    _parameters.Add(parameter.Key, parameter.Value);
-                }
-            }
+                Name = name,
+                RootDirectory = rootDirectory,
+                Projections =  projections,
+                Shapes = shapes,
+                Pipelines =  pipelines
+            };
         }
 
         public static SolutionDeclaration ParseFile(IDictionary<string, string> parameters)
@@ -163,6 +173,63 @@ namespace ShapeFlow.Declaration
             }
 
             return result;
+        }
+
+
+        public static string Save(SolutionDeclaration value)
+        {
+            var builder = new StringBuilder();
+            var writer = new JsonTextWriter(new StringWriter(builder));
+            writer.Formatting = Formatting.Indented;
+
+            writer.WriteStartObject();
+
+            writer.WritePropertyName(nameof(Name).ToCamelCase());
+            writer.WriteValue(value.Name);
+
+            writer.WritePropertyName(nameof(RootDirectory).ToCamelCase());
+            writer.WriteValue(value.RootDirectory);
+
+            writer.WritePropertyName(nameof(Shapes).ToCamelCase());
+            writer.WriteStartObject();
+
+            foreach (var shape in value.Shapes)
+            {
+                writer.WritePropertyName(shape.Name.ToCamelCase());
+                ShapeDeclaration.WriteTo(writer, shape);
+            }
+
+            writer.WriteEndObject();
+
+
+            writer.WritePropertyName(nameof(Projections).ToCamelCase());
+            writer.WriteStartObject();
+
+            foreach (var shape in value.Projections)
+            {
+                writer.WritePropertyName(shape.Name.ToCamelCase());
+                ProjectionDeclaration.WriteTo(writer, shape);
+            }
+
+            writer.WriteEndObject();
+
+
+            writer.WritePropertyName(nameof(Pipelines).ToCamelCase());
+            writer.WriteStartObject();
+
+            foreach (var pipeline in value.Pipelines)
+            {
+                writer.WritePropertyName(pipeline.Name.ToCamelCase());
+                PipelineDeclaration.WriteTo(writer, pipeline);
+            }
+
+            writer.WriteEndObject();
+
+
+            writer.WriteEndObject();
+            
+            writer.Close();
+            return builder.ToString();
         }
 
         public string GetParameter(string name)

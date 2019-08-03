@@ -35,7 +35,7 @@ namespace ShapeFlow.Loaders.Yaml
 
                 var model = yamlStream.Documents.FirstOrDefault()?.RootNode;
 
-                var modelContext = new ShapeContext(context, new YamlShape(model, ShapeFormat.Yaml, context.ModelName, context.Tags));
+                var modelContext = new ShapeContext(context, new YamlShape(model, ShapeFormat.Yaml, context.Name, context.Tags));
 
                 return Task.FromResult(modelContext);
             }

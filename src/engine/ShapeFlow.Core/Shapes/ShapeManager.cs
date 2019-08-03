@@ -32,7 +32,7 @@ namespace ShapeFlow.Shapes
 
         public async Task<ShapeContext> GetOrLoad(ShapeDeclaration declaration) 
         {
-            var modelRoot = Get(declaration.ModelName);
+            var modelRoot = Get(declaration.Name);
             if(modelRoot != null)
             {
                 return modelRoot;
@@ -42,7 +42,7 @@ namespace ShapeFlow.Shapes
             {
                 // load the domain model                                              
                 modelRoot = await loader.Load(declaration);
-                _shapes.Add(declaration.ModelName, modelRoot);
+                _shapes.Add(declaration.Name, modelRoot);
             }
 
             return modelRoot;

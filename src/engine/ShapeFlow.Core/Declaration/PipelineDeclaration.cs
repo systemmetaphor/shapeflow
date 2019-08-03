@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ShapeFlow.Collections;
+using ShapeFlow.Infrastructure;
 
 namespace ShapeFlow.Declaration
 {
@@ -15,9 +19,18 @@ namespace ShapeFlow.Declaration
 
         //public IDictionary<string, string> Parameters => _parameters;
 
-        public string PipelineName { get; private set; }
+        public string Name { get; private set; }
 
         public IEnumerable<PipelineStageDeclaration> Stages { get; private set; }
+
+        public static PipelineDeclaration Create(string pipelineName, IEnumerable<PipelineStageDeclaration> stages)
+        {
+            return new PipelineDeclaration
+            {
+                Name = pipelineName,
+                Stages = stages
+            };
+        }
 
         public static PipelineDeclaration Parse(JObject pipelineObject, string pipelineName, SolutionDeclaration parent)
         {
@@ -53,7 +66,7 @@ namespace ShapeFlow.Declaration
             {
                 _parent =  parent,
                 Stages = stages,
-                PipelineName =  pipelineName,
+                Name =  pipelineName,
             };
 
             return result;
@@ -61,24 +74,17 @@ namespace ShapeFlow.Declaration
 
         public void SetParameter(string name, string value)
         {
-            if (_parameters.ContainsKey(name))
-            {
-                _parameters[name] = value;
-            }
-            else
-            {
-                _parameters.Add(name, value);
-            }
+            _parameters.AddOrUpdate(name, value);
         }
 
         public string GetParameter(string name)
         {
-            if (_parameters?.ContainsKey(name) ?? false)
+            if (!_parameters.TryGetValue(name, out var result))
             {
-                return _parameters[name];
+                return _parent.GetParameter(name);
             }
-            
-            return _parent.GetParameter(name);
+
+            return result;
         }
 
         public IReadOnlyDictionary<string, string> ComputeAggregatedParameters()
@@ -94,6 +100,23 @@ namespace ShapeFlow.Declaration
             }
 
             return dictionary;
+        }
+
+        public static void WriteTo(JsonTextWriter writer, PipelineDeclaration value)
+        {
+            writer.WriteStartObject();
+
+            writer.WritePropertyName(nameof(Stages).ToCamelCase());
+
+            writer.WriteStartObject();
+            foreach (var stage in value.Stages)
+            {
+                writer.WritePropertyName(stage.Name.ToCamelCase());
+                PipelineStageDeclaration.WriteTo(writer, stage);
+            }
+            writer.WriteEndObject();
+
+            writer.WriteEndObject();
         }
     }
 }

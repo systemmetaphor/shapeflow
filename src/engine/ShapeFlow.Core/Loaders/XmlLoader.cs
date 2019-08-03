@@ -28,7 +28,7 @@ namespace ShapeFlow.Loaders
             using (var file = File.OpenRead(modelFilePath))
             {
                 var document = XDocument.Load(file);
-                return Task.FromResult(new ShapeContext(context, new XmlShape(document, ShapeFormat.Xml, context.ModelName, context.Tags)));
+                return Task.FromResult(new ShapeContext(context, new XmlShape(document, ShapeFormat.Xml, context.Name, context.Tags)));
             }
         }
 

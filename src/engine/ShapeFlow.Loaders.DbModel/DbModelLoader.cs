@@ -15,10 +15,18 @@ namespace ShapeFlow.Loaders.DbModel
     public class DbModelLoader : ILoader
     {
         private const string TableMetadataQuery = @"
+; WITH PRIMARY_KEYS (TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME)
+as(
+    SELECT ku.TABLE_SCHEMA, ku.TABLE_NAME, ku.COLUMN_NAME
+    FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS tc
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS ku
+        ON tc.CONSTRAINT_TYPE = 'PRIMARY KEY' 
+        AND tc.CONSTRAINT_NAME = ku.CONSTRAINT_NAME
+) 
 SELECT 
 	col.TABLE_SCHEMA as [ObjectSchema], 
 	col.TABLE_NAME as [ObjectName], 
-	COLUMN_NAME as [PropertyName], 
+	col.COLUMN_NAME as [PropertyName], 
 	ORDINAL_POSITION as [PropertyPosition],
 	COLUMN_DEFAULT as [PropertyDefaultValue], 
 	DATA_TYPE as [PropertySqlDataType], 
@@ -27,13 +35,18 @@ SELECT
 	NUMERIC_PRECISION_RADIX as [PropertyPrecisionRadix], 
 	NUMERIC_SCALE as [Scale],
     DATETIME_PRECISION as [DateTimePrecision],
-    IS_NULLABLE as [SqlIsNullable]
+    IS_NULLABLE as [SqlIsNullable],
+    IIF(pks.COLUMN_NAME is null, 0, 1) as [IsPrimaryKey]
 FROM 
 	INFORMATION_SCHEMA.COLUMNS col
 LEFT JOIN
 	INFORMATION_SCHEMA.TABLES tbl
 ON
 	tbl.TABLE_NAME = col.TABLE_NAME AND tbl.TABLE_SCHEMA = col.TABLE_SCHEMA
+LEFT JOIN
+    PRIMARY_KEYS as pks
+ON
+    pks.TABLE_NAME = col.TABLE_NAME AND pks.TABLE_SCHEMA = col.TABLE_SCHEMA and pks.COLUMN_NAME = col.COLUMN_NAME
 WHERE
 	(tbl.TABLE_TYPE = 'BASE TABLE')
 ";
@@ -42,10 +55,6 @@ WHERE
         public string Name => "DbModelLoader";
 
         public ShapeFormat Format => ShapeFormat.Clr;
-
-        public DbModelLoader()
-        {            
-        }
 
         public async Task<ShapeContext> Load(ShapeDeclaration declaration)
         {
@@ -83,13 +92,19 @@ WHERE
 
             using (var connection = new SqlConnection(SqlHelper.GetConnectionString(databaseInfo)))
             {
-                var lines = await connection.QueryAsync<DbObjectLine>(TableMetadataQuery, new { TableName = tableName });
+                var lines = await connection.QueryAsync<DbObjectLine>(query, new { TableName = tableName });
                 var grouped = lines.GroupBy(l => l.ObjectName);
                 foreach(var g in grouped)
                 {
+                    if (!g.Any())
+                    {
+                        continue;
+                    }
+
                     var m = new TableModel
                     {
-                        ObjectName = SafeName(g.Key)
+                        ObjectName = SafeName(g.Key),
+                        ObjectSchema = SafeName(g.First().ObjectSchema)
                     };
 
                     m.AddColumn(g.OrderBy(p => p.PropertyPosition).Select(p => new ColumnModel
@@ -112,7 +127,7 @@ WHERE
 
             AppTrace.Verbose($"Loaded { result.Entities.Count() } models.");
 
-            return new ShapeContext(declaration, new DatabaseModelShape(result, ShapeFormat.Clr,declaration.ModelName, declaration.Tags));
+            return new ShapeContext(declaration, new DatabaseModelShape(result, ShapeFormat.Clr,declaration.Name, declaration.Tags));
         }
 
         public Task Save(ShapeContext context)

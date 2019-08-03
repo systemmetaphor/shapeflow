@@ -9,8 +9,19 @@
 using Octokit;
 
 //////////////////////////////////////////////////////////////////////
-// ARGUMENTS
+// SCRIPT CONFIGURATION
 //////////////////////////////////////////////////////////////////////
+
+var applicationName   = "shapeflow";
+var solutionRoot      = "./src/engine";
+var runnableRoot      = $"{solutionRoot}/{applicationName}";
+var runnableProject   = $"{runnableRoot}/{applicationName}.csproj";
+var assemblyInfoFile  = $"{solutionRoot}/SolutionInfo.cs";
+var packagingGlob     = $"{solutionRoot}/**/*.csproj";
+var solutionFile      = $"./{applicationName}.sln";
+var unitTestsGlob     = $"./tests/**/*.csproj";
+var mygeturi          = $"https://www.myget.org/F/{applicationName}/api/v2/package";
+
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -37,13 +48,14 @@ var msBuildSettings = new DotNetCoreMSBuildSettings()
     .WithProperty("AssemblyVersion", version)
     .WithProperty("FileVersion", version);
 
-var buildDir = Directory("./src/engine/shapeflow/bin") + Directory(configuration);
+var buildDir = Directory(runnableRoot) + Directory("bin") + Directory(configuration);
+
 var buildResultDir = Directory("./build");
 var nugetRoot = buildResultDir + Directory("nuget");
 var chocoRoot = buildResultDir + Directory("choco");
 var binDir = buildResultDir + Directory("bin");
 
-var zipFile = "shapeflow-v" + semVersion + ".zip";
+var zipFile = $"{applicationName}-v" + semVersion + ".zip";
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -51,7 +63,7 @@ var zipFile = "shapeflow-v" + semVersion + ".zip";
 
 Setup(context =>
 {
-    Information("Building version {0} of shapeflow.", semVersion);
+    Information($"Building version { semVersion } of { applicationName }.");
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -68,10 +80,10 @@ Task("Patch-Assembly-Info")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        var file = "./src/engine/SolutionInfo.cs";
+        var file = assemblyInfoFile;
         CreateAssemblyInfo(file, new AssemblyInfoSettings {
-            Product = "SHAPEFLOW",
-            Copyright = "Copyright \xa9 shapeflow Contributors",
+            Product = applicationName,
+            Copyright = $"Copyright \xa9 { applicationName } Contributors",
             Version = version,
             FileVersion = version,
             InformationalVersion = semVersion
@@ -82,7 +94,7 @@ Task("Restore-Packages")
     .IsDependentOn("Patch-Assembly-Info")
     .Does(() =>
     {
-        DotNetCoreRestore("./engine.sln", new DotNetCoreRestoreSettings
+        DotNetCoreRestore(solutionFile, new DotNetCoreRestoreSettings
         {
             MSBuildSettings = msBuildSettings
         });
@@ -92,7 +104,7 @@ Task("Build")
     .IsDependentOn("Restore-Packages")
     .Does(() =>
     {
-        DotNetCoreBuild("./engine.sln", new DotNetCoreBuildSettings
+        DotNetCoreBuild(solutionFile, new DotNetCoreBuildSettings
         {
             Configuration = configuration,
             NoRestore = true,
@@ -104,7 +116,7 @@ Task("Publish-Client")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        DotNetCorePublish("./src/engine/shapeflow/shapeflow.csproj", new DotNetCorePublishSettings
+        DotNetCorePublish(runnableProject, new DotNetCorePublishSettings
         {
             Configuration = configuration,
             NoBuild = true,
@@ -114,7 +126,7 @@ Task("Publish-Client")
 
 Task("Run-Unit-Tests")
     .IsDependentOn("Build")
-    .DoesForEach(GetFiles("./tests/**/*.csproj"), project =>
+    .DoesForEach(GetFiles(unitTestsGlob), project =>
     {
         DotNetCoreTestSettings testSettings = new DotNetCoreTestSettings()
         {
@@ -157,7 +169,7 @@ Task("Create-Library-Packages")
     .Does(() =>
     {        
         // Get the set of projects to package
-        List<FilePath> projects = new List<FilePath>(GetFiles("./src/engine/**/*.csproj"));
+        List<FilePath> projects = new List<FilePath>(GetFiles(packagingGlob));
         
         // Package all nuspecs
         foreach (var project in projects)
@@ -180,7 +192,7 @@ Task("Create-Tools-Package")
     .WithCriteria(() => isRunningOnWindows)
     .Does(() =>
     {   
-        DotNetCorePack("./src/engine/shapeflow/shapeflow.csproj", new DotNetCorePackSettings {
+        DotNetCorePack(runnableProject, new DotNetCorePackSettings {
             Configuration = configuration,
             OutputDirectory = nugetRoot,
             MSBuildSettings = msBuildSettings
@@ -206,7 +218,7 @@ Task("Publish-MyGet")
         {
             NuGetPush(nupkg, new NuGetPushSettings 
             {
-                Source = "https://www.myget.org/F/shapeflow/api/v2/package",
+                Source = mygeturi,
                 ApiKey = apiKey,
                 Timeout = TimeSpan.FromSeconds(600)
             });
@@ -220,7 +232,7 @@ Task("Publish-Packages")
     // TODO: Add criteria that makes sure this is the master branch
     .Does(() =>
     {
-        var apiKey = EnvironmentVariable("SHAPEFLOW_NUGET_API_KEY");
+        var apiKey = EnvironmentVariable($"{ applicationName.ToUpper() }_NUGET_API_KEY");
         if (string.IsNullOrEmpty(apiKey))
         {
             throw new InvalidOperationException("Could not resolve NuGet API key.");
@@ -243,21 +255,22 @@ Task("Publish-Release")
     // TODO: Add criteria that makes sure this is the master branch
     .Does(() =>
     {
-        var githubToken = EnvironmentVariable("SHAPEFLOW_GITHUB_TOKEN");
+        var githubToken = EnvironmentVariable($"{ applicationName.ToUpper() }_GITHUB_TOKEN");
         if (string.IsNullOrEmpty(githubToken))
         {
             throw new InvalidOperationException("Could not resolve SHAPEFLOW GitHub token.");
         }
         
-        var github = new GitHubClient(new ProductHeaderValue("SHAPEFLOWCakeBuild"))
+        var github = new GitHubClient(new ProductHeaderValue($"{ applicationName.ToUpper() }CakeBuild"))
         {
             Credentials = new Credentials(githubToken)
         };
-        var release = github.Repository.Release.Create("SHAPEFLOWio", "SHAPEFLOW", new NewRelease("v" + semVersion) 
+
+        var release = github.Repository.Release.Create($"{ applicationName.ToUpper() }io", $"{ applicationName.ToUpper() }", new NewRelease("v" + semVersion) 
         {
             Name = semVersion,
             Body = string.Join(Environment.NewLine, releaseNotes.Notes) + Environment.NewLine + Environment.NewLine
-                + @"### Please see https://SHAPEFLOW.io/docs/usage/obtaining for important notes about downloading and installing.",
+                + $@"### Please see https://{applicationName}.io/docs/usage/obtaining for important notes about downloading and installing.",
             TargetCommitish = "master"
         }).Result; 
         

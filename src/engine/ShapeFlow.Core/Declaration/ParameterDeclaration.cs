@@ -27,6 +27,7 @@ namespace ShapeFlow.Declaration
             var parameterLabel = parametersObject.GetStringPropertyValue("label");
             var parameterType = parametersObject.GetStringPropertyValue("type");
             var optional = parametersObject.GetValue("optional").Value<bool>();
+
             var parameterDeclaration = new ParameterDeclaration(parameterName, parameterDescription, parameterLabel, parameterType, optional);
             return parameterDeclaration;
         }

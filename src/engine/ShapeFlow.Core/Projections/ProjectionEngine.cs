@@ -80,9 +80,9 @@ namespace ShapeFlow.Projections
 
             if (projectionContext.Output == null)
             {
-                var outputShapeDecl = new ShapeDeclaration(
+                var outputShapeDecl = ShapeDeclaration.Create(
                     projectionContext.PipelineStageDeclaration.Name,
-                    projectionDecl.Output.Format,
+                    projectionDecl.Output.LoaderName,
                     Enumerable.Empty<string>(),
                     new Dictionary<string, string>());
 

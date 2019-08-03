@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DotNetFileUtils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.PackageManagement;
@@ -19,7 +20,7 @@ namespace ShapeFlow.Declaration
     public class ProjectionDeclaration
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectionRefDeclaration"/> class.
+        /// Initializes a new instance of the <see cref="ProjectionDeclaration"/> class.
         /// </summary>
         private ProjectionDeclaration()
         {
@@ -32,27 +33,6 @@ namespace ShapeFlow.Declaration
         /// The name.
         /// </value>
         public string Name
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the rules used to project the model into the desired output.
-        /// </summary>
-        /// <value>
-        /// The rules used to project the model into the desired output..
-        /// </value>
-        public IEnumerable<ProjectionRuleDeclaration> Rules
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the parameters required by the projection.
-        /// </summary>
-        public IEnumerable<ParameterDeclaration> Parameters
         {
             get;
             private set;
@@ -105,22 +85,79 @@ namespace ShapeFlow.Declaration
             private set;
         }
 
+        /// <summary>
+        /// Gets or sets the projection expression.
+        /// </summary>
         public string ProjectionExpression
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the rules used to project the model into the desired output.
+        /// </summary>
+        /// <value>
+        /// The rules used to project the model into the desired output..
+        /// </value>
+        public IEnumerable<ProjectionRuleDeclaration> Rules
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the parameters required by the projection.
+        /// </summary>
+        public IEnumerable<ParameterDeclaration> Parameters
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets metadata about the output produced by the projection.
+        /// </summary>
         public OutputDeclaration Output
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets metadata about the input expected by the projection.
+        /// </summary>
         public InputDeclaration Input
         {
             get;
             private set;
+        }
+
+        public ProjectionDeclaration AddRule(ProjectionRuleDeclaration rule)
+        {
+            var copy = Clone();
+            var rules = new List<ProjectionRuleDeclaration>(copy.Rules) { rule }; // old set + rule
+            copy.Rules = rules;
+            return copy;
+        }
+
+        public static ProjectionDeclaration Create(
+            string name, 
+            string location, 
+            string rulesBasePath, 
+            IEnumerable<ProjectionRuleDeclaration> rules, 
+            InputDeclaration input, 
+            OutputDeclaration output)
+        {
+            return new ProjectionDeclaration
+            {
+                Name = name,
+                Location =  location,
+                RulesBasePath = rulesBasePath,
+                Rules =  rules,
+                Input =  input,
+                Output =  output
+            };
         }
 
         /// <summary>
@@ -266,6 +303,63 @@ namespace ShapeFlow.Declaration
             projection.PackageId = packageName;
 
             return projection;
+        }
+
+        public static void WriteTo(JsonTextWriter writer, ProjectionDeclaration value)
+        {
+            writer.WriteStartObject();
+            
+            writer.WritePropertyName(nameof(Location).ToCamelCase());
+            writer.WriteValue(value.Location);
+
+            writer.WritePropertyName(nameof(Version).ToCamelCase());
+            writer.WriteValue(value.Version);
+
+            writer.WritePropertyName(nameof(PackageId).ToCamelCase());
+            writer.WriteValue(value.PackageId);
+
+            writer.WritePropertyName(nameof(RulesBasePath).ToCamelCase());
+            writer.WriteValue(value.RulesBasePath);
+
+            writer.WritePropertyName(nameof(ProjectionExpression).ToCamelCase());
+            writer.WriteValue(value.ProjectionExpression);
+
+            writer.WritePropertyName(nameof(Rules).ToCamelCase());
+
+            writer.WriteStartArray();
+
+            foreach (var rule in value.Rules)
+            {
+                ProjectionRuleDeclaration.WriteTo(writer, rule);
+            }
+
+            writer.WriteEndArray();
+
+            writer.WritePropertyName(nameof(Input).ToCamelCase());
+            InputDeclaration.WriteTo(writer, value.Input);
+
+            writer.WritePropertyName(nameof(Output).ToCamelCase());
+            OutputDeclaration.WriteTo(writer, value.Output);
+
+            writer.WriteEndObject();
+        }
+
+        private ProjectionDeclaration Clone()
+        {
+            return new ProjectionDeclaration
+            {
+                Name = Name,
+                Input = Input,
+                Location = Location,
+                Output = Output,
+                Version = Version,
+                PackageId = PackageId,
+                Parameters = new List<ParameterDeclaration>(Parameters),
+                Rules = new List<ProjectionRuleDeclaration>(Rules),
+                RulesBasePath = RulesBasePath,
+                ProjectionExpression = ProjectionExpression,
+
+            };
         }
     }
 }

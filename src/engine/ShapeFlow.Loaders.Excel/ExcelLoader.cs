@@ -47,7 +47,7 @@ namespace ShapeFlow.Loaders.Excel
                     MatchColumnNameOnFile = context.GetParameter(MatchColumnParameter),
                     MatchColumnName = matchColumn,
                     SchemaName = schemaName
-                }, ShapeFormat.Clr, context.ModelName, context.Tags)));
+                }, ShapeFormat.Clr, context.Name, context.Tags)));
         }
 
         public Task Save(ShapeContext context)

@@ -7,7 +7,7 @@ namespace ShapeFlow.Projections
         public static ProjectionExpression Parse(string expression)
         {
             // naif parser
-            if (string.Equals("map(i,f,o)", expression))
+            if (string.IsNullOrWhiteSpace(expression) || string.Equals("map(i,f,o)", expression))
             {
                 return new ProjectionExpression(new ProjectionExpressionNode(ProjectionCardinality.One), ProjectionOperator.Map, new ProjectionExpressionNode(ProjectionCardinality.One));
             }

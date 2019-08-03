@@ -7,14 +7,31 @@ using DotLiquid;
 using DotLiquid.NamingConventions;
 using Newtonsoft.Json.Linq;
 using ShapeFlow.Infrastructure;
+using ShapeFlow.ModelToCode;
 using ShapeFlow.Projections;
 using ShapeFlow.Shapes;
 
 namespace ShapeFlow.RuleEngines.DotLiquid
 {
+    public static class DotLiquidProjectionFilters
+    {
+        // filter names must be lowercase
+
+        public static string sqltocsharp(string input)
+        {
+            return DotNetScalarTypeSelector.SqlTypeToCSharpType(input);
+        }
+    }
+
+
     public class DotLiquidProjectionRuleEngine : IProjectionRuleEngine
     {
         private static readonly BindingFlags BindingFlags = BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
+
+        static DotLiquidProjectionRuleEngine()
+        {
+            Template.RegisterFilter(typeof(DotLiquidProjectionFilters));
+        }
 
         public DotLiquidProjectionRuleEngine()
         {

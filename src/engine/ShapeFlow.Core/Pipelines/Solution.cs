@@ -22,7 +22,7 @@ namespace ShapeFlow.Pipelines
 
         public void Add(Pipeline pipeline)
         {
-            _solutionPipelines.Add(pipeline.PipelineDeclaration.PipelineName, pipeline);
+            _solutionPipelines.Add(pipeline.PipelineDeclaration.Name, pipeline);
         }
 
         public async Task PublishAll()

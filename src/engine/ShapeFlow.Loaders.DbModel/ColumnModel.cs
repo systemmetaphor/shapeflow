@@ -10,37 +10,6 @@
 
         public string SqlDataType { get; set; }
 
-        public string PropertyDotNetType
-        {
-            get
-            {
-                var sqlType = (SqlDataType ?? string.Empty).ToLower();
-                switch(sqlType)
-                {
-                    case "varchar":
-                        return "string";
-
-                    case "nvarchar":
-                        return "string";
-
-                    case "date":
-                        return "DateTime";
-
-                    case "decimal":
-                        return "decimal";
-
-                    case "int":
-                        return "int";
-
-                    case "bigint":
-                        return "long";
-
-                    default:
-                        return "object";
-                }
-            }
-        }                
-
         public int? Length { get; set; }
 
         public int? Precision { get; set; }

@@ -26,7 +26,7 @@ namespace ShapeFlow.Loaders
             var modelFilePath = declaration.GetParameter(ModelPathParameter);
             var modelRoot = new ShapeContext(
                 declaration, 
-                new JsonShape(JObject.Parse(File.ReadAllText(modelFilePath)), ShapeFormat.Json, declaration.ModelName, declaration.Tags));
+                new JsonShape(JObject.Parse(File.ReadAllText(modelFilePath)), ShapeFormat.Json, declaration.Name, declaration.Tags));
             return Task.FromResult(modelRoot);
         }
 
