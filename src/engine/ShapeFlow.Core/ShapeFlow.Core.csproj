@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CodeClassifier">
-      <HintPath>..\..\..\_lib\CodeClassifier.dll</HintPath>
+    <Reference Include="CodeClassifier.NetCore">
+      <HintPath>..\..\..\_lib\CodeClassifier.NetCore.dll</HintPath>
     </Reference>
   </ItemGroup>
 

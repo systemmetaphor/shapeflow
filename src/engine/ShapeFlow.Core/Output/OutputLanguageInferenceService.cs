@@ -6,6 +6,9 @@ namespace ShapeFlow.Output
     {
         public string InferFileExtension(string text)
         {
+            // cancel out the classification output messages
+            CodeClassifier.Output = null;
+
             var language = CodeClassifier.Classify(text);
 
             switch(language.ToLower())

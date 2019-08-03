@@ -51,7 +51,7 @@ namespace ShapeFlow.Commands
             sb.AppendLine(@"{% endfor -%}");
             sb.AppendLine(@"}");
 
-            file = Path.Combine(directory, "templates\\TablesToRecords.liquid");
+            file = Path.Combine(directory, "Templates\\Data\\Records.liquid");
             _fileService.PerformWrite(file, sb.ToString());
 
             return Task.FromResult(0);

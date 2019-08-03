@@ -9,12 +9,12 @@ namespace ShapeFlow.Declaration
     {
         public static string Generate(InitTemplateOptions options)
         { 
-            var projectionRule = ProjectionRuleDeclaration.Create("templates\\TablesToRecords.liquid", RuleLanguages.DotLiquid);
+            var projectionRule = ProjectionRuleDeclaration.Create("Data\\Records.liquid", RuleLanguages.DotLiquid);
             
             var projection = ProjectionDeclaration.Create(
                 "tablesToRecords",
                 options.RootDirectory,
-                string.Empty,
+                "Templates",
                 new []{ projectionRule },
                 InputDeclaration.Create(nameof(ShapeFormat.Clr), string.Empty),
                 OutputDeclaration.Create(nameof(ShapeFormat.FileSet), "FileSetLoader", null));
