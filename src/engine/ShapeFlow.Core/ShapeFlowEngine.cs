@@ -35,7 +35,7 @@ namespace ShapeFlow
             try
             {
                 var pipeline = AssemblePipeline(solutionDeclaration);
-                await pipeline.PublishAll();
+                await pipeline.LoadAndPublish();
             }
             catch (Exception e)
             {

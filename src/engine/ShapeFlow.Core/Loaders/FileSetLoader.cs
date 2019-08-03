@@ -28,11 +28,6 @@ namespace ShapeFlow.Loaders
             return c;
         }
 
-        public ShapeContext CreateSet(ShapeDeclaration decl)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool ValidateArguments(ShapeDeclaration context)
         {
             throw new NotImplementedException();

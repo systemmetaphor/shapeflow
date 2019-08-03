@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\loaders\ShapeFlow.Loaders.KriativityReflectedModel\ShapeFlow.Loaders.KriativityReflectedModel.csproj" />
     <ProjectReference Include="..\ShapeFlow.Core\ShapeFlow.Core.csproj" />
     <ProjectReference Include="..\ShapeFlow.Infrastructure\ShapeFlow.Infrastructure.csproj" />
     <ProjectReference Include="..\ShapeFlow.Loaders.DbModel\ShapeFlow.Loaders.DbModel.csproj" />

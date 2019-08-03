@@ -11,6 +11,7 @@ namespace ShapeFlow.Tests
     {
         public const string RecordFolderName = "Records";
         public const string RepositoryFolderName = "Repositories";
+        public const string ShapeflowPackages = ".shapeflow";
 
         private readonly string _projectName;
 
@@ -41,6 +42,8 @@ namespace ShapeFlow.Tests
 
         public string RepositoriesFolder { get; private set; }
 
+        public string ShapeflowFolder { get; private set; }
+
         public void Create()
         {
             CreateFolders();
@@ -61,6 +64,7 @@ namespace ShapeFlow.Tests
             
             var recordsFolder = Path.Combine(SolutionDir, RecordFolderName);
             var repositoriesFolder = Path.Combine(SolutionDir, RepositoryFolderName);
+            var shapeflowFolder = Path.Combine(SolutionDir, ShapeflowPackages);
 
             if (!Directory.Exists(recordsFolder))
             {
@@ -72,8 +76,14 @@ namespace ShapeFlow.Tests
                 Directory.CreateDirectory((repositoriesFolder));
             }
 
+            if (!Directory.Exists(shapeflowFolder))
+            {
+                Directory.CreateDirectory((shapeflowFolder));
+            }
+
             RecordsFolder = recordsFolder;
             RepositoriesFolder = repositoriesFolder;
+            ShapeflowFolder = shapeflowFolder;
         }
 
         private void CreateFiles()

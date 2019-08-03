@@ -2,7 +2,7 @@
   "profiles": {
     "shapeflow": {
       "commandName": "Project",
-      "workingDirectory": "C:\\tmp\\tst"
+      "workingDirectory": "C:\\prj\\pes\\mytelecom\\services\\_models"
     }
   }
 }

@@ -25,7 +25,7 @@ namespace ShapeFlow.Pipelines
             _solutionPipelines.Add(pipeline.PipelineDeclaration.Name, pipeline);
         }
 
-        public async Task PublishAll()
+        public async Task LoadAndPublish()
         {
             var shapeManager = GetService<ShapeManager>();
 

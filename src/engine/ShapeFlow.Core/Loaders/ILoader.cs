@@ -17,8 +17,6 @@ namespace ShapeFlow.Loaders
 
         ShapeContext Create(ShapeDeclaration decl);
 
-        ShapeContext CreateSet(ShapeDeclaration decl);
-
         bool ValidateArguments(ShapeDeclaration context);
     }
 }

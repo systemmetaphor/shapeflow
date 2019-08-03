@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DotNetFileUtils;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
 using ShapeFlow.PackageManagement;
@@ -15,10 +14,7 @@ namespace ShapeFlow.Projections
         private readonly PackageManagerFactory _packageManagerFactory;
         private readonly RuleLanguageProvider _ruleLanguageProvider;
 
-        public ProjectionRegistry(
-            IExtensibilityService extensibilityService, 
-            PackageManagerFactory packageManagerFactory,
-            RuleLanguageProvider ruleLanguageProvider)
+        public ProjectionRegistry(IExtensibilityService extensibilityService, PackageManagerFactory packageManagerFactory, RuleLanguageProvider ruleLanguageProvider)
         {
             _packageManagerFactory = packageManagerFactory;
             _targets = new HashSet<TargetRegistration>();
@@ -45,12 +41,12 @@ namespace ShapeFlow.Projections
 
         public void Add(ProjectionDeclaration declaration, string location)
         {
-            _targets.Add(new TargetRegistration { Configuration = declaration, Location = location });
+            _targets.Add(new TargetRegistration { Configuration = declaration });
         }
 
         public void Add(ProjectionDeclaration declaration, PackageInfo package)
         {
-            _targets.Add(new TargetRegistration { Configuration = declaration, Location = package.Root, PackageInfo = package });
+            _targets.Add(new TargetRegistration { Configuration = declaration, PackageInfo = package });
         }
 
         class TargetRegistration
@@ -58,8 +54,6 @@ namespace ShapeFlow.Projections
             public ProjectionDeclaration Configuration { get; set; }
 
             public IProjectionExtension Extension { get; set; }
-
-            public string Location { get; set; }
 
             public  PackageInfo PackageInfo { get; set; }
         }
@@ -107,7 +101,7 @@ namespace ShapeFlow.Projections
 
             foreach (var extension in targetExtensions)
             {
-                _targets.Add(new TargetRegistration { Extension = extension, Configuration = extension.Declaration, Location = extension.Location });
+                _targets.Add(new TargetRegistration { Extension = extension, Configuration = extension.Declaration });
             }            
         }
     }
