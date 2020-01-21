@@ -42,11 +42,6 @@ namespace ShapeFlow.Loaders
             throw new NotImplementedException();
         }
 
-        public ShapeContext CreateSet(ShapeDeclaration decl)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool ValidateArguments(ShapeDeclaration context)
         {
             if (string.IsNullOrWhiteSpace(context.GetParameter(ModelPathParameter)))

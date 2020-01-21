@@ -5,6 +5,7 @@ using ShapeFlow.Infrastructure;
 using ShapeFlow.Loaders;
 using ShapeFlow.Loaders.DbModel;
 using ShapeFlow.Loaders.Excel;
+using ShapeFlow.Loaders.KriativityReflectedModel;
 using ShapeFlow.Output;
 using ShapeFlow.PackageManagement;
 using ShapeFlow.PackageManagement.NuGet;
@@ -69,6 +70,7 @@ namespace ShapeFlow
             container.RegisterMany<ILoader, FileSetLoader>();
             container.RegisterMany<ILoader, DbModelLoader>();
             container.RegisterMany<ILoader, ExcelLoader>();
+            container.RegisterMany<ILoader, KriativityReflectedModelLoader>();
 
             container.RegisterMany<IProjectionRuleEngine, DotLiquidProjectionRuleEngine>();
             container.RegisterMany<IProjectionRuleEngine, T4ProjectionRuleEngine>();

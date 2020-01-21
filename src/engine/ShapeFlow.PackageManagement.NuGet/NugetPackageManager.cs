@@ -68,6 +68,30 @@ namespace ShapeFlow.PackageManagement.NuGet
             return Task.FromResult(result);
         }
 
+        public override async Task<PackageInfo> TryInstallPackage(string packageFilePath)
+        {
+            var archiveReader = new PackageArchiveReader(packageFilePath);
+
+            var identity = archiveReader.GetIdentity();
+
+            using (var packageStream = File.OpenRead(packageFilePath))
+            {
+                var downloadResult = new DownloadResourceResult(packageStream, Path.GetDirectoryName(packageFilePath));
+                await _nugetProject.InstallPackageAsync(
+                    identity,
+                    downloadResult,
+                    new NuGetProjectContext(),
+                    CancellationToken.None);
+            }
+
+            var installedPath = _nugetProject.GetInstalledPath(identity);
+            var filePath = _nugetProject.GetInstalledPackageFilePath(identity);
+
+            var result = new PackageInfo(identity.Id, identity.Version.OriginalVersion, installedPath, filePath);
+            PopulateContents(result);
+            return result;
+        }
+
         public override async Task<PackageInfo> TryInstallPackage(string packageName, string packageVersion)
         {   
             var identity = new PackageIdentity(packageName, new NuGetVersion(packageVersion));
@@ -128,7 +152,7 @@ namespace ShapeFlow.PackageManagement.NuGet
                 foreach (var contentSegment in contentGroup.Items.Distinct())
                 {
                     var contentPath = Path.Combine(result.Root, contentSegment);
-                    AppTrace.Verbose($"Added content path {contentPath} from compatible content group {contentGroup.TargetFramework.DotNetFrameworkName} from package {result.Name} to included paths");
+                    AppTrace.Verbose($"Added content packageFilePath {contentPath} from compatible content group {contentGroup.TargetFramework.DotNetFrameworkName} from package {result.Name} to included paths");
                     result.AddContentPath(contentPath);
                 }
             }

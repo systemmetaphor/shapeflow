@@ -1,7 +1,7 @@
 ﻿{
   "name": "My Application 1",
   "projections": {
-    "DDDGenerator": {
+    "domainDrivenGenerator": {
       "version": "1.0.0",
       "rulesBasePath": "Rules",
       "rules": [
@@ -19,7 +19,7 @@
     }
   },
   "shapes": {
-    "SalesModel": {
+    "salesModel": {
       "tags": "domainEntityModel",
       "loaderName": "JsonLoader",
       "parameters": {
@@ -31,8 +31,8 @@
     "applicationTier": {
       "stages": {
         "domainEntities": {
-          "selector": "SalesModel",
-          "projectionRef": "DDDGenerator"
+          "selector": "salesModel",
+          "projectionRef": "domainDrivenGenerator"
         }
       }
     }

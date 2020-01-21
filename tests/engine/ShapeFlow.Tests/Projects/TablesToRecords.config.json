@@ -24,7 +24,7 @@
       "tags": "dbEntityModel",
       "loaderName": "DbModelLoader",
       "parameters": {
-        "server": ".",
+        "server": ".\\sql2017",
         "db": "Northwind",
         "user": "sa",
         "password": "qaz123WSX"

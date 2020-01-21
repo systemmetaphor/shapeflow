@@ -16,23 +16,20 @@ namespace ShapeFlow.PackageManagement
 
         public abstract Task<PackageInfo> GetPackageAsync(string packageName, string packageVersion);
 
+        public abstract Task<PackageInfo> TryInstallPackage(string packageFilePath);
+
         public abstract Task<PackageInfo> TryInstallPackage(string packageName, string packageVersion);
 
         public async Task<PackageInfo> ResolvePackage(string packageName, string packageVersion)
         {
-            PackageInfo info = await GetPackageAsync(packageName, packageVersion);
+            var info = await GetPackageAsync(packageName, packageVersion);
 
             if (!info.IsInstalled)
             {
                 info = await TryInstallPackage(packageName, packageVersion);
             }
 
-            if (!info.IsInstalled)
-            {
-                return null;
-            }
-
-            return info;
+            return !info.IsInstalled ? null : info;
         }
     }
 }

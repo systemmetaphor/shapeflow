@@ -27,9 +27,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.PackageManagement
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.RuleEngines.T4", "src\engine\ShapeFlow.RuleEngines.T4\ShapeFlow.RuleEngines.T4.csproj", "{1D6A5FE1-653E-468C-A327-D65F6FA08023}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.RuleEngines.Roslyn", "src\engine\ShapeFlow.RuleEngines.Roslyn\ShapeFlow.RuleEngines.Roslyn.csproj", "{A97F58AF-77CE-4A19-94C2-A10EC82152E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.RuleEngines.Roslyn", "src\engine\ShapeFlow.RuleEngines.Roslyn\ShapeFlow.RuleEngines.Roslyn.csproj", "{A97F58AF-77CE-4A19-94C2-A10EC82152E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.RuleEngines.Edgejs", "src\engine\ShapeFlow.RuleEngines.Edgejs\ShapeFlow.RuleEngines.Edgejs.csproj", "{FC84569F-B74C-4309-A109-EEB55CDA493B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.RuleEngines.Edgejs", "src\engine\ShapeFlow.RuleEngines.Edgejs\ShapeFlow.RuleEngines.Edgejs.csproj", "{FC84569F-B74C-4309-A109-EEB55CDA493B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeFlow.Projections.Persistence", "src\projections\ShapeFlow.Projections.Persistence\ShapeFlow.Projections.Persistence.csproj", "{0F0B43E3-0FB9-4D46-8265-91DFAB1E493D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeFlow.Loaders.KriativityReflectedModel", "src\loaders\ShapeFlow.Loaders.KriativityReflectedModel\ShapeFlow.Loaders.KriativityReflectedModel.csproj", "{0C05E3CA-50ED-413C-8DB6-857E93337E52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1C374B45-E5EB-4548-9B63-DB6988BB2B20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,9 +99,20 @@ Global
 		{FC84569F-B74C-4309-A109-EEB55CDA493B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC84569F-B74C-4309-A109-EEB55CDA493B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC84569F-B74C-4309-A109-EEB55CDA493B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F0B43E3-0FB9-4D46-8265-91DFAB1E493D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0B43E3-0FB9-4D46-8265-91DFAB1E493D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0B43E3-0FB9-4D46-8265-91DFAB1E493D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0B43E3-0FB9-4D46-8265-91DFAB1E493D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C05E3CA-50ED-413C-8DB6-857E93337E52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C05E3CA-50ED-413C-8DB6-857E93337E52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C05E3CA-50ED-413C-8DB6-857E93337E52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C05E3CA-50ED-413C-8DB6-857E93337E52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0F0B43E3-0FB9-4D46-8265-91DFAB1E493D} = {1C374B45-E5EB-4548-9B63-DB6988BB2B20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D8E4FB4-0C0F-407C-848A-750585C5AF3E}
