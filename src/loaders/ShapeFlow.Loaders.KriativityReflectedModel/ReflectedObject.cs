@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using dnlib.DotNet;
 
 namespace ShapeFlow.Loaders.KriativityReflectedModel
 {
@@ -21,7 +22,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 
         public IEnumerable<ReflectedObjectProperty> Properties  => _properties;
                 
-        public Type DotNetType { get; set; }
+        public TypeDef DotNetType { get; set; }
         
         public bool IsObsolete { get; set; }
 

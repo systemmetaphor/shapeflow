@@ -1,4 +1,5 @@
 using System;
+using dnlib.DotNet;
 
 namespace ShapeFlow.Loaders.KriativityReflectedModel
 {          
@@ -6,7 +7,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
     {
         public string Name { get; set; }
               
-        public Type DotNetType { get; set; }
+        public TypeDef DotNetType { get; set; }
         
         public string TargetType { get; set; }
 

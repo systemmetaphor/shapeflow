@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using dnlib.DotNet;
 
 namespace ShapeFlow.Loaders.KriativityReflectedModel
 {
     public static class TypeScriptSyntax
     {
-        public static Type GetCollectionElementType(Type what)
+        public static Type GetCollectionElementType(TypeDef what)
         {
             if(!IsCollectionType(what))
             {
@@ -18,7 +19,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return what.GetGenericArguments()[0];
         }
 
-        public static bool IsCollectionType(Type what)
+        public static bool IsCollectionType(TypeDef what)
         {
             return IsGenericObservableCollectionType(what) || IsGenericCollectionType(what) || IsGenericListType(what) || IsGenericEnumerableType(what);
         }
@@ -105,7 +106,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return "any";
         }
 
-        public static string ConvertClrTypeToDtoTypeScriptType(Type what)
+        public static string ConvertClrTypeToDtoTypeScriptType(TypeDef what)
         {
             if (what == null)
             {
@@ -150,7 +151,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return "any";
         }
 
-        public static string GetDomainDefaultValue(Type what, bool forExtends = false)
+        public static string GetDomainDefaultValue(TypeDef what, bool forExtends = false)
         {
             if (what == null)
             {
@@ -227,7 +228,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return "null";
         }
 
-        public static string GetDtoDefaultValue(Type what, bool forExtends = false)
+        public static string GetDtoDefaultValue(TypeDef what, bool forExtends = false)
         {
             if (what == null)
             {

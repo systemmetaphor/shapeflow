@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using dnlib.DotNet;
 using ShapeFlow.Infrastructure;
 
 namespace Kriativity.ModelDriven.Infrastructure
 {
     internal class AssemblyLoader : IDisposable
     {
-        private readonly Dictionary<string, Assembly> _loadedAssemblies;
+        private readonly Dictionary<string, AssemblyDef> _loadedAssemblies;
 
         public AssemblyLoader()
         {
-            _loadedAssemblies = new Dictionary<string, Assembly>();
+            _loadedAssemblies = new Dictionary<string, AssemblyDef>();
             InstallAssemblyResolver();
         }
 
         public Func<string, bool> IgnoreFilter { get; set; }
 
-        public IEnumerable<Assembly> LoadAll(string baseDirectory, string pattern)
+        public IEnumerable<AssemblyDef> LoadAll(string baseDirectory, string pattern)
         {
             DirectoryInfo dirInfo = new DirectoryInfo(baseDirectory);
             FileInfo[] allAssembliesInDirectory = dirInfo.GetFiles();
@@ -47,7 +48,7 @@ namespace Kriativity.ModelDriven.Infrastructure
             return _loadedAssemblies.Values;
         }
 
-        public IEnumerable<Assembly> GetAll(string pattern)
+        public IEnumerable<AssemblyDef> GetAll(string pattern)
         {
             var kvps = from entry in _loadedAssemblies
                        where entry.Key.MatchesGlobExpression(pattern)
@@ -121,11 +122,11 @@ namespace Kriativity.ModelDriven.Infrastructure
                 AppTrace.Verbose("Loading assembly {0} ", assembly.FullName);
 
 
-                Assembly loadedAssembly = null;
+                ModuleDefMD loadedAssembly = null;
                 try
                 {
-                    loadedAssembly = Assembly.LoadFile(assembly.FullName);
-                    _loadedAssemblies.Add(loadedAssembly.FullName, loadedAssembly);
+                    loadedAssembly = ModuleDefMD.Load(assembly.FullName);
+                    _loadedAssemblies.Add(loadedAssembly.FullName, loadedAssembly.Assembly);
                 }
                 catch
                 {

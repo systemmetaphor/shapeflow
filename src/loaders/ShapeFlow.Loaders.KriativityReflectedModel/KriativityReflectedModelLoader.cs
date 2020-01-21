@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using dnlib.DotNet;
 using Kriativity.ModelDriven.Infrastructure;
 using ShapeFlow.Declaration;
 using ShapeFlow.Infrastructure;
@@ -63,7 +64,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             
             var ns = context.GetParameter("namespace-inclusion-pattern");
             
-            var typesToConsider = new Dictionary<string, Type>();
+            var typesToConsider = new Dictionary<string, TypeDef>();
 
             // TODO: Include the types that were explicitly added in the configuration
 
@@ -72,9 +73,9 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 
             foreach (var assembly in assemblies)
             {
-                foreach (var type in assembly.GetTypes())
+                foreach (var type in assembly.Modules.SelectMany(m => m.GetTypes()))
                 {
-                    if (type.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any())
+                    if (type.CustomAttributes.Any(t => t.TypeFullName.Contains(typeof(GeneratedCodeAttribute).FullName)))
                     {
                         continue;
                     }
@@ -86,21 +87,21 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 }
             }
 
-            var dataObjectTypes = new List<Type>();
-            var eventObjectTypes = new List<Type>();
-            var stateObjectTypes = new List<Type>();
+            var dataObjectTypes = new List<TypeDef>();
+            var eventObjectTypes = new List<TypeDef>();
+            var stateObjectTypes = new List<TypeDef>();
 
             dataObjectTypes.AddRange(typesToConsider.Values
                 .Where(t => t.ShouldIncludeAsDataObject())
-                .Where(t => string.IsNullOrWhiteSpace(ns) || t.Namespace.MatchesGlobExpression(ns)));
+                .Where(t => string.IsNullOrWhiteSpace(ns) || t.Namespace.String.MatchesGlobExpression(ns)));
 
             eventObjectTypes.AddRange(typesToConsider.Values
                 .Where(t => t.ShouldIncludeAsEventObject())
-                .Where(t => string.IsNullOrWhiteSpace(ns) || t.Namespace.MatchesGlobExpression(ns)));
+                .Where(t => string.IsNullOrWhiteSpace(ns) || t.Namespace.String.MatchesGlobExpression(ns)));
 
             stateObjectTypes.AddRange(typesToConsider.Values
                 .Where(t => t.ShouldIncludeAsStateObject())
-                .Where(t => string.IsNullOrWhiteSpace(ns) || t.Namespace.MatchesGlobExpression(ns)));
+                .Where(t => string.IsNullOrWhiteSpace(ns) || t.Namespace.String.MatchesGlobExpression(ns)));
 
             var imported = new List<Type>();
 
@@ -182,7 +183,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return true;
         }
 
-        private ReflectedObject ConvertToReflectObject(Type t, List<Type> importedTypes)
+        private ReflectedObject ConvertToReflectObject(TypeDef t, List<TypeDef> importedTypes)
         {
             var theName = t.Name;
 
@@ -196,15 +197,15 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 Name = theName,
                 DtoName = t.Name,
                 DotNetNamespace = t.Namespace,
-                DotNetAssembly = t.Assembly.FullName,
+                DotNetAssembly = t.AssemblyQualifiedName,
                 DotNetType = t,
-                BaseName = t.BaseType != null && t.BaseType != typeof(object) ? t.BaseType.Name : string.Empty,
-                HasBaseEventObject = t.BaseType != null && t.BaseType.ShouldIncludeAsEventObject()
+                BaseName = t.BaseType != null && t.BaseType.Name.String != typeof(object).Name ? t.BaseType.Name.String : string.Empty,
+                HasBaseEventObject = t.BaseType != null && t.BaseType.ResolveTypeDef().ShouldIncludeAsEventObject()
             };
 
             // handle type
 
-            var attributeGroups = t.GetCustomAttributes(false).GroupBy(a => a.GetType());
+            var attributeGroups = t.CustomAttributes.GroupBy(a => a.GetType());
             var customAttributes = attributeGroups.ToDictionary(g => g.Key);
             var hasObsoleteAttribute = customAttributes.Any(a => a.Key == typeof(ObsoleteAttribute));
 
@@ -218,19 +219,19 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return result;
         }
 
-        private static void ProcessTypeProperties(Type t, ReflectedObject b, List<Type> importedTypes)
+        private static void ProcessTypeProperties(TypeDef t, ReflectedObject b, List<TypeDef> importedTypes)
         {
             // handle type properties
-            var properties = t.GetProperties(HierarchyProperties).OrderBy(p => p.Name).ToList();
+            var properties = t.Properties.OrderBy(p => p.Name).ToList();
 
-            var thisPrefix = b.DotNetType.Assembly.FullName.Split('.').FirstOrDefault() ?? string.Empty;
+            var thisPrefix = b.DotNetType.AssemblyQualifiedName.Split('.').FirstOrDefault() ?? string.Empty;
 
             foreach (var property in properties)
             {
                 var businessObjectProperty = new ReflectedObjectProperty();
                 businessObjectProperty.Name = property.Name;
 
-                var customAttributes = property.GetCustomAttributes(false).ToDictionary(a => a.GetType());
+                var customAttributes = property.CustomAttributes.ToDictionary(a => a.GetType());
                 var hasObsoleteAttribute = customAttributes.ContainsKey(typeof(ObsoleteAttribute));
 
                 if (hasObsoleteAttribute)
@@ -239,11 +240,11 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 }
 
 
-                businessObjectProperty.DotNetType = property.PropertyType;
+                businessObjectProperty.DotNetType = property.GetMethod.ReturnType.TryGetTypeDef();
                 businessObjectProperty.TargetName = businessObjectProperty.Name.ToCamelCase();
                 businessObjectProperty.IsBusinessObject = businessObjectProperty.DotNetType.ShouldIncludeAsDataObject();
 
-                var theName = businessObjectProperty.DotNetType.Name;
+                var theName = businessObjectProperty.DotNetType.Name.String;
 
                 if (theName.EndsWith("Data"))
                 {
