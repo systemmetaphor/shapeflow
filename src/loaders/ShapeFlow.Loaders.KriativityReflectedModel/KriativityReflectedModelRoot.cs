@@ -12,13 +12,14 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
         private readonly List<ReflectedObject> _businessObjects;
         private readonly List<ReflectedObject> _eventObjects;
         private readonly List<StateProjection> _stateProjections;
-
+        private readonly List<ReflectedObject> _dataObjects; 
         
         public KriativityReflectedModelRoot()
         {
             _businessObjects = new List<ReflectedObject>();
             _eventObjects = new List<ReflectedObject>();
             _stateProjections = new List<StateProjection>();
+            _dataObjects = new List<ReflectedObject>();
         }
 
         public IEnumerable<ReflectedObject> BusinessObjects => _businessObjects;
@@ -27,21 +28,24 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 
         public IEnumerable<StateProjection> StateProjections => _stateProjections;
 
+        public IEnumerable<ReflectedObject> DataObjects => _dataObjects;
+
         public IEnumerable<string> StateProjectionsNamespaces
         {
             get
             {
                 var objs = StateProjections.Select(p => p.BusinessObject).Concat(StateProjections.Select(p => p.StateObject));
-                var nss = objs.Select(o => o.DotNetNamespace);
+                var nss = objs.Select(o => o.Namespace);
                 return nss.Distinct().OrderBy(n => n).ToArray();
             }
         }
 
-        public void AddModels(IEnumerable<ReflectedObject> businessObjects, IEnumerable<ReflectedObject> eventObjects, IEnumerable<StateProjection> stateProjections)
+        public void AddModels(IEnumerable<ReflectedObject> businessObjects, IEnumerable<ReflectedObject> eventObjects, IEnumerable<StateProjection> stateProjections, IEnumerable<ReflectedObject> dataObjects)
         {
             _businessObjects.AddRange(ModelSorter.Sort(businessObjects));
             _eventObjects.AddRange(ModelSorter.Sort(eventObjects));
             _stateProjections.AddRange(stateProjections);
+            _dataObjects.AddRange(dataObjects);
         }
 
         public bool HasEventObject(string name)
@@ -49,11 +53,15 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return _eventObjects.Any(e => e.Name.Equals(name));
         }
 
-        public bool HasBusinessbject(string name)
+        public bool HasBusinessObject(string name)
         {
             return _businessObjects.Any(e => e.Name.Equals(name));
         }
-
+        
+        public bool HasDataObject(string name)
+        {
+            return _dataObjects.Any(e => e.Name.Equals(name));
+        }
 
         public void RegisterDomainTypes(Action<Type, string[]> register)
         {

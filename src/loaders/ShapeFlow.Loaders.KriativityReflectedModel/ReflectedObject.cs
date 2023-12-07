@@ -7,7 +7,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 {
     public class ReflectedObject
     {
-        private HashSet<ReflectedObjectProperty> _properties;     
+        private readonly HashSet<ReflectedObjectProperty> _properties;     
 
         public ReflectedObject()
         {
@@ -16,17 +16,15 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
         
         public string Name { get; set; }
         
-        public string DotNetNamespace { get; set; }
-
-        public string DotNetAssembly { get; set; }
+        public string Namespace { get; set; }
 
         public IEnumerable<ReflectedObjectProperty> Properties  => _properties;
                 
-        public TypeDef DotNetType { get; set; }
+        public string Type { get; set; }
         
         public bool IsObsolete { get; set; }
 
-        public string BaseName { get; set; }
+        public string BaseType { get; set; }
 
         public bool HasBaseEventObject { get; set; }
 

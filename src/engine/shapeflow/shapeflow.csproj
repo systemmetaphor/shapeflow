@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Company>www.systemmetaphor.com</Company>
     <Authors>Pedro Salgueiro</Authors>
     <IsPackable>true</IsPackable>

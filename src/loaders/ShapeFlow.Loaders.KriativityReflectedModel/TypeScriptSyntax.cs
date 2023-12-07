@@ -9,14 +9,14 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 {
     public static class TypeScriptSyntax
     {
-        public static Type GetCollectionElementType(TypeDef what)
+        public static TypeDef GetCollectionElementType(TypeDef what)
         {
             if(!IsCollectionType(what))
             {
                 return null;
             }
 
-            return what.GetGenericArguments()[0];
+            return what.GenericParameters[0].Kind.ResolveTypeDef();
         }
 
         public static bool IsCollectionType(TypeDef what)
@@ -24,7 +24,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             return IsGenericObservableCollectionType(what) || IsGenericCollectionType(what) || IsGenericListType(what) || IsGenericEnumerableType(what);
         }
 
-        public static string ConvertClrTypeToDomainTypeScriptType(Type what, bool forExtends = false)
+        public static string ConvertClrTypeToDomainTypeScriptType(TypeDef what, bool forExtends = false)
         {
             if(what == null)
             {
@@ -97,11 +97,11 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 case "System.String[]": return "KnockoutObservableArray<string>";                                
             }
 
-            var isNullable = CSharpSyntax.IsNullableType(what);
-            if (isNullable)
-            {
-                return ConvertClrTypeToDomainTypeScriptType(Nullable.GetUnderlyingType(what));
-            }
+            //var isNullable = CSharpSyntax.IsNullableType(what);
+            //if (isNullable)
+            //{
+            //    return ConvertClrTypeToDomainTypeScriptType(Nullable.GetUnderlyingType(what));
+            //}
             
             return "any";
         }
@@ -142,11 +142,11 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 case "System.String[]": return "string";
             }
 
-            var isNullable = CSharpSyntax.IsNullableType(what);
-            if (isNullable)
-            {
-                return ConvertClrTypeToDtoTypeScriptType(Nullable.GetUnderlyingType(what));
-            }
+            //var isNullable = CSharpSyntax.IsNullableType(what);
+            //if (isNullable)
+            //{
+            //    return ConvertClrTypeToDtoTypeScriptType(Nullable.GetUnderlyingType(what));
+            //}
 
             return "any";
         }
@@ -171,7 +171,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 
             if (IsCollectionType(what))
             {
-                Type collectionElementType = what.GetGenericArguments()[0];
+                TypeDef collectionElementType = what.GenericParameters[0].Kind.ResolveTypeDef();
                 var collectionElementTypeName = CSharpSyntax.ConvertClrTypeToKeyword(collectionElementType);
                 var typescriptElementTypeName = "any";
 
@@ -219,11 +219,11 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 case "System.String[]": return "ko.observableArray<string>()";
             }
 
-            var isNullable = CSharpSyntax.IsNullableType(what);
-            if (isNullable)
-            {
-                return GetDomainDefaultValue(Nullable.GetUnderlyingType(what));
-            }
+            //var isNullable = CSharpSyntax.IsNullableType(what);
+            //if (isNullable)
+            //{
+            //    return GetDomainDefaultValue(Nullable.GetUnderlyingType(what));
+            //}
 
             return "null";
         }
@@ -242,7 +242,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 
             if (IsCollectionType(what))
             {
-                return string.Format("[]", ConvertClrTypeToDomainTypeScriptType(what.GetGenericArguments()[0]));
+                return "[]";
 
             }
 
@@ -265,33 +265,41 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 case "System.String[]": return "[]";
             }
 
-            var isNullable = CSharpSyntax.IsNullableType(what);
-            if (isNullable)
-            {
-                return GetDtoDefaultValue(Nullable.GetUnderlyingType(what));
-            }
+            //var isNullable = CSharpSyntax.IsNullableType(what);
+            //if (isNullable)
+            //{
+            //    return GetDtoDefaultValue(Nullable.GetUnderlyingType(what));
+            //}
 
             return "null";
         }
 
-        private static bool IsGenericObservableCollectionType(Type propertyType)
+        private static bool IsGenericObservableCollectionType(TypeDef propertyType)
         {
-            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(System.Collections.ObjectModel.ObservableCollection<>));
+            //return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(System.Collections.ObjectModel.ObservableCollection<>));
+
+            return false;
         }
 
-        private static bool IsGenericCollectionType(Type propertyType)
+        private static bool IsGenericCollectionType(TypeDef propertyType)
         {
-            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(ICollection<>));
+            // return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(ICollection<>));
+
+            return false;
         }
 
-        private static bool IsGenericListType(Type propertyType)
+        private static bool IsGenericListType(TypeDef propertyType)
         {
-            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(IList<>));
+            // return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(IList<>));
+
+            return false;
         }
 
-        private static bool IsGenericEnumerableType(Type propertyType)
+        private static bool IsGenericEnumerableType(TypeDef propertyType)
         {
-            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(IEnumerable<>));
+            // return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition().Equals(typeof(IEnumerable<>));
+
+            return false;
         }
     }
 }

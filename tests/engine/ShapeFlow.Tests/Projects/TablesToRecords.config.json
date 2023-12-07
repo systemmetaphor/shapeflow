@@ -24,10 +24,10 @@
       "tags": "dbEntityModel",
       "loaderName": "DbModelLoader",
       "parameters": {
-        "server": ".\\sql2017",
+        "server": ".\\sql2019",
         "db": "Northwind",
         "user": "sa",
-        "password": "qaz123WSX"
+        "password": "pa$$w0rd"
       }
     }
   },

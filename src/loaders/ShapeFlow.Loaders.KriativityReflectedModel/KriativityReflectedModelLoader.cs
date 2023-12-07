@@ -21,7 +21,6 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
         private const string ModelPathParameter = "model-path";
         private const string AssemblySearchPatternParameter = "assembly-search-pattern";
 
-        private static BindingFlags HierarchyProperties = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
         private readonly AssemblyLoader _assemblyLoader;
 
         public KriativityReflectedModelLoader()
@@ -32,13 +31,11 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
         }
 
         public string Name { get; }
-        
+
         public ShapeFormat Format { get; }
-        
+
         public Task<ShapeContext> Load(ShapeDeclaration context)
         {
-            var root = new KriativityReflectedModelRoot();
-
             //context.GeneratorContext.SearchDirectories;
 
             var searchDirectories = new List<string>();
@@ -61,9 +58,9 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                     _assemblyLoader.LoadAll(actualDirectory, loadPattern ?? DefaultAssembliesInclusionPattern);
                 }
             }
-            
+
             var ns = context.GetParameter("namespace-inclusion-pattern");
-            
+
             var typesToConsider = new Dictionary<string, TypeDef>();
 
             // TODO: Include the types that were explicitly added in the configuration
@@ -87,6 +84,16 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 }
             }
 
+            var root = ReflectModel(ns, typesToConsider);
+
+            var shape = new KriativityReflectedModelShape(root, ShapeFormat.Clr, context.Name);
+
+            return Task.FromResult(new ShapeContext(context, shape));
+        }
+
+        public KriativityReflectedModelRoot ReflectModel(string ns, Dictionary<string, TypeDef> typesToConsider)
+        {
+            var root = new KriativityReflectedModelRoot();
             var dataObjectTypes = new List<TypeDef>();
             var eventObjectTypes = new List<TypeDef>();
             var stateObjectTypes = new List<TypeDef>();
@@ -103,13 +110,13 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 .Where(t => t.ShouldIncludeAsStateObject())
                 .Where(t => string.IsNullOrWhiteSpace(ns) || t.Namespace.String.MatchesGlobExpression(ns)));
 
-            var imported = new List<Type>();
+            var imported = new List<TypeDef>();
 
             var bos = dataObjectTypes.Select(t => ConvertToReflectObject(t, imported)).ToList();
             if (imported.Count > 0)
             {
                 // we are ignoring these imports
-                var innerImported = new List<Type>();
+                var innerImported = new List<TypeDef>();
 
                 var tmpCollection = imported.Select(t => ConvertToReflectObject(t, innerImported)).ToList();
                 tmpCollection.AddRange(bos);
@@ -121,7 +128,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             if (imported.Count > 0)
             {
                 // we are ignoring these imports
-                var innerImported = new List<Type>();
+                var innerImported = new List<TypeDef>();
 
                 var tmpCollection = imported.Select(t => ConvertToReflectObject(t, innerImported)).ToList();
                 // nasty hack: we are adding this to the bo collection because its a way to get the sort
@@ -161,11 +168,9 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 }
             }
 
-            root.AddModels(bos, evos, sos);
+            root.AddModels(bos, evos, sos, Enumerable.Empty<ReflectedObject>());
 
-            var shape = new KriativityReflectedModelShape(root, ShapeFormat.Clr, context.Name);
-
-            return Task.FromResult(new ShapeContext(context, shape));
+            return root;
         }
 
         public Task Save(ShapeContext context)
@@ -196,11 +201,10 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             {
                 Name = theName,
                 DtoName = t.Name,
-                DotNetNamespace = t.Namespace,
-                DotNetAssembly = t.AssemblyQualifiedName,
-                DotNetType = t,
-                BaseName = t.BaseType != null && t.BaseType.Name.String != typeof(object).Name ? t.BaseType.Name.String : string.Empty,
-                HasBaseEventObject = t.BaseType != null && t.BaseType.ResolveTypeDef().ShouldIncludeAsEventObject()
+                Namespace = t.Namespace,
+                Type = t.Name.String,
+                BaseType = t.BaseType != null && t.BaseType.Name.String != typeof(object).Name ? t.BaseType.Name.String : string.Empty,
+                HasBaseEventObject = t.BaseType?.ResolveTypeDef() != null && t.BaseType.ResolveTypeDef().ShouldIncludeAsEventObject()
             };
 
             // handle type
@@ -224,7 +228,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             // handle type properties
             var properties = t.Properties.OrderBy(p => p.Name).ToList();
 
-            var thisPrefix = b.DotNetType.AssemblyQualifiedName.Split('.').FirstOrDefault() ?? string.Empty;
+            var thisPrefix = b.Type.Split('.').FirstOrDefault() ?? string.Empty;
 
             foreach (var property in properties)
             {
@@ -239,12 +243,13 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                     businessObjectProperty.IsObsolete = true;
                 }
 
+                var propertyTypeDef = property.GetMethod.ReturnType.TryGetTypeDef();
 
-                businessObjectProperty.DotNetType = property.GetMethod.ReturnType.TryGetTypeDef();
+                businessObjectProperty.Type = property.GetMethod.ReturnType.TypeName;
                 businessObjectProperty.TargetName = businessObjectProperty.Name.ToCamelCase();
-                businessObjectProperty.IsBusinessObject = businessObjectProperty.DotNetType.ShouldIncludeAsDataObject();
+                businessObjectProperty.IsBusinessObject = propertyTypeDef?.ShouldIncludeAsDataObject() ?? false;
 
-                var theName = businessObjectProperty.DotNetType.Name.String;
+                var theName = businessObjectProperty.Type;
 
                 if (theName.EndsWith("Data"))
                 {
@@ -252,36 +257,43 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 }
 
                 businessObjectProperty.BusinessObjectType = businessObjectProperty.IsBusinessObject ? theName : string.Empty;
-                businessObjectProperty.DataTransferObjectType = businessObjectProperty.DotNetType.Name;
+                businessObjectProperty.DataTransferObjectType = businessObjectProperty.Type;
 
-                var collectionElementType = TypeScriptSyntax.GetCollectionElementType(businessObjectProperty.DotNetType);
+                var collectionElementTypeName = string.Empty;
 
-                businessObjectProperty.IsBusinessObjectCollection = collectionElementType != null && collectionElementType.ShouldIncludeAsDataObject();
-                if (businessObjectProperty.IsBusinessObjectCollection)
+                if (propertyTypeDef != null)
                 {
-                    theName = collectionElementType.Name;
+                    var collectionElementType = TypeScriptSyntax.GetCollectionElementType(propertyTypeDef);
 
-                    if (theName.EndsWith("Data"))
+                    businessObjectProperty.IsBusinessObjectCollection = collectionElementType != null && collectionElementType.ShouldIncludeAsDataObject();
+                    if (businessObjectProperty.IsBusinessObjectCollection)
                     {
-                        theName = string.Concat(theName.Substring(0, theName.Length - "Data".Length), "Model");
-                    }
+                        theName = collectionElementType.Name;
 
-                    businessObjectProperty.BusinessObjectType = theName;
+                        if (theName.EndsWith("Data"))
+                        {
+                            theName = string.Concat(theName.Substring(0, theName.Length - "Data".Length), "Model");
+                        }
+
+                        collectionElementTypeName = theName;
+                        businessObjectProperty.BusinessObjectType = collectionElementTypeName;
+                    }
                 }
 
                 if (businessObjectProperty.IsBusinessObject || businessObjectProperty.IsBusinessObjectCollection)
                 {
-                    var referencedType = businessObjectProperty.IsBusinessObject ? businessObjectProperty.DotNetType : collectionElementType;
+                    var referencedType = businessObjectProperty.IsBusinessObject ? businessObjectProperty.Type : collectionElementTypeName;
 
                     if (referencedType != null)
                     {
-                        var referencedPrefix = referencedType.Assembly.FullName.Split('.').FirstOrDefault() ?? string.Empty;
+                        var referencedPrefix = referencedType.Split('.').FirstOrDefault() ?? string.Empty;
 
                         if (!string.Equals(thisPrefix, referencedPrefix, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (!importedTypes.Any(element => element.FullName.Equals(referencedType.FullName)))
+                            if (!importedTypes.Any(element => element.Equals(referencedType)))
                             {
-                                importedTypes.Add(referencedType);
+                                // TODO: This will break when its a collection
+                                importedTypes.Add(propertyTypeDef);
                             }
                         }
                     }
@@ -289,24 +301,24 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
 
                 if (businessObjectProperty.IsBusinessObject)
                 {
-                    theName = businessObjectProperty.DotNetType.Name;
+                    theName = businessObjectProperty.Type;
                     if (theName.EndsWith("Data"))
                     {
                         theName = string.Concat(theName.Substring(0, theName.Length - "Data".Length), "Model");
                     }
 
                     businessObjectProperty.TargetType = $"KnockoutObservable<{theName}>";
-                    businessObjectProperty.DataTransferObjectType = businessObjectProperty.DotNetType.Name;
+                    businessObjectProperty.DataTransferObjectType = businessObjectProperty.Type;
                 }
                 else
                 {
-                    businessObjectProperty.TargetType = TypeScriptSyntax.ConvertClrTypeToDomainTypeScriptType(businessObjectProperty.DotNetType);
-                    businessObjectProperty.DataTransferObjectType = TypeScriptSyntax.ConvertClrTypeToDtoTypeScriptType(businessObjectProperty.DotNetType);
+                    businessObjectProperty.TargetType = TypeScriptSyntax.ConvertClrTypeToDomainTypeScriptType(propertyTypeDef);
+                    businessObjectProperty.DataTransferObjectType = TypeScriptSyntax.ConvertClrTypeToDtoTypeScriptType(propertyTypeDef);
                 }
 
                 if (businessObjectProperty.IsBusinessObject)
                 {
-                    theName = businessObjectProperty.DotNetType.Name;
+                    theName = businessObjectProperty.Type;
                     if (theName.EndsWith("Data"))
                     {
                         theName = string.Concat(theName.Substring(0, theName.Length - "Data".Length), "Model");
@@ -317,8 +329,8 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
                 }
                 else
                 {
-                    businessObjectProperty.TargetInitialValue = TypeScriptSyntax.GetDomainDefaultValue(businessObjectProperty.DotNetType);
-                    businessObjectProperty.DataTransferObjectTargetInitialValue = TypeScriptSyntax.GetDtoDefaultValue(businessObjectProperty.DotNetType);
+                    businessObjectProperty.TargetInitialValue = TypeScriptSyntax.GetDomainDefaultValue(propertyTypeDef);
+                    businessObjectProperty.DataTransferObjectTargetInitialValue = TypeScriptSyntax.GetDtoDefaultValue(propertyTypeDef);
                 }
 
                 b.AddProperty(businessObjectProperty);

@@ -3,87 +3,93 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using dnlib.DotNet;
 
 namespace ShapeFlow.Loaders.KriativityReflectedModel
 {
     public static class CSharpSyntax 
     {
-        public static string ConvertClrTypeToKeyword(Type t)
+        public static string ConvertClrTypeToKeyword(TypeDef t)
         {
-            var actualType = t;
-            var isNullable = IsNullableType(t);            
-            if(isNullable)
-            {
-                actualType = Nullable.GetUnderlyingType(t);
-            }
+            return t.Name.String;
 
-            if(typeof(System.Boolean) == actualType)
-            {
-                return string.Concat("bool", isNullable ? "?" : string.Empty);
-            }
+            //var actualType = t;
 
-            if(typeof(System.Int16) == actualType)
-            {
-                return string.Concat("short", isNullable ? "?" : string.Empty);
-            }
+            //var isNullable = false;// IsNullableType(t);            
+            ////if(isNullable)
+            ////{
+            ////    actualType = Nullable.GetUnderlyingType(t);
+            ////}
 
-            if (typeof(System.Int32) == actualType)
-            {
-                return string.Concat("int", isNullable ? "?" : string.Empty);
-            }
-            
-            if (typeof(System.Int64) == actualType)
-            {
-                return string.Concat("long", isNullable ? "?" : string.Empty);
-            }
+            //if(typeof(bool).Name == actualType.Name.String)
+            //{
+            //    return string.Concat("bool", isNullable ? "?" : string.Empty);
+            //}
 
-            if (typeof(System.Single) == actualType)
-            {
-                return string.Concat("float", isNullable ? "?" : string.Empty);
-            }
+            //if(typeof(System.Int16) == actualType)
+            //{
+            //    return string.Concat("short", isNullable ? "?" : string.Empty);
+            //}
 
-            if (typeof(System.Double) == actualType)
-            {
-                return string.Concat("double", isNullable ? "?" : string.Empty);
-            }
+            //if (typeof(System.Int32) == actualType)
+            //{
+            //    return string.Concat("int", isNullable ? "?" : string.Empty);
+            //}
 
-            if (typeof(System.Decimal) == actualType)
-            {
-                return string.Concat("decimal", isNullable ? "?" : string.Empty);
-            }
+            //if (typeof(System.Int64) == actualType)
+            //{
+            //    return string.Concat("long", isNullable ? "?" : string.Empty);
+            //}
 
-            if (typeof(System.DateTime) == actualType)
-            {
-                return string.Concat("DateTime", isNullable ? "?" : string.Empty);
-            }
+            //if (typeof(System.Single) == actualType)
+            //{
+            //    return string.Concat("float", isNullable ? "?" : string.Empty);
+            //}
 
-            if (typeof(System.String) == actualType)
-            {
-                return "string";
-            }
-            
-            if(t.IsGenericType && !isNullable)
-            {
-                return GetFullName(t);
-            }
+            //if (typeof(System.Double) == actualType)
+            //{
+            //    return string.Concat("double", isNullable ? "?" : string.Empty);
+            //}
+
+            //if (typeof(System.Decimal) == actualType)
+            //{
+            //    return string.Concat("decimal", isNullable ? "?" : string.Empty);
+            //}
+
+            //if (typeof(System.DateTime) == actualType)
+            //{
+            //    return string.Concat("DateTime", isNullable ? "?" : string.Empty);
+            //}
+
+            //if (typeof(System.String) == actualType)
+            //{
+            //    return "string";
+            //}
+
+            //if(t.GenericParameters(). && !isNullable)
+            //{
+            //    return GetFullName(t);
+            //}
 
 
-            if(!isNullable && !string.IsNullOrWhiteSpace(actualType.FullName))
-            {
-                return actualType.FullName;
-            }
+            //if(!isNullable && !string.IsNullOrWhiteSpace(actualType.FullName))
+            //{
+            //    return actualType.FullName;
+            //}
 
-            return string.Concat(actualType.Name, isNullable ? "?" : string.Empty);
+            //return string.Concat(actualType.Name, isNullable ? "?" : string.Empty);
         }
 
-        public static bool IsNullableType(Type t)
+        public static bool IsNullableType(TypeDef t)
         {
-            return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>);
+            // return t.IsGeneric() && t.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+            return false;
         }
 
-        public static string GetFullName(Type t)
+        public static string GetFullName(TypeDef t)
         {
-            if (!t.IsGenericType)
+            if (!t.IsGeneric())
             {
                 if(!string.IsNullOrEmpty(t.FullName))
                 {
@@ -96,7 +102,7 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             StringBuilder sb = new StringBuilder();
 
             sb.Append(t.Name.Substring(0, t.Name.LastIndexOf("`")));
-            sb.Append(t.GetGenericArguments().Aggregate("<",(aggregate, type) => aggregate + (aggregate == "<" ? "" : ",") + GetFullName(type)));
+            sb.Append(t.GenericParameters.Aggregate("<",(aggregate, type) => aggregate + (aggregate == "<" ? "" : ",") + GetFullName(type.Kind.ResolveTypeDef())));
             sb.Append(">");
 
             return sb.ToString();
@@ -119,6 +125,14 @@ namespace ShapeFlow.Loaders.KriativityReflectedModel
             }
 
             return stringType;
+        }
+    }
+
+    public static class TypeDefExtensions
+    {
+        public static bool IsGeneric(this TypeDef t)
+        {
+            return (t.GenericParameters?.Count ?? 0) > 0;
         }
     }
 }

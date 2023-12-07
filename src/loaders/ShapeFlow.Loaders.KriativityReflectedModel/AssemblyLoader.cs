@@ -59,8 +59,8 @@ namespace Kriativity.ModelDriven.Infrastructure
 
         public Assembly GetOrLoad(string pattern)
         {
-            Func<Assembly, bool> fullNameStartsWith = (a) => a.FullName.StartsWith(pattern, StringComparison.OrdinalIgnoreCase);
-            var result = AppDomain.CurrentDomain.GetAssemblies().Where(fullNameStartsWith).FirstOrDefault();
+            bool FullNameStartsWith(Assembly a) => a.FullName.StartsWith(pattern, StringComparison.OrdinalIgnoreCase);
+            var result = AppDomain.CurrentDomain.GetAssemblies().Where(FullNameStartsWith).FirstOrDefault();
             return result;
         }
 
