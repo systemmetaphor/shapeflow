@@ -1,0 +1,44 @@
+﻿{
+  "name": "Generate Records based on Tables",
+  "projections": {
+    "TablesToRecords": {
+      "input": {
+        "format": "clr"
+      },
+      "output": {
+        "format": "fileset",
+        "loaderName": "fileSetLoader"
+      },
+      "rules": [
+        {
+          "fileName": "Data\\Records.liquid"
+        }
+      ],
+      "rulesBasePath": "Rules",
+      "version": "1.0.0"
+
+    }
+  },
+  "shapes": {
+    "salesModel": {
+      "tags": "dbEntityModel",
+      "loaderName": "DbModelLoader",
+      "parameters": {
+        "server": ".",
+        "db": "Northwind",
+        "user": "sa",
+        "password": "qaz123WSX"
+      }
+    }
+  },
+  "pipelines": {
+    "applicationTier": {
+      "stages": {
+        "entities": {
+          "selector": "salesModel",
+          "projectionRef": "TablesToRecords"
+        }
+      }
+    }
+  }
+}

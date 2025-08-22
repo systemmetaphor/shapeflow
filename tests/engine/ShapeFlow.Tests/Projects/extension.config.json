@@ -1,0 +1,35 @@
+﻿{
+  "name": "MyErp Code Generation",
+  "projections": {
+    "Persistence": {
+      "packageId": "ShapeFlow.Projections.Persistence",
+      "version": "1.0.0",
+      "input": {
+        "format": "json"
+      },
+      "output": {
+        "format": "fileset",
+        "loaderName": "fileSetLoader"
+      }
+    }
+  },
+  "shapes": {
+    "SalesModel" :  {
+      "tags": "domainEntityModel",
+      "loaderName": "JsonLoader",
+      "parameters": {
+        "model-path": "Shapes\\Order.json"
+      }
+    }
+  },
+  "pipelines": {
+    "applicationTier" : {
+      "stages": {
+        "entities": {
+          "selector": "SalesModel",
+          "projectionRef": "Persistence"
+        }
+      }
+    }
+  }
+}

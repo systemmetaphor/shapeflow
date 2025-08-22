@@ -1,0 +1,31 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="Newtonsoft.Json.Linq" #>
+
+
+<#@ property name="entities" type="System.Object[]" processor="PropertyProcessor" #>
+
+
+using System;
+using System.Collections.Generic;
+
+namespace DomainObjects
+{
+	// TODO: add some code generator here
+<#
+	foreach(var element in entities)
+	{
+		var domainObject = (IDictionary<string,object>)element;
+		var className = (string)domainObject["domainName"];
+#>
+	public class <#= className #>
+	{
+	}
+<#
+	}
+#>
+
+}

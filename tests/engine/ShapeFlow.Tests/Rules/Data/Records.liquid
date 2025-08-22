@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Kriativity;
+
+namespace {{Namespace}}
+{
+{% for item in Entities -%}
+	public class {{item.ObjectName}}Record
+	{
+{% for property in item.Properties -%}
+		public {{ property.SqlDataType | sqltocsharp }} {{property.Name}} {get; set;}
+{% endfor -%}
+	}
+{% unless forloop.last -%}
+
+{% endunless -%}
+{% endfor -%}
+}

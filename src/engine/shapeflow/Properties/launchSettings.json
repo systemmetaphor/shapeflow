@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "shapeflow": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\tmp\\tst"
+    }
+  }
+}

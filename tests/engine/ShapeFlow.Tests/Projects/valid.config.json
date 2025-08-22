@@ -1,0 +1,57 @@
+﻿{
+  "name": "MyErp Code Generation",
+  "projections": {
+    "DDDGenerator": {
+      "version": "1.0.0",
+      "rulesBasePath": "Rules",
+      "rules": [
+        {
+          "fileName": "DomainObjects\\Aggregates.liquid"
+        }
+      ],
+      "input": {
+        "format": "json"
+      },
+      "output": {
+        "format": "fileset",
+        "loaderName": "fileSetLoader"
+      }
+    }
+  },
+  "shapes": {
+    "CustomersImport": {
+      "tags": "importers",
+      "loaderName": "ExcelSchema",
+      "parameters": {
+        "model-path": "shapes\\customers.template.xlsx",
+        "importer-name": "CustomerFile"
+      }
+    },
+    "PartnersImport": {
+      "loaderName": "ExcelSchema",
+      "tags": "importers",
+      "parameters": {
+        "model-path": "shapes\\partners.template.xlsx",
+        "importer-name": "PartnersFile"
+      }
+    },
+    "EmployeesImport": {
+      "loaderName": "ExcelSchema",
+      "tags": "importers",
+      "parameters": {
+        "model-path": "shapes\\employees.template.xlsx",
+        "importer-name": "EmployeesFile"
+      }
+    }
+  },
+  "pipelines": {
+    "applicationTier": {
+      "stages": {
+        "excelImporters": {
+          "selector": "?(tag=importers)",
+          "projectionRef": "excelimport"
+        }
+      }
+    }
+  }
+}
