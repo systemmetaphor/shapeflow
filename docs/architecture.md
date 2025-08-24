@@ -14,6 +14,14 @@ Code generation is driven by a *solution declaration* – a JSON configuration f
 
 Each shape describes an input model and references a loader capable of materialising it. Loaders are registered via the DI container and surfaced through the `LoaderRegistry`. The `ShapeManager` uses this registry to validate and load shapes on demand, caching the resulting `ShapeContext` instances for reuse.
 
+### Supported Shapes
+
+ShapeFlow ships with loaders for JSON (`JsonLoader`), XML (`XmlLoader`), YAML (`YamlModelLoader`), database schemas (`DbModelLoader`), Excel templates (`ExcelLoader`), and file sets (`FileSetLoader`)【F:src/engine/ShapeFlow.Core/Loaders/JsonLoader.cs†L20-L22】【F:src/engine/ShapeFlow.Core/Loaders/XmlLoader.cs†L20-L23】【F:src/engine/ShapeFlow.Loaders.Yaml/YamlModelLoader.cs†L23-L28】【F:src/engine/ShapeFlow.Loaders.DbModel/DbModelLoader.cs†L55-L58】【F:src/engine/ShapeFlow.Loaders.Excel/ExcelLoader.cs†L21-L24】【F:src/engine/ShapeFlow.Core/Loaders/FileSetLoader.cs†L8-L12】. The available shape formats are defined by `ShapeFormat`, which includes `Json`, `Xml`, `Yaml`, `Clr`, `FileSet`, and `Text`【F:src/engine/ShapeFlow.Core/Shapes/ShapeFormat.cs†L6-L41】.
+
+### Output Artifacts
+
+Projections typically produce `FileSet` outputs. When a rule returns text, the engine wraps it into a `FileShape` and infers the file extension before adding it to the set【F:src/engine/ShapeFlow.Core/Projections/ProjectionEngine.cs†L128-L145】. Known output languages include CSharp, SQL, HTML, CSS, and plain Text, as listed in `OutputLanguages`【F:src/engine/ShapeFlow.Core/Output/OutputLanguages.cs†L3-L9】.
+
 ## Pipelines
 
 A pipeline orchestrates the sequence of projections to execute. `PipelineDeclaration` captures the pipeline name and its ordered stages【F:src/engine/ShapeFlow.Core/Declaration/PipelineDeclaration.cs†L22-L72】. Each stage specifies a selector identifying the input shape and a projection to apply【F:src/engine/ShapeFlow.Core/Declaration/PipelineStageDeclaration.cs†L8-L32】. When the engine runs, `ShapeFlowEngine.AssemblePipeline` converts these declarations into executable pipelines made of projection handlers【F:src/engine/ShapeFlow.Core/ShapeFlowEngine.cs†L47-L64】.
